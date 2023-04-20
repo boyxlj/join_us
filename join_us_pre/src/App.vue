@@ -1,9 +1,5 @@
 <template>
-  <div>
-    <h1>123</h1>
-    <a-button type="primary">Primary Button</a-button>
-    <button @click="num++">{{num}}</button>
-  </div>
+    <router-view></router-view>
 </template>
 
 <script setup lang="ts">
