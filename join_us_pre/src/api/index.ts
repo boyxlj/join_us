@@ -22,3 +22,10 @@ export const register = (data: Record<string, string>) => {
         data: data
     })
 }
+
+export const sendCode = () => {
+    return request({
+        url: '/code',
+        method: 'get'
+    })
+}
