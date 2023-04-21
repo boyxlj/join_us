@@ -29,3 +29,17 @@ export const sendCode = () => {
         method: 'get'
     })
 }
+
+export const getJobType = () => {
+    return request({
+        url: '/jobtype',
+        method: 'get'
+    })
+}
+
+export const getJobList = () => {
+    return request({
+        url: '/jobList',
+        method: 'get'
+    })
+}
