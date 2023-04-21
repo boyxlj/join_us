@@ -30,9 +30,13 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       less: {
-        javascriptEnabled: true,
+        modifyVars: {
+          'primary-color': 'red',
+          'link-color': '#1DA57A',
+          'border-radius-base': '50px',
+        },
+        javascriptEnabled: true
       }
     }
-  },
-
+  }
 })

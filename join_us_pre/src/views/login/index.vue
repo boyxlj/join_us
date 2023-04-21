@@ -22,7 +22,7 @@
           @validate="handleValidate"
           @finishFailed="handleFinishFailed"
         >
-          <a-form-item v-if="activeKey === 0"  name="email">
+          <a-form-item v-if="activeKey === 0" name="email">
             <a-input
               v-model:value="formState.email"
               type="text"
@@ -30,7 +30,7 @@
               placeholder="请输入您的邮箱"
             />
           </a-form-item>
-          <a-form-item v-if="activeKey === 1"  name="username">
+          <a-form-item v-if="activeKey === 1" name="username">
             <a-input
               v-model:value="formState.username"
               type="text"
@@ -38,7 +38,7 @@
               placeholder="请输入您的手机号"
             />
           </a-form-item>
-          <a-form-item v-if="activeKey === 1"  name="psd">
+          <a-form-item v-if="activeKey === 1" name="psd">
             <a-input
               v-model:value="formState.psd"
               type="password"
@@ -47,16 +47,25 @@
             />
           </a-form-item>
 
-          <a-form-item class="sendCode" v-if="activeKey === 0"  name="code">
+          <a-form-item class="sendCode" v-if="activeKey === 0" name="code">
             <a-input
               v-model:value="formState.code"
               type="password"
               autocomplete="off"
               placeholder="验证码"
             />
-          <a-button :disabled="disabledSendCodeBtn" class="sendCodeBtn" @click = "clickSendCode">{{ sendCodeBtnText }}</a-button>
+            <a-button
+              :disabled="disabledSendCodeBtn"
+              class="sendCodeBtn"
+              @click="clickSendCode"
+              >{{ sendCodeBtnText }}</a-button
+            >
           </a-form-item>
-          <a-form-item class="coders" name="inputCodeValue" v-show="activeKey === 1" >
+          <a-form-item
+            class="coders"
+            name="inputCodeValue"
+            v-show="activeKey === 1"
+          >
             <a-input
               v-model:value="formState.inputCodeValue"
               placeholder="请输入数字验证码"
@@ -68,7 +77,7 @@
               class="submitBtn"
               style="width: 100%"
               type="primary"
-              html-type="submit"
+              @click="submit"
               >登录/注册</a-button
             >
             <!-- <a-button style="margin-left: 10px" @click="resetForm"
@@ -82,15 +91,18 @@
 </template>
 
 <script setup lang="ts">
+import { notification,message  } from "ant-design-vue";
 import type { Rule } from "ant-design-vue/es/form";
 import type { FormInstance } from "ant-design-vue";
 import { getValidateCoder } from "validate-coder";
+import { sendCode, userLoginReq } from "@/api";
+const router = useRouter()
 interface FormState {
   email: string;
   code: string;
   username: string;
   psd: string;
-  inputCodeValue:string
+  inputCodeValue?: string;
 }
 const activeKey = ref(0);
 const validateCoder = ref<string>();
@@ -101,27 +113,38 @@ const changeActive = (actIdx: number) => {
   if (activeKey.value === actIdx) return;
   activeKey.value = actIdx;
   formRef.value?.resetFields();
-  refresh()
+  refresh();
 };
 
-
 //验证码按钮
-const sendCodeBtnText = ref('发送验证码')
-const disabledSendCodeBtn = ref(false)
-const clickSendCode =async ()=>{
-    // await  formRef.value?.validate(["email"])
-  disabledSendCodeBtn.value = true
-  let timeout =60
-  let timer = setInterval(()=>{
-    timeout--
-    if(timeout===0){
-      clearInterval(timer)
-      disabledSendCodeBtn.value = false
-      return sendCodeBtnText.value = '发送验证码'
-    }
-    sendCodeBtnText.value = `${timeout}后再次尝试发送`
-  },1000) 
-}
+const sendCodeBtnText = ref("发送验证码");
+const disabledSendCodeBtn = ref(false);
+const clickSendCode = async () => {
+  // await  formRef .value?.validate(["email"])
+  disabledSendCodeBtn.value = true;
+  const res: any = await sendCode();
+  console.log(res);
+  if (res.code === 200) {
+    notification.success({
+      message: "验证码发送成功，请注意查收",
+    });
+    let timeout = 60;
+    let timer = setInterval(() => {
+      timeout--;
+      if (timeout === 0) {
+        clearInterval(timer);
+        disabledSendCodeBtn.value = false;
+        return (sendCodeBtnText.value = "发送验证码");
+      }
+      sendCodeBtnText.value = `${timeout}后再次尝试发送`;
+    }, 1000);
+  } else {
+    disabledSendCodeBtn.value = false;
+    notification.error({
+      message: "验证码发送失败",
+    });
+  }
+};
 
 //更新验证码
 const refresh = () => {
@@ -137,11 +160,11 @@ onMounted(() => {
 
 const formRef = ref<FormInstance>();
 const formState = reactive<FormState>({
-  code:'',
-  email: '',
-  username: '',
-  psd: '',
-  inputCodeValue:'',
+  code: "123456",
+  email: "x123@126.com",
+  username: "18812756574",
+  psd: "WasD123",
+  inputCodeValue: "",
 });
 
 let validateEmailCode = async (_rule: Rule, value: string) => {
@@ -155,33 +178,33 @@ let validateEmailCode = async (_rule: Rule, value: string) => {
   }
 };
 let validateEmail = async (_rule: Rule, value: string) => {
-  const reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/
+  const reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
   if (value === "") {
     return Promise.reject("请填写您的邮箱");
-  } else if (!reg.test(formState.email) ) {
+  } else if (!reg.test(formState.email)) {
     return Promise.reject("请输入合法的邮箱");
   } else {
     return Promise.resolve();
   }
 };
 let validateUserName = async (_rule: Rule, value: string) => {
-const reg = /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/
+  const reg =
+    /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
   if (value === "") {
     return Promise.reject("请填写您的手机号");
-  } else if (!reg.test(formState.username) ) {
+  } else if (!reg.test(formState.username)) {
     return Promise.reject("请输入正确格式的手机号");
   } else {
     return Promise.resolve();
   }
 };
 let validateUserPsd = async (_rule: Rule, value: string) => {
-  const reg = /^[a-z0-9]+$/i
+  const reg = /^[a-z0-9]+$/i;
   if (value === "") {
     return Promise.reject("请填写您的登录密码");
-  } else if (!reg.test(formState.psd)  ) {
+  } else if (!reg.test(formState.psd)) {
     return Promise.reject("密码只能由6-14位数字和字母组成");
-  
-  } else if (value.length>14 || value.length<6 ) {
+  } else if (value.length > 14 || value.length < 6) {
     return Promise.reject("密码只能由6-14位数字和字母组成");
   } else {
     return Promise.resolve();
@@ -209,13 +232,29 @@ const layout = {
   wrapperCol: { span: 24 },
 };
 const handleFinish = (values: FormState) => {
-  console.log(values, formState);
+  // console.log("###", values, formState);
 };
 const handleFinishFailed = (errors: any) => {
   // console.log(errors);
 };
-const resetForm = () => {
-  formRef.value?.resetFields();
+// const resetForm = () => {
+//   formRef.value?.resetFields();
+// };
+const submit = async () => {
+  await formRef.value?.validateFields([
+    "email",
+    "code",
+  ]);
+  const params = {email:formState.email,code:formState.code}
+  const res:any = await userLoginReq(params)
+  if(res.code===200){
+    localStorage.setItem("token",res.token)
+    message.success("登录成功")
+    router.push("/")
+  }else if(res.code===400){
+    message.error(res.msg?res.msg:'密码错误，请重新输入')
+  }
+
 };
 const handleValidate = (...args: any) => {
   // console.log(args);
@@ -281,27 +320,27 @@ const handleValidate = (...args: any) => {
         .ant-form-item {
           padding-bottom: 10px;
         }
-        .sendCode{
+        .sendCode {
           display: flex;
           justify-content: space-between;
           position: relative;
-          .ant-input{
+          .ant-input {
             width: 282px;
           }
-          .sendCodeBtn{
-            flex:1 ;
+          .sendCodeBtn {
+            flex: 1;
             height: 45px;
             position: absolute;
             right: 0;
+            width: 140px;
             // padding: 0 35px;
           }
         }
         .coders {
           position: relative;
           height: 100%;
-          ::v-deep(.ant-form-item-explain-error){
+          ::v-deep(.ant-form-item-explain-error) {
             margin-top: 12px !important;
-
           }
           .ant-input {
             height: 45px;
@@ -311,7 +350,7 @@ const handleValidate = (...args: any) => {
             right: 0;
             top: 0;
           }
-          .photo{
+          .photo {
             position: absolute;
             right: 0;
             top: 0;
@@ -319,7 +358,6 @@ const handleValidate = (...args: any) => {
             width: 130px;
             text-align: center;
             height: 45px !important;
-    
           }
         }
         .ant-input {
