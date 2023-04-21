@@ -1,8 +1,10 @@
 import { createApp } from 'vue'
+import './assets/css/reset.css'
 import './style.css'
+// import 'ant-design-vue/dist/antd.less'
+import './assets/theme/theme.less'
 import App from './App.vue'
 import router from './router'
-import './assets/theme/theme.less'
 
 const app = createApp(App)
 app.use(router)

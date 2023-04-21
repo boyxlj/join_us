@@ -10,7 +10,13 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     AButton: typeof import('ant-design-vue/es')['Button']
+    AForm: typeof import('ant-design-vue/es')['Form']
+    AFormItem: typeof import('ant-design-vue/es')['FormItem']
+    AInput: typeof import('ant-design-vue/es')['Input']
+    AInputNumber: typeof import('ant-design-vue/es')['InputNumber']
     ASpace: typeof import('ant-design-vue/es')['Space']
+    ATabPane: typeof import('ant-design-vue/es')['TabPane']
+    ATabs: typeof import('ant-design-vue/es')['Tabs']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
     RouterLink: typeof import('vue-router')['RouterLink']

@@ -1112,6 +1112,11 @@ unplugin@^1.1.0, unplugin@^1.3.1:
     webpack-sources "^3.2.3"
     webpack-virtual-modules "^0.5.0"
 
+validate-coder@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.npmjs.org/validate-coder/-/validate-coder-0.0.5.tgz"
+  integrity sha512-r0qQQtSG6fMCAqxS+/Em7QQOmPmBb622lR0QdjkSZ6FNSrtk4F/KGM4HjenlUwNt5XCXZDoRYktSG5gKxnUBgw==
+
 vdirs@^0.1.4, vdirs@^0.1.8:
   version "0.1.8"
   resolved "https://registry.npmjs.org/vdirs/-/vdirs-0.1.8.tgz"

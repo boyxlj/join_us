@@ -3,18 +3,18 @@ import vue from '@vitejs/plugin-vue'
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers'
-import path  from "path"
+import path from "path"
 export default defineConfig({
-  resolve:{
-    alias:{
-      "@":path.resolve(__dirname,'src')
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, 'src')
     }
   },
   plugins: [
     vue(),
     AutoImport({
       resolvers: [AntDesignVueResolver()],
-      imports:[
+      imports: [
         'vue',
         'vue-router',
         'pinia'
@@ -23,7 +23,7 @@ export default defineConfig({
     Components({
       resolvers: [
         AntDesignVueResolver(),
-        
+
       ],
     }),
   ],
@@ -34,5 +34,5 @@ export default defineConfig({
       }
     }
   },
- 
+
 })

@@ -1,8 +1,28 @@
 import { RouteRecordRaw } from "vue-router"
-const Login = () => import("@/views/login/index.vue")
+
+function lazyLoad(path:string){
+  return () => import(`@/views/${path}/index.vue`)
+}
+
 export const routes: RouteRecordRaw[] = [
   {
+    path: "/",
+    redirect: '/home',
+  },
+  {
+    path: "/home",
+    component: lazyLoad('home'),
+  },
+  {
     path: "/login",
-    component: Login,
-  }
+    component: lazyLoad('login'),
+  },
+  {
+    path: "/notfound",
+    component: lazyLoad('notfound'),
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: '/notfound',
+  },
 ]
