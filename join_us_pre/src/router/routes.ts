@@ -7,11 +7,17 @@ function lazyLoad(path:string){
 export const routes: RouteRecordRaw[] = [
   {
     path: "/",
-    redirect: '/home',
+    redirect: '/home/index',
   },
   {
     path: "/home",
     component: lazyLoad('home'),
+    children:[
+      {
+        path: "/home/index",
+        component: lazyLoad('index'),
+      },
+    ]
   },
   {
     path: "/login",

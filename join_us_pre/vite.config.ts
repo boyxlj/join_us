@@ -10,6 +10,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, 'src')
     }
   },
+ 
   plugins: [
     vue(),
     AutoImport({
@@ -22,21 +23,22 @@ export default defineConfig({
     }),
     Components({
       resolvers: [
-        AntDesignVueResolver(),
-
+        AntDesignVueResolver({ importStyle: "less" }),
       ],
     }),
+    
   ],
   css: {
     preprocessorOptions: {
       less: {
         modifyVars: {
-          'primary-color': 'red',
+          'primary-color': '#7546C9',
           'link-color': '#1DA57A',
-          'border-radius-base': '50px',
+          'border-radius-base': '8px',
         },
-        javascriptEnabled: true
-      }
+        javascriptEnabled: true,
+      },
     }
   }
+  
 })

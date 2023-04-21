@@ -150,7 +150,7 @@ const clickSendCode = async () => {
 const refresh = () => {
   validateCoder.value = getValidateCoder(
     validateContainer.value as HTMLDivElement,
-    "#A7D8EA"
+    "#BCDEEA"
   );
 };
 
@@ -262,16 +262,16 @@ const handleValidate = (...args: any) => {
 </script>
 
 <style lang="less" scoped>
+
 .login {
   width: 100vw;
   height: 100vh;
   background: url("../../assets/images/login_bg.webp") no-repeat center center;
   background-size: 100% 100%;
+  user-select: none;
   .box {
     width: 550px;
     height: 550px;
-    // background: skyblue;
-    // border: 2px solid skyblue;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -280,7 +280,8 @@ const handleValidate = (...args: any) => {
     padding: 40px 20px;
     box-sizing: border-box;
     box-shadow: 0 0 10px #ddd;
-    border-radius: 15px;
+    border-radius: 20px;
+    background: #fff;
     h1 {
       font-size: 30px;
       margin: 20px 0 30px;
@@ -289,7 +290,7 @@ const handleValidate = (...args: any) => {
       width: 85%;
       height: 50px;
       margin: 0 auto;
-      border-radius: 6px;
+      border-radius: var(--radiusSize);
       background: #ececec;
       padding: 4px;
       box-sizing: border-box;
@@ -301,7 +302,7 @@ const handleValidate = (...args: any) => {
         display: flex;
         justify-content: center;
         align-items: center;
-        border-radius: 4px;
+        border-radius: var(--radiusSize);
         user-select: none;
         cursor: pointer;
         transition: all 0.2s;
@@ -356,6 +357,7 @@ const handleValidate = (...args: any) => {
             top: 0;
             bottom: 0;
             width: 130px;
+            border-radius: var(--radiusSize);
             text-align: center;
             height: 45px !important;
           }

@@ -1,14 +1,18 @@
 <template>
-  <div>
-    <h1>Home</h1>
-    <a-button>test</a-button>
+  <div class="home">
+    <NavBar/>
+    <router-view></router-view>
+    <Footer/>
   </div>
 </template>
 
 <script setup lang="ts">
-
+  import NavBar from "./components/navbar/index.vue"
+  import Footer from "./components/footer/index.vue"
 </script>
 
-<style lang='less' scoped> 
-
+<style lang="less" scoped>
+.home {
+  user-select: none;
+}
 </style>
