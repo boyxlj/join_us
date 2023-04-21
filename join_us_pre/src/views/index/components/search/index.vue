@@ -43,7 +43,7 @@ const handleChange = () => {};
 <style lang="less" scoped>
 .search {
   widows: 100%;
-  height: 160px;
+  height: 140px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -60,6 +60,7 @@ const handleChange = () => {};
       display: flex;
       justify-content: space-between;
       position: relative;
+      margin-top: 15px;
       .options {
         display: flex;
         width: 88%;
@@ -142,7 +143,7 @@ const handleChange = () => {};
     }
     .topKey{
       width: 75%;
-      margin: 15px auto;
+      margin: 22px auto 15px;
       display: flex;
       li{
         background: #fff;

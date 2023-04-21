@@ -3,25 +3,31 @@
     <div class="banner">
       <img src="../../assets/images/banner.jpg" alt="" />
     </div>
-    <Search/>
-    <div class=""></div>
+    <div class="content">
+      <Search />
+      <Swiper />
+    </div>
   </div>
-  
 </template>
 
 <script setup lang="ts">
-import Search from "./components/search/index.vue"
+import Search from "./components/search/index.vue";
+import Swiper from "./components/swiper/index.vue";
 </script>
 
 <style lang="less" scoped>
 .index {
   .banner {
-    widows: 100%;
+    width: 100%;
     height: 200px;
-    img{
+    img {
       width: 100%;
       height: 100%;
     }
+  }
+  .content {
+    width: 1200px;
+    margin: 0 auto;
   }
 }
 </style>
