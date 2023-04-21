@@ -13,7 +13,7 @@
             <li>医疗健康</li>
         </ul>
         <div class="card-container" ref="cardContainer">
-            <a-card v-if="jobList.length > 0" style="width: 300px;" v-for="(item, index) in jobList" :key="item.id">
+            <a-card v-if="jobList.length > 0" style="width: 370px;" v-for="(item, index) in jobList" :key="item.id">
                 <template #title>
                     <div class="card_title">
                         <span class="job-name">{{ item.jobName }}</span>
@@ -104,14 +104,13 @@ const changeOn = (e: any): void => {
     }
 
     .job-type {
-        width: 900px;
+        width: 1200px;
         height: 40px;
         display: flex;
-        margin: 0 auto;
         border-bottom: 1px solid #888;
         font-size: 18px;
         line-height: 40px;
-
+        justify-content: space-evenly;
         li {
             text-align: center;
             width: 100px;
@@ -123,12 +122,12 @@ const changeOn = (e: any): void => {
     }
 
     .card-container {
-        width: 1000px;
+        width: 1200px;
         height: 300px;
         margin: 25px auto;
         display: flex;
         flex-wrap: wrap;
-
+        justify-content: flex-start;
         .ant-card {
             margin: 13px;
         }
