@@ -27,8 +27,8 @@
 </template>
 
 <script setup lang="ts">
-import NavBar from "@/views/home/components/navbar/index.vue";
-import Search from "./components/search/index.vue";
+import NavBar from "@/components/common/navbar/index.vue";
+import Search from "@/components/common/search/index.vue";
 import Swiper from "./components/swiper/index.vue";
 import HotJOb from "./components/hotjob/index.vue";
 const showNavBar = ref(false)

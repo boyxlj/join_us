@@ -2,7 +2,7 @@
     <div class="navbar">
       <div class="container">
         <div class="logo">
-          <img src="../../../../assets/vue.svg" alt="" />
+          <img src="../../../assets/vue.svg" alt="" />
           <p class="city">
             <span class="weight">武汉</span>
             <span class="changeCity">[切换城市]</span>

@@ -7,8 +7,8 @@
 </template>
 
 <script setup lang="ts">
-  import NavBar from "./components/navbar/index.vue"
-  import Footer from "./components/footer/index.vue"
+  import NavBar from "@/components/common/navbar/index.vue"
+  import Footer from "@/components/common/footer/index.vue"
 </script>
 
 <style lang="less" scoped>
