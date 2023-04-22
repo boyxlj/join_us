@@ -19,7 +19,6 @@ declare module '@vue/runtime-core' {
     ASelect: typeof import('ant-design-vue/es')['Select']
     ASelectOption: typeof import('ant-design-vue/es')['SelectOption']
     Footer: typeof import('./src/components/common/footer/index.vue')['default']
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Navbar: typeof import('./src/components/common/navbar/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

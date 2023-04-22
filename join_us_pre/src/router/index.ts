@@ -10,6 +10,9 @@ router.beforeEach((to, from, next) => {
   //   return next('/')
   // }
   next()
+  window.scroll({
+    top: 0,
+    behavior: "auto"
+  })
 })
-
 export default router
