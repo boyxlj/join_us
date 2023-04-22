@@ -16,7 +16,7 @@
             <a-card v-if="jobList.length > 0" style="width: 370px;" v-for="(item, index) in jobList" :key="item.id">
                 <template #title>
                     <div class="card_title">
-                        <span class="job-name">{{ item.jobName }}</span>
+                        <span @click="toDetail(item)" class="job-name">{{ item.jobName }}</span>
                         <span class="job-salary">{{ item.salary }}</span>
                     </div>
                 </template>
@@ -47,14 +47,17 @@
                 </template>
             </a-card>
             <p v-else>暂无职位</p>
+          <a-button class="more-job" type="primary">查看更多职位</a-button>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, defineProps } from 'vue'
+import { ref } from 'vue'
 import { getJobList } from '@/api'
 import { message } from 'ant-design-vue';
+import {jobDetailStore} from "@/store/jobDetail";
+const router = useRouter()
 const lis = ref()
 const cardContainer = ref()
 interface obj {
@@ -70,10 +73,10 @@ interface obj {
 }
 const jobList = ref<Array<obj>>([])
 let allJobList = ref<Array<obj>>([])
-getJobList().then((res: any) => {
-    allJobList.value = res.data
-    let tmpArr = allJobList.value.filter(item => item.jobType === '互联网')
-    res.code === 200 ? jobList.value = tmpArr : message.error('数据请求失败')
+const job = jobDetailStore()
+job.jobListAction().then(res => {
+  allJobList.value = job.allJobList
+  jobList.value = job.allJobList.filter((item: any) => item.jobType === '互联网').slice(0, 9)
 })
 const changeOn = (e: any): void => {
     Array.from(lis.value.children).forEach((item: any) => {
@@ -82,14 +85,22 @@ const changeOn = (e: any): void => {
         }
     })
     e.target.classList.add('on')
-    jobList.value = allJobList.value.filter(item => item.jobType === e.target.innerHTML)
+    jobList.value = allJobList.value.filter(item => item.jobType === e.target.innerHTML).slice(0, 9)
+}
+const toDetail = (item: obj) => {
+  router.push({
+    path: '/home/jobDetail',
+    query: {
+      id: item.id
+    }
+  })
 }
 </script>
 
 <style lang="less" scoped>
 .hotjob-container {
     width: 1200px;
-    height: 1000px;
+    height: 850px;
     margin: 0 auto;
 
     .title {
@@ -127,9 +138,9 @@ const changeOn = (e: any): void => {
         margin: 25px auto;
         display: flex;
         flex-wrap: wrap;
-        justify-content: flex-start;
+        justify-content: center;
         .ant-card {
-            margin: 13px;
+            margin: 5px;
         }
 
         .card_title {
@@ -162,9 +173,24 @@ const changeOn = (e: any): void => {
             text-align: center;
             line-height: 25px;
             border-radius: 5px;
-            background-color: #cccaca;
+            background-color: #f8f8f8;
             color: #000;
             margin: 0 5px;
         }
     }
-}</style>
+  .more-job{
+    margin-top: 15px;
+    width: 150px;
+    height: 50px;
+    background-color: #d5bdea;
+    color: var(--themeColor);
+    border: none;
+    font-weight: bold;
+    transition: all .2s;
+    &:hover{
+      background-color: var(--themeColor);
+      color: #fff;
+    }
+  }
+}
+</style>

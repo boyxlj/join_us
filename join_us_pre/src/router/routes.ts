@@ -17,6 +17,11 @@ export const routes: RouteRecordRaw[] = [
         path: "/home/index",
         component: lazyLoad('index'),
       },
+      {
+        name: 'jobDetail',
+        path: "/home/jobDetail",
+        component: lazyLoad('jobDetail')
+      }
     ]
   },
   {
