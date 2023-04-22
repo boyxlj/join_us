@@ -9,8 +9,8 @@
           </p>
         </div>
         <ul class="links">
-          <router-link to="/home" active-class="homeLinkActive">首页</router-link>
-          <router-link to="/" active-class="homeLinkActive">首页</router-link>
+          <router-link to="/home/index" active-class="homeLinkActive">首页</router-link>
+          <router-link to="/home/job" active-class="homeLinkActive">职位</router-link>
           <router-link to="/" active-class="homeLinkActive">首页</router-link>
           <router-link to="/" active-class="homeLinkActive">首页</router-link>
           <router-link to="/" active-class="homeLinkActive">首页</router-link>

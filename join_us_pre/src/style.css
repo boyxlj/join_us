@@ -15,4 +15,23 @@
 html,
 body {
   background: #f1f2f4 !important;
+  background: #F6F6F8 !important;
 }
+
+/* 滚动条样式 */
+::-webkit-scrollbar{
+  width: 5px;
+  background-color: #fff;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-track{
+  padding: 5px;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb{
+  width: 3px !important;
+  border-radius: 8px;
+  background-color: #cecece;
+}
+
+

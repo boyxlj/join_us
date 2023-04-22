@@ -7,9 +7,9 @@
         :key="item.id"
         :class="activeKey === item.id ? 'actives' : ''"
       >
-        <p class="weight">{{ item.firstTypeName }}</p>
-        <span v-for="name in item.childrenType?.slice(0, 4)" :key="name.id">{{
-          name.secondTypeName
+        <p class="weight">{{ item.name }}</p>
+        <span v-for="name in item.children?.slice(0, 4)" :key="name.id">{{
+          name.name
         }}</span>
         <p class="arrow"><span></span></p>
       </li>
@@ -17,10 +17,10 @@
 
     <div @mouseleave="leaveShowBox" class="showBox" v-show="showBox">
       <div v-for="item in showBoxData" :key="item.id">
-        <p>{{ item.firstTypeName }}</p>
+        <p>{{ item.name }}</p>
         <div class="tags">
-          <span v-for="name in item.childrenType" :key="name.id">{{
-            name.secondTypeName
+          <span v-for="item1 in item.children" :key="item1.id">{{
+            item1.name
           }}</span>
         </div>
       </div>
@@ -53,9 +53,10 @@
 
 <script setup lang="ts">
 import { LeftCircleOutlined, RightCircleOutlined } from "@ant-design/icons-vue";
+import {IJobType} from "@/types/jobType"
 import { getJobType } from "@/api";
 const onChange = (current: number) => {
-  console.log(current);
+  // console.log(current);
 };
 const showBox = ref(false);
 
@@ -63,11 +64,6 @@ onMounted(() => {
   getJobs();
 });
 
-interface IJobType {
-  childrenType?: { secondTypeName: string; id: number }[];
-  firstTypeName: string;
-  id: string;
-}
 
 const data = ref<IJobType[]>([]);
 const showBoxData = ref<IJobType[]>([]);
@@ -203,7 +199,7 @@ const mouseleaveBox = () => {
       // background-color: rgba(31, 45, 61, 0.11);
       transition: ease all 0.3s;
       opacity: 0.3;
-      z-index: 1;
+      z-index: -1;
     }
     ::v-deep(.slick-arrow.custom-slick-arrow:before) {
       display: none;
@@ -235,11 +231,15 @@ const mouseleaveBox = () => {
     border-radius: var(--radiusSize);
     padding: 15px 25px;
     box-sizing: border-box;
+    z-index: 88;
     p {
       margin-bottom: 10px;
       font-size: 18px;
     }
     .tags {
+      display: flex;
+            justify-content: flex-start;
+            flex-wrap: wrap;
       span {
         margin-right: 30px;
         line-height: 32px;
