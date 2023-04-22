@@ -2,7 +2,6 @@
   <div class="home">
     <NavBar/>
     <router-view></router-view>
-    <HotJOb/>
     <Footer/>
   </div>
 </template>
