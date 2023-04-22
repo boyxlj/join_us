@@ -2,7 +2,7 @@
   <div class="navbar">
     <div class="container">
       <div class="logo">
-        <img src="../../../assets/vue.svg" alt="" />
+        <img @click="clickLogo" src="../../../assets/vue.svg" alt="" />
         <p class="city" @click="changeCity">
           <span class="weight">{{ positionCity }}</span>
           <span class="changeCity">[切换城市]</span>
@@ -57,7 +57,10 @@ import {hotCityList} from "@/utils/hotCity"
 import {otherCityList} from "@/utils/otherCity"
 const visible = ref<boolean>(false);
 const positionCity = ref('武汉')
-
+const router = useRouter()
+const clickLogo = ()=>{
+  router.push('/')
+}
 
 const clickCity = (e:any)=>{
   positionCity.value = e.target.innerText
@@ -67,7 +70,6 @@ const clickCity = (e:any)=>{
 const changeCity = () => {
   visible.value = true;
 };
-const router = useRouter();
 const navigateLogin = () => {
   router.push("/login");
 };

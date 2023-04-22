@@ -10,13 +10,12 @@
         </div>
         <p class="tabs"><span>城市和区域</span></p>
         <div class="cityBox">
-          <div class="city">
-            <span>全国</span>
-            <span v-for="item in 8" :key="item">上海</span>
+          <div class="city" @click="clickCity">
+            <span v-for="item in hotCityList" :class="activeCityId===item.code?'active':''" :data-id='item.code' :key="item.code">{{ item.name }}</span>
           </div>
-          <div class="city qu">
+          <div class="city qu" @click="clickQu" v-if="showQu">
             <span>不限</span>
-            <span v-for="item in 8" :key="item">上海虹桥区</span>
+            <span v-for="item in quList" :class="activeQuId===item.code?'active':''" :data-id='item.code' :key="item.code">{{ item.name }}</span>
           </div>
           <div class="city select">
             <a-select
@@ -45,7 +44,12 @@
       <div class="left">
         <JobList />
       </div>
-      <div class="right"></div>
+      <div class="right">
+
+         
+        <span v-if="cityData.city">选择城市 <br><br>{{ cityData.city }} -- id {{ cityData.cityId }}</span><br><br> <br>
+        <span 选择区 v-if="cityData.qu">选择区 <br><br>{{ cityData.qu }} -- id {{ cityData.quId }}</span> 
+      </div>
     </div>
 
     <div
@@ -66,6 +70,61 @@ import { ExportOutlined } from "@ant-design/icons-vue";
 import Search from "@/components/common/search/index.vue";
 import JobList from "./components/jobList/index.vue";
 import NavBar from "@/components/common/navbar/index.vue";
+import {cityList} from "@/utils/city"
+import {hotCityList} from "@/utils/hotCity"
+const allCities  = ref(cityList.map(item=>item.subLevelModelList).flat())
+const quList  = ref<any>([])
+const activeCityId = ref(0)
+const activeQuId = ref(0)
+const showQu = ref(true)
+
+const  cityData = reactive({
+  qu:'',
+  quId:'',
+city:'',
+cityId:'',
+})
+const clickCity = (e:any)=>{
+  if(!e.target.dataset.id) return
+  if(e.target.innerText==='全国'){
+    showQu.value = false
+
+    cityData.cityId = e.target.dataset.id
+  cityData.city =  e.target.innerText
+
+  }else{
+    showQu.value = true
+  }
+  activeCityId.value = e.target.dataset.id*1
+  getQu(e.target.innerText)
+
+
+  cityData.cityId = e.target.dataset.id
+  cityData.city =  e.target.innerText
+
+}
+const clickQu = (e:any)=>{
+  if(!e.target.dataset.id) return
+  activeQuId.value = e.target.dataset.id*1
+
+
+  cityData.quId = e.target.dataset.id
+  cityData.qu =  e.target.innerText
+
+}
+
+onMounted(()=>{
+  getQu('武汉')
+})
+const getQu = (cityName:string = '武汉')=>{
+  quList.value = allCities.value.filter(item=>{
+    if(item.name===cityName){
+      return item.subLevelModelList
+    }
+  })[0].subLevelModelList
+
+
+}
 const router = useRouter()
 const navigateLoginPage = ()=>{
   router.push('/login')
@@ -102,7 +161,8 @@ const getScrollTop = () => {
     .top {
       width: 1200px;
       margin: 0 auto;
-      min-height: 300px;
+      min-height: 240px;
+      padding-bottom: 15px;
       .search {
         display: flex;
         justify-content: space-between;
@@ -147,12 +207,15 @@ const getScrollTop = () => {
       .cityBox {
         .city {
           display: flex;
-          height: 45px;
+          min-height: 45px;
           padding: 0 8px;
           box-sizing: border-box;
           justify-content: flex-start;
           flex-wrap: wrap;
           align-items: center;
+          .active{
+            color: var(--themeColor);
+          }
           span {
             margin-right: 22px;
             cursor: pointer;
@@ -165,6 +228,11 @@ const getScrollTop = () => {
           }
         }
         .qu {
+          min-height: 45px !important;
+          padding: 10px 8px;
+          span{
+            margin: 5px 22px 5px 0;
+          }
           background: #f8f8f8;
         }
         .select {
