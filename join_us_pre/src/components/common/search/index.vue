@@ -106,6 +106,7 @@ const showSearchFocusBox = ref(false);
 const enterSearchFocusBoxValue = ref(false);
 const handleChange = () => {};
 const inputFocus = () => {
+  getHistorySearchList()
   showSearchFocusBox.value = true;
 };
 const inputNoFocus = () => {

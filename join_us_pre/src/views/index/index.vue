@@ -17,7 +17,7 @@
       <Swiper />
       <HotJOb />
     </div>
-    <div class="active animate__animated animate__fadeInDown" :style="{display: showNavBar?'block':'none'}">
+    <div id="active" class=" animate__animated animate__fadeInDown" :style="{display: showNavBar?'block':'none'}">
       <NavBar />
       <div class="searchBar"  >
         <Search :center="false" :height="80" />
@@ -41,7 +41,6 @@ onUnmounted(() => {
 
 const getScrollTop = () => {
   const val =  document.documentElement.scrollTop;
-  console.log(document.documentElement.scrollTop)
   if(val>=300){
     showNavBar.value = true
   }else{
@@ -51,20 +50,8 @@ const getScrollTop = () => {
 </script>
 
 <style lang="less" scoped>
-.active {
-  width: 100%;
-  height: 160px;
-  background: #fff;
-  z-index: 999;
-  box-shadow: 0 16px 40px 0 rgba(158, 158, 158, 0.2);
-  position: fixed;
-  top: 0;
-  display: none;
-  .searchBar {
-    width: 1140px;
-    margin: 10px auto;
-  }
-}
+@import "@/assets/css/common.less" ;
+
 .index {
   .banner {
     width: 100%;
