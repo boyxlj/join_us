@@ -33,13 +33,36 @@
   </div>
   <div class="info-container">
     <a-card class="xx-info">
-      <p class="ms">职位描述</p>
+      <p class="ms">
+        <span>职位描述</span>
+        <span>
+          <WarningOutlined />
+          <a>举报该职位</a>
+        </span>
+      </p>
+      <div class="mark">
+        <span>计算机</span>
+        <span>前端</span>
+      </div>
+      <pre>需要本科学历
+我们提供：
+1、国内领先的在线教育企业
+2、入职即缴纳五险一金
+3、双休，按照国家法定节假日休假
+任职要求：
+1、 具备极强的责任心、协作精神、沟通能力；
+2、 具备较好的艺术修养、审美、创新能力以及过硬的摄像技术，
+3、 熟练使用佳能5D Mark 4、索尼PMW-EX280、等摄像器材；
+      </pre>
+      <template #actions>
+        111
+      </template>
     </a-card>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ShoppingOutlined, EnvironmentOutlined, BankOutlined, StarOutlined, StarFilled } from '@ant-design/icons-vue'
+import { ShoppingOutlined, WarningOutlined, EnvironmentOutlined, BankOutlined, StarOutlined, StarFilled } from '@ant-design/icons-vue'
 import { jobDetailStore } from '@/store/jobDetail'
 const router = useRouter()
 const currentRouter = computed(() => router.currentRoute.value)
@@ -139,8 +162,32 @@ let isIn = ref(false)
     width: 900px;
     height: 500px;
     .ms{
-      font-size: 24px;
-      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      &>span:first-of-type{
+        font-size: 24px;
+        font-weight: bold;
+      }
+    }
+    .mark{
+      width: 100%;
+      height: 40px;
+      margin: 15px 0;
+      span{
+        display: inline-block;
+        width: 60px;
+        height: 40px;
+        background-color: #f8f8f8;
+        line-height: 40px;
+        text-align: center;
+        margin-right: 15px;
+        border-radius: var(--radiusSize);
+        font-weight: bold;
+      }
+    }
+    pre{
+      font-family: "Microsoft YaHei UI",serif;
+      letter-spacing: 0.1em;
     }
   }
 }
