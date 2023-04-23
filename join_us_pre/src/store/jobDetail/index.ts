@@ -16,5 +16,13 @@ export const jobDetailStore = defineStore('jobDetail', {
                 message.error('数据请求失败', 0.8)
             }
         }
+    },
+    persist: {
+      enabled: true,
+      strategies: [
+        {
+          storage: localStorage,
+        },
+      ],
     }
 })

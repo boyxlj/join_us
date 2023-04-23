@@ -54,24 +54,18 @@
 <script setup lang="ts">
 import { LeftCircleOutlined, RightCircleOutlined } from "@ant-design/icons-vue";
 import {IJobType} from "@/types/jobType"
-import { getJobType } from "@/api";
+import { useJobTypeStore } from "@/store/jobType";
+
 const onChange = (current: number) => {
   // console.log(current);
 };
 const showBox = ref(false);
 
-onMounted(() => {
-  getJobs();
-});
-
-
 const data = ref<IJobType[]>([]);
 const showBoxData = ref<IJobType[]>([]);
 //获取职位类型
-const getJobs = async () => {
-  const res = await getJobType();
-  data.value = res.data;
-};
+const store = useJobTypeStore();
+data.value = store.jobTypeList;
 
 const activeKey = ref<any>("");
 const mouseenter = (id: any) => {

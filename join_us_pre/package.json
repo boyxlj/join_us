@@ -16,6 +16,7 @@
     "less": "^4.1.3",
     "nprogress": "^0.2.0",
     "pinia": "^2.0.34",
+    "pinia-plugin-persist": "^1.0.0",
     "unplugin-auto-import": "^0.15.3",
     "unplugin-vue-components": "^0.24.1",
     "vue": "^3.2.47",

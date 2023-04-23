@@ -1,7 +1,7 @@
 <template>
-  <div class="search" :style="{height:height?`${height}px`:'120px'}">
+  <div class="search" :style="{ height: height ? `${height}px` : '120px' }">
     <div class="container">
-      <div class="box" :style="{margin:center?'0 auto':'0'}  ">
+      <div class="box" :style="{ margin: center ? '0 auto' : '0' }">
         <div class="options">
           <div
             @click.stop="clickJobType"
@@ -90,23 +90,28 @@
 <script setup lang="ts">
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { createVNode } from "vue";
-import { getJobType } from "@/api";
 import { IJobType } from "@/types/jobType";
 import { Modal } from "ant-design-vue";
+import { useJobTypeStore } from "@/store/jobType";
+
 const inpVal = ref("");
 
+withDefaults(defineProps<{ center?: boolean; height?: number }>(), {
+  center: true,
+  height: 120,
+});
 
-
-withDefaults(defineProps<{center?:boolean,height?:number}>(),{
-  center:true,
-  height:120,
-})
+//获取职位类型数据
+const data = ref<IJobType[]>([]);
+const showBoxData = ref<IJobType[]>([]);
+const store = useJobTypeStore();
+data.value = store.jobTypeList;
 //输入框
 const showSearchFocusBox = ref(false);
 const enterSearchFocusBoxValue = ref(false);
 const handleChange = () => {};
 const inputFocus = () => {
-  getHistorySearchList()
+  getHistorySearchList();
   showSearchFocusBox.value = true;
 };
 const inputNoFocus = () => {
@@ -140,14 +145,7 @@ document.body.addEventListener("click", () => {
   }
 });
 
-const data = ref<IJobType[]>([]);
-const showBoxData = ref<IJobType[]>([]);
 const activeKey = ref();
-//获取职位类型
-const getJobs = async () => {
-  const res = await getJobType();
-  data.value = res.data;
-};
 //悬停职位类型li
 const enterJobLi = (id: any) => {
   showJobTypeContent.value = true;
@@ -162,7 +160,6 @@ const leaveJobLi = () => {
 
 onMounted(() => {
   getHistorySearchList();
-  getJobs();
 });
 
 //获取搜索历史

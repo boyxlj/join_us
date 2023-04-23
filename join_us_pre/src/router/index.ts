@@ -5,14 +5,19 @@ const router = createRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
-  // const token = localStorage.getItem('token')
-  // if (token && to.path.includes('/login')) {
-  //   return next('/')
-  // }
+  const token = localStorage.getItem('token')
+  if (token && to.path.includes('/login')) {
+    return next('/')
+  }
   next()
   window.scroll({
     top: 0,
     behavior: "auto"
   })
+})
+router.afterEach((to,from)=>{
+  if(to.meta.title){
+    document.title = to.meta.title as string
+  }
 })
 export default router

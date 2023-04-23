@@ -15,14 +15,18 @@
         </div>
       </div>
       <div class="info">
-        <EnvironmentOutlined :style="{ fontSize: '20px', color: '#fff' }"/>
+        <EnvironmentOutlined :style="{ fontSize: '20px', color: '#fff' }" />
         <span>{{ jobInfo.place }}</span>
         <ShoppingOutlined :style="{ fontSize: '20px', color: '#fff' }" />
         <span>{{ jobInfo.worktime }}</span>
-        <BankOutlined :style="{ fontSize: '20px', color: '#fff' }"/>
+        <BankOutlined :style="{ fontSize: '20px', color: '#fff' }" />
         <span>{{ jobInfo.education }}</span>
       </div>
-      <a-button class="gxq" @mouseenter="isIn = !isIn" @mouseleave="isIn = !isIn">
+      <a-button
+        class="gxq"
+        @mouseenter="isIn = !isIn"
+        @mouseleave="isIn = !isIn"
+      >
         <template #icon>
           <component :is="isIn ? StarFilled : StarOutlined"></component>
         </template>
@@ -44,66 +48,72 @@
         <span>计算机</span>
         <span>前端</span>
       </div>
-      <pre>需要本科学历
-我们提供：
-1、国内领先的在线教育企业
-2、入职即缴纳五险一金
-3、双休，按照国家法定节假日休假
-任职要求：
-1、 具备极强的责任心、协作精神、沟通能力；
-2、 具备较好的艺术修养、审美、创新能力以及过硬的摄像技术，
-3、 熟练使用佳能5D Mark 4、索尼PMW-EX280、等摄像器材；
+      <pre>
+        需要本科学历
+        我们提供：
+        1、国内领先的在线教育企业
+        2、入职即缴纳五险一金
+        3、双休，按照国家法定节假日休假
+        任职要求：
+        1、 具备极强的责任心、协作精神、沟通能力；
+        2、 具备较好的艺术修养、审美、创新能力以及过硬的摄像技术，
+        3、 熟练使用佳能5D Mark 4、索尼PMW-EX280、等摄像器材；
       </pre>
-      <template #actions>
-        111
-      </template>
+      <template #actions> 111 </template>
     </a-card>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ShoppingOutlined, WarningOutlined, EnvironmentOutlined, BankOutlined, StarOutlined, StarFilled } from '@ant-design/icons-vue'
-import { jobDetailStore } from '@/store/jobDetail'
-const router = useRouter()
-const currentRouter = computed(() => router.currentRoute.value)
-const jobId = computed(() => currentRouter.value.query.id)
-const job = jobDetailStore()
-let jobInfo: any
-jobInfo = job.allJobList.filter((item: any) => item.id === jobId.value)[0]
-let isIn = ref(false)
+import {
+  ShoppingOutlined,
+  WarningOutlined,
+  EnvironmentOutlined,
+  BankOutlined,
+  StarOutlined,
+  StarFilled,
+} from "@ant-design/icons-vue";
+import { jobDetailStore } from "@/store/jobDetail";
+const job = jobDetailStore();
+const jobId = computed(() => currentRouter.value.query.id);
+const router = useRouter();
+const currentRouter = computed(() => router.currentRoute.value);
+let jobInfo: any;
+jobInfo = job.allJobList.filter((item: any) => item.id === jobId.value)[0];
+let isIn = ref(false);
 </script>
 
 <style lang="less" scoped>
-.detail-header{
+.detail-header {
   width: 100%;
   height: 200px;
   background-color: #38556b;
-  .info-title{
+  .info-title {
     width: 1200px;
     height: 200px;
     margin: 0 auto;
     padding-top: 20px;
-    .name-salary-row{
+    .name-salary-row {
       width: 1200px;
       height: 40px;
       display: flex;
       justify-content: space-between;
       padding-left: 40px;
-      .row-first{
-        span:first-of-type{
+      .row-first {
+        span:first-of-type {
           color: #fff;
           font-size: 22px;
           margin-right: 20px;
         }
-        span:last-of-type{
+        span:last-of-type {
           font-size: 28px;
           color: #f26d49;
         }
       }
-      .row-last{
+      .row-last {
         min-width: 300px;
         height: 40px;
-        span{
+        span {
           display: inline-block;
           min-width: 40px;
           height: 25px;
@@ -118,11 +128,11 @@ let isIn = ref(false)
         }
       }
     }
-    .info{
+    .info {
       width: 250px;
       height: 30px;
       margin: 10px 0 10px 40px;
-      span{
+      span {
         display: inline-block;
         height: 30px;
         line-height: 30px;
@@ -131,7 +141,7 @@ let isIn = ref(false)
         color: #fff;
       }
     }
-    .gxq{
+    .gxq {
       margin-left: 40px;
       margin-top: 20px;
       width: 120px;
@@ -141,7 +151,7 @@ let isIn = ref(false)
       font-weight: bold;
       border-color: #5620a8;
     }
-    .chat{
+    .chat {
       margin-left: 20px;
       margin-top: 20px;
       width: 120px;
@@ -153,27 +163,27 @@ let isIn = ref(false)
     }
   }
 }
-.info-container{
+.info-container {
   width: 1200px;
   height: 600px;
   margin: 15px auto;
   padding: 20px;
-  .xx-info{
+  .xx-info {
     width: 900px;
     height: 500px;
-    .ms{
+    .ms {
       display: flex;
       justify-content: space-between;
-      &>span:first-of-type{
+      & > span:first-of-type {
         font-size: 24px;
         font-weight: bold;
       }
     }
-    .mark{
+    .mark {
       width: 100%;
       height: 40px;
       margin: 15px 0;
-      span{
+      span {
         display: inline-block;
         width: 60px;
         height: 40px;
@@ -185,8 +195,8 @@ let isIn = ref(false)
         font-weight: bold;
       }
     }
-    pre{
-      font-family: "Microsoft YaHei UI",serif;
+    pre {
+      font-family: "Microsoft YaHei UI", serif;
       letter-spacing: 0.1em;
     }
   }

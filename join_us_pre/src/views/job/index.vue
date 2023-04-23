@@ -4,18 +4,30 @@
       <div class="top">
         <div class="search">
           <Search :center="false" />
-          <div class="loginState" @click="navigateLoginPage">
+          <div class="loginState" v-if="!loginState" @click="navigateLoginPage">
             <export-outlined class="icon" /> 登录, 查看更多岗位
           </div>
         </div>
         <p class="tabs"><span>城市和区域</span></p>
         <div class="cityBox">
           <div class="city" @click="clickCity">
-            <span v-for="item in hotCityList" :class="activeCityId===item.code?'active':''" :data-id='item.code' :key="item.code">{{ item.name }}</span>
+            <span
+              v-for="item in hotCityList"
+              :class="activeCityId === item.code ? 'active' : ''"
+              :data-id="item.code"
+              :key="item.code"
+              >{{ item.name }}</span
+            >
           </div>
           <div class="city qu" @click="clickQu" v-if="showQu">
             <span>不限</span>
-            <span v-for="item in quList" :class="activeQuId===item.code?'active':''" :data-id='item.code' :key="item.code">{{ item.name }}</span>
+            <span
+              v-for="item in quList"
+              :class="activeQuId === item.code ? 'active' : ''"
+              :data-id="item.code"
+              :key="item.code"
+              >{{ item.name }}</span
+            >
           </div>
           <div class="city select">
             <a-select
@@ -30,7 +42,9 @@
               <a-select-option value="供应链/物流">供应链/物流</a-select-option>
               <a-select-option value="房地产/建筑">房地产/建筑</a-select-option>
               <a-select-option value="农/林/牧/渔">农/林/牧/渔</a-select-option>
-              <a-select-option value="咨询/翻译/法律">咨询/翻译/法律</a-select-option>
+              <a-select-option value="咨询/翻译/法律"
+                >咨询/翻译/法律</a-select-option
+              >
               <a-select-option value="旅游">旅游</a-select-option>
               <a-select-option value="服务业">服务业</a-select-option>
               <a-select-option value="生产制造">生产制造</a-select-option>
@@ -45,15 +59,19 @@
         <JobList />
       </div>
       <div class="right">
-
-         
-        <span v-if="cityData.city">选择城市 <br><br>{{ cityData.city }} -- id {{ cityData.cityId }}</span><br><br> <br>
-        <span 选择区 v-if="cityData.qu">选择区 <br><br>{{ cityData.qu }} -- id {{ cityData.quId }}</span> 
+        <span v-if="cityData.city"
+          >选择城市 <br /><br />{{ cityData.city }} -- id
+          {{ cityData.cityId }}</span
+        ><br /><br />
+        <br />
+        <span 选择区 v-if="cityData.qu"
+          >选择区 <br /><br />{{ cityData.qu }} -- id {{ cityData.quId }}</span
+        >
       </div>
     </div>
 
     <div
-    id="active"
+      id="active"
       class="animate__animated animate__fadeInDown"
       :style="{ display: showNavBar ? 'block' : 'none' }"
     >
@@ -70,65 +88,66 @@ import { ExportOutlined } from "@ant-design/icons-vue";
 import Search from "@/components/common/search/index.vue";
 import JobList from "./components/jobList/index.vue";
 import NavBar from "@/components/common/navbar/index.vue";
-import {cityList} from "@/utils/city"
-import {hotCityList} from "@/utils/hotCity"
-const allCities  = ref(cityList.map(item=>item.subLevelModelList).flat())
-const quList  = ref<any>([])
-const activeCityId = ref(0)
-const activeQuId = ref(0)
-const showQu = ref(true)
+import { cityList } from "@/utils/city";
+import { hotCityList } from "@/utils/hotCity";
 
-const  cityData = reactive({
-  qu:'',
-  quId:'',
-city:'',
-cityId:'',
-})
-const clickCity = (e:any)=>{
-  if(!e.target.dataset.id) return
-  if(e.target.innerText==='全国'){
-    showQu.value = false
+import { useUserLoginState } from "@/hooks/useUserLoginState";
+const loginState = useUserLoginState();
 
-    cityData.cityId = e.target.dataset.id
-  cityData.city =  e.target.innerText
+const allCities = ref(cityList.map((item) => item.subLevelModelList).flat());
+const quList = ref<any>([]);
+const activeCityId = ref(0);
+const activeQuId = ref(0);
+const showQu = ref(true);
 
-  }else{
-    showQu.value = true
+const cityData = reactive({
+  qu: "",
+  quId: "",
+  city: "",
+  cityId: "",
+});
+const clickCity = (e: any) => {
+  if (!e.target.dataset.id) return;
+  if (e.target.innerText === "全国") {
+    showQu.value = false;
+
+    cityData.cityId = e.target.dataset.id;
+    cityData.city = e.target.innerText;
+    cityData.quId = "";
+    cityData.qu = "";
+  } else {
+    showQu.value = true;
   }
-  activeCityId.value = e.target.dataset.id*1
-  getQu(e.target.innerText)
+  activeCityId.value = e.target.dataset.id * 1;
+  getQu(e.target.innerText);
 
+  cityData.cityId = e.target.dataset.id;
+  cityData.city = e.target.innerText;
+  cityData.quId = "";
+  cityData.qu = "";
+};
+const clickQu = (e: any) => {
+  if (!e.target.dataset.id) return;
+  activeQuId.value = e.target.dataset.id * 1;
 
-  cityData.cityId = e.target.dataset.id
-  cityData.city =  e.target.innerText
+  cityData.quId = e.target.dataset.id;
+  cityData.qu = e.target.innerText;
+};
 
-}
-const clickQu = (e:any)=>{
-  if(!e.target.dataset.id) return
-  activeQuId.value = e.target.dataset.id*1
-
-
-  cityData.quId = e.target.dataset.id
-  cityData.qu =  e.target.innerText
-
-}
-
-onMounted(()=>{
-  getQu('武汉')
-})
-const getQu = (cityName:string = '武汉')=>{
-  quList.value = allCities.value.filter(item=>{
-    if(item.name===cityName){
-      return item.subLevelModelList
+onMounted(() => {
+  getQu("武汉");
+});
+const getQu = (cityName: string = "武汉") => {
+  quList.value = allCities.value.filter((item) => {
+    if (item.name === cityName) {
+      return item.subLevelModelList;
     }
-  })[0].subLevelModelList
-
-
-}
-const router = useRouter()
-const navigateLoginPage = ()=>{
-  router.push('/login')
-}
+  })[0].subLevelModelList;
+};
+const router = useRouter();
+const navigateLoginPage = () => {
+  router.push("/login");
+};
 const handleChange = () => {};
 const focus = () => {};
 const formData = reactive({
@@ -154,7 +173,7 @@ const getScrollTop = () => {
 </script>
 
 <style lang="less" scoped>
-@import "@/assets/css/common.less" ;
+@import "@/assets/css/common.less";
 .job {
   .bg {
     background: #fff;
@@ -213,7 +232,7 @@ const getScrollTop = () => {
           justify-content: flex-start;
           flex-wrap: wrap;
           align-items: center;
-          .active{
+          .active {
             color: var(--themeColor);
           }
           span {
@@ -230,7 +249,7 @@ const getScrollTop = () => {
         .qu {
           min-height: 45px !important;
           padding: 10px 8px;
-          span{
+          span {
             margin: 5px 22px 5px 0;
           }
           background: #f8f8f8;
