@@ -54,15 +54,13 @@
         </a-card>
       </template>
         <p v-else>暂无职位</p>
-        <a-button class="more-job" type="primary">查看更多职位</a-button>
+        <a-button class="more-job" type="primary" @click="router.push('/home/job')">查看更多职位</a-button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { getJobList } from "@/api";
-import { message } from "ant-design-vue";
 import { jobDetailStore } from "@/store/jobDetail";
 const router = useRouter();
 const lis = ref();
@@ -165,6 +163,9 @@ const toDetail = (item: obj) => {
       .job-salary {
         color: #fe7154;
       }
+      &:hover{
+        color: var(--themeColor);
+      }
     }
 
     .avatar {
@@ -201,6 +202,9 @@ const toDetail = (item: obj) => {
       background-color: var(--themeColor);
       color: #fff;
     }
+  }
+  .ant-card:hover{
+    box-shadow: 0 16px 40px 0 hsla(0, 0%, 60%, 0.3);
   }
 }
 </style>
