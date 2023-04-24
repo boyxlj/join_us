@@ -10,5 +10,36 @@
   .searchBar {
     width: 1140px;
     margin: 10px auto;
+    position: relative;
+    left: -30px;
   }
+  .selectTop{
+    width: 1200px;
+    margin:  auto;
+    .select {
+      width: 100%;
+      margin: 10px auto;
+      display: flex;
+      justify-content: space-between;
+      .dropDownlist {
+        margin-right: 25px;
+      }
+      .left {
+        flex: 1;
+        display: flex;
+      }
+      .clearSelect {
+        width: 100px;
+        font-size: 14px;
+        transition: all 0.2s linear;
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 100px;
+        &:hover {
+          color: var(--themeColor);
+        }
+      }
+    }
+  }
+  
 }

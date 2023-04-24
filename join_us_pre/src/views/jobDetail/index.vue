@@ -75,12 +75,19 @@ import {
 } from "@ant-design/icons-vue";
 import { jobDetailStore } from "@/store/jobDetail";
 const job = jobDetailStore();
-const jobId = computed(() => currentRouter.value.query.id);
 const router = useRouter();
-const currentRouter = computed(() => router.currentRoute.value);
-let jobInfo: any;
-jobInfo = job.allJobList.filter((item: any) => item.id === jobId.value)[0];
+const route = useRoute();
+// const jobId = computed(() => route.query.id);
 let isIn = ref(false);
+console.log(job.allJobList)
+let jobInfo = reactive<any>()
+// let jobInfo: any;
+jobInfo = job.allJobList?.filter((item: any) =>{
+  // if(item.id === route.query.id){
+    console.log("@@@@@",item)
+    // return item
+  // }
+});
 </script>
 
 <style lang="less" scoped>
