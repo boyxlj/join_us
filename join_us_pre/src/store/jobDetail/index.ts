@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { getJobList } from '@/api'
 import { message } from 'ant-design-vue'
+import { obj } from '@/types/jobType'
 export const jobDetailStore = defineStore('jobDetail', {
     state: () => {
         return {
