@@ -6,9 +6,9 @@
 import {useJobTypeStore} from "@/store/jobType"
 import { jobDetailStore } from "@/store/jobDetail";
 const job = jobDetailStore();
-const store  = useJobTypeStore()
-store.getJobs()
-job.jobListAction()
+const jobType  = useJobTypeStore()
+  job.jobListAction()
+  jobType.getJobs()
 </script>
 
 <style scoped></style>

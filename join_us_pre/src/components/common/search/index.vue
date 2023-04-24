@@ -3,13 +3,16 @@
     <div class="container">
       <div class="box" :style="{ margin: center ? '0 auto' : '0' }">
         <div class="options">
-          <div
+          <slot name="searchSelect"  >
+            <div
             @click.stop="clickJobType"
-            :class="jobTypeFocusBox ? 'activeJob jobs' : 'jobs'"
-          >
-            <span class="name">职位类型</span>
-            <span class="arrow"></span>
-          </div>
+              :class="jobTypeFocusBox ? 'activeJob jobs' : 'jobs'"
+            >
+              <span class="name">职位类型</span>
+              <span class="arrow"></span>
+            </div>
+          </slot>
+
           <input
             @focus="inputFocus"
             @blur="inputNoFocus"
@@ -80,10 +83,11 @@
             <span>Java前端</span>
           </div>
         </div>
-
         <div class="searchBtn" @click="searchSubmit">搜索</div>
       </div>
     </div>
+
+ 
   </div>
 </template>
 
@@ -223,13 +227,42 @@ const searchSubmit = () => {
     .box {
       width: 75%;
       height: 50px;
-      // margin: 0 auto;
       border: 2.5px solid var(--themeColor);
       border-radius: var(--radiusSize);
       display: flex;
       justify-content: space-between;
       justify-content: flex-start !important;
       position: relative;
+      :slotted(.citySelect){
+        min-width: 120px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        padding-left: 0px;
+        &:hover {
+            .name {
+              color: var(--themeColor);
+            }
+            .arrow {
+              border-top: 5px solid var(--themeColor);
+            }
+          }
+          .name {
+            transition: all 0.2s;
+            color: #222;
+            font-size: 16px;
+          }
+          .arrow {
+            transition: all 0.2s;
+            display: inline-block;
+            border: 5px solid transparent;
+            border-top: 5px solid #cbcbcb;
+            margin-left: 15px;
+            position: relative;
+            top: 3px;
+          }
+      }
       .searchFocusBox {
         position: absolute;
         width: 650px;
@@ -243,7 +276,7 @@ const searchSubmit = () => {
         padding: 15px 18px;
         box-sizing: border-box;
         .title {
-          widows: 100%;
+          width: 100%;
           display: flex;
           justify-content: space-between;
           align-items: center;
