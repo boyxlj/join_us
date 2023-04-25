@@ -53,3 +53,13 @@ export const getPositionList = (data:any) => {
     data,
   })
 }
+
+export const getJobDetail = (position_id: string) => {
+    return request({
+        url: `/positionDetail`,
+        method: 'get',
+        params: {
+            position_id: position_id
+        }
+    })
+}

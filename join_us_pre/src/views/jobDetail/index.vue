@@ -3,24 +3,24 @@
     <div class="info-title">
       <div class="name-salary-row">
         <div class="row-first">
-          <span>阿里巴巴</span>
-          <span>6-8k</span>
+          <span>{{ jobDetailData?.position_name }}</span>
+          <span>{{ jobDetailData?.salary }}</span>
         </div>
-        <div class="row-last">
-          <span>五险一金</span>
-          <span>医疗保险</span>
-          <span>定期体检</span>
-          <span>年终奖</span>
-          <span>...</span>
+        <div v-if="welfare_tagArr.length > 0" class="row-last">
+          <span v-for="item in 3" :key="item">{{ welfare_tagArr[item] }}</span>
+          <span @mouseenter="welfare_tagShown = true" @mouseleave="welfare_tagShown = false" v-if="welfare_tagArr.length > 3">...</span>
         </div>
+        <a-card v-show="welfare_tagShown" class="welfare-card">
+          <span class="welfare_tag" v-for="(item, index) in welfare_tagArr" :key="index">{{ item }}</span>
+        </a-card>
       </div>
       <div class="info">
         <EnvironmentOutlined :style="{ fontSize: '20px', color: '#fff' }" />
-        <span>武汉</span>
+        <span>{{ jobDetailData.cityName }}</span>
         <ShoppingOutlined :style="{ fontSize: '20px', color: '#fff' }" />
-        <span>不限</span>
+        <span>{{ jobDetailData.experiences }}</span>
         <BankOutlined :style="{ fontSize: '20px', color: '#fff' }" />
-        <span>本科</span>
+        <span>{{ jobDetailData.degrees }}</span>
       </div>
       <a-button class="gxq" @mouseenter="isIn = !isIn" @mouseleave="isIn = !isIn">
         <template #icon>
@@ -41,26 +41,21 @@
         </span>
       </p>
       <div class="mark">
-        <span>计算机</span>
-        <span>前端</span>
+        <span>{{ jobDetailData.industry }}</span>
+        <span>{{ jobDetailData.job_type }}</span>
+        <template v-if="desc_tagArr.length > 0">
+          <span v-for="(item, index) in desc_tagArr" :key="index">{{ item }}</span>
+        </template>
       </div>
-      <pre>
-        需要本科学历
-        我们提供：
-        1、国内领先的在线教育企业
-        2、入职即缴纳五险一金
-        3、双休，按照国家法定节假日休假
-        任职要求：
-        1、 具备极强的责任心、协作精神、沟通能力；
-        2、 具备较好的艺术修养、审美、创新能力以及过硬的摄像技术，
-        3、 熟练使用佳能5D Mark 4、索尼PMW-EX280、等摄像器材；
-      </pre>
+      <div ref="desc" class="position-desc">
+
+      </div>
       <div class="company-info-container">
         <div class="info">
-          <img class="company-avatar" src="https://img.bosszhipin.com/beijin/upload/com/workfeel/20230128/7bf6f160950405e926523a7a2f65762ff05bf107a7bc2c281659d04846c031ace8be1e47045b27d8.jpg?x-oss-process=image/resize,w_100,limit_0" alt="">
+          <img class="company-avatar" :src="jobDetailData.logo" alt="">
           <div class="detail-info">
-            <span>阿里巴巴</span>
-            <span><span>阿里巴巴</span>|<span>校招hr</span></span>
+            <span>{{ jobDetailData.company_name }}</span>
+            <span><span>{{ jobDetailData.company_name }}</span>|<span>校招hr</span></span>
           </div>
         </div>
       </div>
@@ -80,13 +75,28 @@ import {
   StarOutlined,
   StarFilled,
 } from "@ant-design/icons-vue";
-import { obj } from '@/types/jobType'
+import { Iposition_type } from '@/types/jobType'
 import salaryCaculate from './components/salaryCaculate/index.vue'
 import { jobDetailStore } from "@/store/jobDetail";
+import { getJobDetail } from '@/api'
 const router = useRouter();
 const route = useRoute();
 let isIn = ref(false);
-const jobId = route.query.id
+const jobId = route.query.position_id
+let jobDetailData = ref<Iposition_type>({} as Iposition_type)
+let welfare_tagArr = ref<string[]>([])
+let welfare_tagShown = ref(false)
+let desc_tagArr = ref<string[]>([])
+const desc = ref<HTMLDivElement>()
+onMounted(() => {
+  getJobDetail(jobId as string).then(res => {
+    jobDetailData.value = res.data as Iposition_type
+    welfare_tagArr.value = JSON.parse(jobDetailData.value.welfare_tag)
+    desc_tagArr.value = JSON.parse(jobDetailData.value.position_tag)
+    // 添加感叹号表示该元素一定存在
+    desc.value!.innerHTML = jobDetailData.value.position_desc
+  })
+})
 </script>
 
 <style lang="less" scoped>
@@ -107,6 +117,7 @@ const jobId = route.query.id
       display: flex;
       justify-content: space-between;
       padding-left: 40px;
+      position: relative;
 
       .row-first {
         span:first-of-type {
@@ -137,6 +148,30 @@ const jobId = route.query.id
           color: var(--themeColor);
           font-weight: bold;
           border-radius: 5px;
+        }
+      }
+      .welfare-card{
+        position: absolute;
+        right: 30px;
+        top: 35px;
+        max-width: 600px;
+        height: 130px;
+        display: flex;
+        flex-wrap: wrap;
+        .welfare_tag{
+          display: inline-block;
+          min-width: 40px;
+          height: 25px;
+          background-color: var(--themeColor);
+          margin-right: 10px;
+          text-align: center;
+          line-height: 15px;
+          padding: 5px;
+          color: #fff;
+          font-weight: bold;
+          border-radius: 5px;
+          margin-right: 6px;
+          margin-bottom: 5px;
         }
       }
     }
@@ -181,14 +216,14 @@ const jobId = route.query.id
 }
 .info-container {
   width: 1200px;
-  height: 600px;
+  min-height: 600px;
   margin: 15px auto;
   padding: 20px;
   display: flex;
 
   .xx-info {
     width: 800px;
-    height: 500px;
+    min-height: 500px;
     border-radius: 15px;
 
     .ms {
@@ -208,7 +243,7 @@ const jobId = route.query.id
 
       span {
         display: inline-block;
-        width: 60px;
+        min-width: 60px;
         height: 40px;
         background-color: #f8f8f8;
         line-height: 40px;
@@ -218,17 +253,14 @@ const jobId = route.query.id
         font-weight: bold;
       }
     }
-
-    pre {
-      font-family: "Microsoft YaHei UI", serif;
-      letter-spacing: 0.1em;
+    .position-desc{
+      width: 600px;
+      min-height: 300px;
     }
-
     .company-info-container {
       width: 850px;
       height: 100px;
-      position: absolute;
-      bottom: 10px;
+      margin-top: 20px;
 
       .info {
         height: 100px;

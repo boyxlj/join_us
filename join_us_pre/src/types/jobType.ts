@@ -3,7 +3,7 @@ export interface IJobType {
   name: string;
   id: string;
 }
-export interface obj {
+export interface Iobj {
   id: string;
   jobName: string;
   salary: string;
@@ -13,4 +13,37 @@ export interface obj {
   jobType: string;
   education: string;
   avatar: string;
+}
+export interface Iposition_type {
+  id: number;
+  position_id: string;
+  position_name: string;
+  salary: string;
+  cityName: string;
+  region: string;
+  experiences: string;
+  degrees: string;
+  position_tag: string;
+  welfare_tag: string;
+  company_id: string;
+  hr_id: string;
+  position_desc: string;
+  addTime: string;
+  updateTime: string;
+  position_state: string;
+  position_type1: string;
+  position_type2: string;
+  job_type: string;
+  company_name: string;
+  logo: string;
+  people_num: string;
+  industry: string;
+  financing: string;
+  legal_representative: string;
+  create_time: string;
+  reg_city: string;
+  capital: string;
+  state: string;
+  business_scope: string;
+  others: string;
 }
