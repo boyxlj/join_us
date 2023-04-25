@@ -3,7 +3,7 @@
     <div class="bg">
       <div class="top">
         <div class="search">
-          <Search :center="false">
+          <Search  :center="false">
             <template #searchSelect>
               <div @click="showCityModel" class="citySelect">
                 <span class="name">{{
@@ -62,19 +62,21 @@
       <div class="left">
         <JobList v-if="positionData.length" :positionData="positionData" />
         <div class="empty" v-else>
-            <h1 style="font-size: 30px;font-weight: bold;" >暂无数据</h1>
+          <Empty />
+        </div>
+        <div class="pageNation">
+          <a-pagination
+            @change="changePageNation"
+            v-model:current="pageNationParams.pageOn"
+            :showSizeChanger="false"
+            v-show="pageNationParams.total"
+            :pageSize="pageNationParams.pageSize"
+            :total="pageNationParams.total"
+          />
         </div>
       </div>
     </div>
-    <div class="pageNation">
-        <a-pagination @change="changePageNation" 
-        v-model:current="pageNationParams.pageOn"
-        :showSizeChanger="false"
-        v-show="pageNationParams.total"
-        :pageSize="pageNationParams.pageSize"
-        :total="pageNationParams.total" />
 
-    </div>
     <div
       id="active"
       class="animate__animated animate__fadeInDown"
@@ -82,34 +84,34 @@
     >
       <NavBar />
       <div class="searchBar">
-        <Search :center="false" :height="80">
-            <template #searchSelect>
-              <div @click="showCityModel" class="citySelect">
-                <span class="name">{{
-                  cityData.city ? cityData.city : "城市选择"
-                }}</span>
-                <span class="arrow"></span>
-              </div>
-            </template>
-          </Search>
+        <Search  :center="false" :height="80">
+          <template #searchSelect>
+            <div @click="showCityModel" class="citySelect">
+              <span class="name">{{
+                cityData.city ? cityData.city : "城市选择"
+              }}</span>
+              <span class="arrow"></span>
+            </div>
+          </template>
+        </Search>
       </div>
       <div class="selectTop">
         <div class="city select">
-            <div class="left" :key="random">
-              <template v-for="(item, index) in conditionData" :key="index">
-                <DropDownlist
-                  class="dropDownlist"
-                  @change="getClickValue"
-                  :conditionName="showValues[index]"
-                  v-model:selectValue="formData[`value${index}`]"
-                  :itemList="conditionData[index]"
-                  :idx="index"
-                >
-                </DropDownlist>
-              </template>
-            </div>
-            <div class="clearSelect" @click="clearSelect">清空筛选条件</div>
+          <div class="left" :key="random">
+            <template v-for="(item, index) in conditionData" :key="index">
+              <DropDownlist
+                class="dropDownlist"
+                @change="getClickValue"
+                :conditionName="showValues[index]"
+                v-model:selectValue="formData[`value${index}`]"
+                :itemList="conditionData[index]"
+                :idx="index"
+              >
+              </DropDownlist>
+            </template>
           </div>
+          <div class="clearSelect" @click="clearSelect">清空筛选条件</div>
+        </div>
       </div>
     </div>
     <!-- 城市选择 -->
@@ -140,28 +142,42 @@ import Search from "@/components/common/search/index.vue";
 import JobList from "./components/jobList/index.vue";
 import NavBar from "@/components/common/navbar/index.vue";
 import DropDownlist from "@/components/common/dropDownlist/index.vue";
+import Empty from "@/components/common/empty/index.vue";
 import { useCity } from "@/store/city";
 import { useUserLoginState } from "@/hooks/useUserLoginState";
 import { useGetConditionData } from "@/store/condition";
-import {getPositionList} from "@/api"
+import { getPositionList } from "@/api";
 import { message } from "ant-design-vue";
+const route = useRoute()
 const { hotCityList, allCityList, preventCity } = useCity();
-const keyName = ['job_type','experiences','salary','degrees','people_num','financing']
+const keyName = [
+  "job_type",
+  "experiences",
+  "salary",
+  "degrees",
+  "people_num",
+  "financing",
+];
+const keyword = ref(route.query.keyword as string )
 
-const positionData = ref([])
-
-
+watch(()=>route.query,()=>{
+  pageNationParams.pageOn = 1
+  keyword.value = route.query.keyword as string
+  getPositionData()
+})
+const positionData = ref([]);
 
 const pageNationParams = reactive({
-  pageOn:1,
-  pageSize:10,
-  total:100,
-})
-const changePageNation = (page:number, pageSize:number)=>{
-  document.documentElement.scrollTo({top:0,behavior:'smooth'})
-  pageNationParams.pageOn = page
-  getPositionData()
-}
+  pageOn: 1,
+  pageSize: 10,
+  total: 100,
+});
+const changePageNation = (page: number, pageSize: number) => {
+  document.documentElement.scrollTo({ top: 0, behavior: "smooth" });
+  pageNationParams.pageOn = page;
+  getPositionData();
+
+};
 
 //选择城市模态框
 const visible = ref(false);
@@ -179,37 +195,39 @@ const clickCityItem = (cityName: string, code: number) => {
   //发送请求
   activeCityId.value = code;
   getQu(cityName);
+  pageNationParams.pageOn = 1
   getPositionData();
 };
 
 //获取职位列表数据
-const getPositionData =async () => {
-  const newObj:any = {}
-  for(let i in formData){
-    newObj[keyName[(i.slice(5) as any)*1]] = formData[i]
+const getPositionData = async () => {
+  const newObj: any = {};
+  for (let i in formData) {
+    newObj[keyName[(i.slice(5) as any) * 1]] = formData[i];
   }
   const params = {
-    region:cityData.qu,
+    region: cityData.qu,
+    keyword:keyword.value,
     ...newObj,
-    cityName:cityData.city,
+    cityName: cityData.city,
     ...pageNationParams,
   };
 
-  for(let item in params){
-    if(params[item]=='不限' || !params[item]){
-      delete params[item]
+  for (let item in params) {
+    if (params[item] == "不限" || !params[item]) {
+      delete params[item];
     }
   }
 
-  console.log('@@@@',params)
-   const res:any = await getPositionList(params)
-  console.log("#########",res)
-  if(res.code!==200){
-    positionData.value = []
-    message.error('服务异常')
-  }else{
-    pageNationParams.total = res.total
-    positionData.value = res.data
+  console.log("@@@@", params);
+  const res: any = await getPositionList(params);
+  console.log("#########", res);
+  if (res.code !== 200) {
+    positionData.value = [];
+    message.error("服务异常");
+  } else {
+    pageNationParams.total = res.total;
+    positionData.value = res.data;
   }
 };
 const showCityModel = () => {
@@ -233,16 +251,17 @@ const getClickValue = (val: string, idx: number) => {
       formData[item] = val;
     }
   }
+  pageNationParams.pageOn = 1
   //发送请求
   getPositionData();
 };
 
-
 //区域不限
-const quAll = ()=>{
-  cityData.qu = ''
+const quAll = () => {
+  cityData.qu = "";
+
   getPositionData();
-}
+};
 //清空选中内容
 const random = ref(-1);
 const clearSelect = () => {
@@ -250,8 +269,8 @@ const clearSelect = () => {
     formData[item] = "不限";
   }
   random.value = Math.random();
-
   //发送请求
+  pageNationParams.pageOn = 1
   getPositionData();
 };
 
@@ -272,27 +291,29 @@ const clickCity = (e: any) => {
     activeCityId.value = e.target.dataset.id * 1;
     cityData.city = e.target.innerText;
   }
-  cityData.qu = '';
-  getPositionData()
+  cityData.qu = "";
+  pageNationParams.pageOn = 1
+  getPositionData();
 };
 const clickQu = (e: any) => {
   if (!e.target.dataset.id) return;
   activeQuId.value = e.target.dataset.id * 1;
   cityData.qu = e.target.innerText;
-  getPositionData()
+  pageNationParams.pageOn = 1
+  getPositionData();
 };
 
 onMounted(() => {
-  if(cityData.city){
-    if(cityData.city==='全国'){
-      getPositionData()
-     return showQu.value = false;
+  if (cityData.city) {
+    if (cityData.city === "全国") {
+      getPositionData();
+      return (showQu.value = false);
     }
     getQu(cityData.city);
-  }else{
+  } else {
     getQu("武汉");
   }
-  getPositionData()
+  getPositionData();
 });
 const getQu = (cityName: string = "武汉") => {
   quList.value = allCities.value.filter((item) => {
@@ -462,16 +483,18 @@ const getScrollTop = () => {
     .left {
       width: 75%;
       height: 100%;
+      .pageNation {
+        width: 100%;
+        margin: 40px auto 70px;
+        // text-align: center;
+        display: flex;
+        justify-content: center;
+      }
     }
     .right {
       width: 24%;
       height: 100%;
     }
-  }
-  .pageNation{
-    width: 1200px;
-    margin: 40px auto 70px;
-    // text-align: center;
   }
 }
 

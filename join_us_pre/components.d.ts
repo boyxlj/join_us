@@ -20,6 +20,7 @@ declare module '@vue/runtime-core' {
     APagination: typeof import('ant-design-vue/es')['Pagination']
     ASpin: typeof import('ant-design-vue/es')['Spin']
     DropDownlist: typeof import('./src/components/common/dropDownlist/index.vue')['default']
+    Empty: typeof import('./src/components/common/empty/index.vue')['default']
     Footer: typeof import('./src/components/common/footer/index.vue')['default']
     Navbar: typeof import('./src/components/common/navbar/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

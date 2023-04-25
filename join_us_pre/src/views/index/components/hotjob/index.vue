@@ -61,18 +61,12 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { jobDetailStore } from "@/store/jobDetail";
 const router = useRouter();
 const lis = ref();
 const cardContainer = ref();
 import { Iobj } from '@/types/jobType'
 const jobList = ref<Array<Iobj>>([]);
 let allJobList = ref<Array<Iobj>>([]);
-const job = jobDetailStore();
-allJobList.value = job.allJobList;
-jobList.value = job.allJobList
-  .filter((item: any) => item.jobType === "互联网")
-  .slice(0, 9);
 
 const changeOn = (e: any): void => {
   Array.from(lis.value.children).forEach((item: any) => {

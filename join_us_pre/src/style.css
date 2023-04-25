@@ -18,6 +18,9 @@ body {
   background: #F6F6F8 !important;
 }
 
+img{
+  -webkit-user-drag: none;
+}
 /* 滚动条样式 */
 ::-webkit-scrollbar{
   width: 5px;

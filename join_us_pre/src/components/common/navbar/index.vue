@@ -101,6 +101,7 @@ const clickCity = (e: any) => {
   if (!e.target.dataset.id) return;
   city.changeCity(e.target.innerText);
   visible.value = false;
+  router.go(0)
 };
 const changeCity = () => {
   visible.value = true;
@@ -111,7 +112,6 @@ const navigateLogin = () => {
 
 const cancelLogin = (e:Event)=>{
   localStorage.removeItem('token')
-  // router.push('/home/index')
   router.go(0)
 }
 </script>

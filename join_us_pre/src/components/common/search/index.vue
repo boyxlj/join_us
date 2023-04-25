@@ -12,7 +12,6 @@
               <span class="arrow"></span>
             </div>
           </slot>
-
           <input
             @focus="inputFocus"
             @blur="inputNoFocus"
@@ -47,7 +46,7 @@
             <div class="right" v-show="showJobTypeContent">
                 <!-- <p>{{ item. }}</p> -->
                 <div class="tags">
-                  <span @click="navigateJob(item1.position_type_id)"  v-for="item1 in showBoxData" :key="item1.position_type_id">{{
+                  <span @click="navigateProfile(item1.position_type_id)"  v-for="item1 in showBoxData" :key="item1.position_type_id">{{
                     item1.type_name
                   }}</span>
                 </div>
@@ -70,21 +69,19 @@
             >
           </p>
           <div class="historyContent">
-            <span v-for="(item, index) in historyData" :key="index">{{
+            <span @click="navigateJob(item)" v-for="(item, index) in historyData" :key="index">{{
               item
             }}</span>
             <b v-if="!historyData.length">暂无搜索记录</b>
           </div>
           <p class="title">搜索发现</p>
           <div class="historyContent">
-            <span @click="navigateJobPage(item)" v-for="item in hotSearchPositionList" :key="item">{{ item }}</span>
+            <span @click="navigateProfilePage(item)" v-for="item in hotSearchPositionList" :key="item">{{ item }}</span>
           </div>
         </div>
         <div class="searchBtn" @click="searchSubmit">搜索</div>
       </div>
     </div>
-
- 
   </div>
 </template>
 
@@ -99,14 +96,18 @@ const inpVal = ref("");
 const router = useRouter()
 
 const hotSearchPositionList = computed(()=>useHotSearchPosition().hotSearchPositionList)
-const navigateJobPage  = (val:string)=>{
+const navigateProfilePage  = (val:string)=>{
   router.push(`/home/user/profile?position_name=${val}`)
 }
-withDefaults(defineProps<{ center?: boolean; height?: number }>(), {
+const navigateJob = (val:string)=>{
+  router.push(`/home/job?keyword=${val}`)
+}
+ withDefaults(defineProps<{ center?: boolean; height?: number}>(), {
   center: true,
   height: 120,
 });
-
+const route = useRoute()
+inpVal.value = route.query.keyword as string
 //获取职位类型数据
 const data = ref<IPositionType[]>([]);
 const showBoxData = ref<IPositionTypeChild[]>([]);
@@ -159,7 +160,7 @@ const enterJobLi = (id: string) => {
   showBoxData.value = data.value?.filter((item) => item.position_type_id == id)[0]?.children
 };
 
-const navigateJob = (id:string)=>{
+const navigateProfile = (id:string)=>{
   router.push(`/home/job?position_type1=${activeKey.value}&position_type2=${id}`)
 }
 
@@ -186,6 +187,7 @@ const getHistorySearchList = () => {
 
 //存储搜索历史记录
 const setHistorySearchList = (key: string) => {
+  if(!key) return
   const newList = [key, ...historyData.value];
   localStorage.setItem("searchList", JSON.stringify(newList));
   getHistorySearchList();
@@ -202,7 +204,7 @@ const clearHistorySearchList = () => {
       "您确定要清空所有搜索历史记录吗?"
     ),
     cancelText: "取消",
-    // centered:true,
+    centered:true,
     okText: "确定",
     onOk() {
       localStorage.removeItem("searchList");
@@ -215,8 +217,9 @@ const clearHistorySearchList = () => {
 
 //提交搜索
 const searchSubmit = () => {
-  if (!inpVal.value) return;
+  // if (!inpVal.value) return;
   setHistorySearchList(inpVal.value);
+  router.push(`/home/job?keyword=${inpVal.value}`)
 };
 </script>
 
