@@ -21,6 +21,7 @@ declare module '@vue/runtime-core' {
     ASpin: typeof import('ant-design-vue/es')['Spin']
     DropDownlist: typeof import('./src/components/common/dropDownlist/index.vue')['default']
     Footer: typeof import('./src/components/common/footer/index.vue')['default']
+    IndexJob: typeof import('./src/components/common/indexJob/index.vue')['default']
     Navbar: typeof import('./src/components/common/navbar/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

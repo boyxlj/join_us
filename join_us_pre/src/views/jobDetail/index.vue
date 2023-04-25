@@ -28,7 +28,7 @@
         </template>
         <span>感兴趣</span>
       </a-button>
-      <a-button class="chat">立即沟通</a-button>
+      <a-button class="chat">立即投递</a-button>
     </div>
   </div>
   <div class="info-container">

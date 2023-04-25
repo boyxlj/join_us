@@ -15,6 +15,7 @@
       </div>
       <Swiper />
       <HotJOb />
+      <specialJob />
     </div>
     <div id="active" class=" animate__animated animate__fadeInDown" :style="{display: showNavBar?'block':'none'}">
       <NavBar />
@@ -30,6 +31,7 @@ import NavBar from "@/components/common/navbar/index.vue";
 import Search from "@/components/common/search/index.vue";
 import Swiper from "./components/swiper/index.vue";
 import HotJOb from "./components/hotjob/index.vue";
+import specialJob from './components/specialJob/index.vue';
 import {useHotSearchPosition} from "@/store/position"
 const showNavBar = ref(false)
 const router = useRouter()
