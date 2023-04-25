@@ -105,7 +105,7 @@ positionRouter.get("/position/hot", (req, res) => {
 positionRouter.get("/positionDetail", (req, res) => {
 	const position_id = req.query.position_id;
 	const sql = `select * from company, pos where pos.company_id = company.company_id and position_id = '${position_id}'`;
-	query(sql, (result) => {
+  query(sql, (result) => {
 		res.send({
 			code: 200,
 			msg: "请求成功",

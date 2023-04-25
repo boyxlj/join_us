@@ -4,7 +4,7 @@
         <a-input-number v-model:value="salaryNum" class="salary-input" placeholder="请输入工资"></a-input-number>
         <span style="position: absolute; right: 40px; top: 65px;font-weight: bold; color: var(--themeColor);">元</span>
         <a-button @click="salaryCaculateDialog" class="btn">开始计算</a-button>
-        <a-modal style="text-align: center;" v-model:visible="visible" title="薪资计算器" @ok="handleOk">
+        <a-modal centered okText="确定"  cancelText="取消" style="text-align: center;" v-model:visible="visible" title="薪资计算器" @ok="handleOk">
             <a-spin v-show="isShown" size="large" />
             <p v-show="isShown">正在计算.......</p>
             <p v-show="!isShown">您的薪资是。。。。。</p>

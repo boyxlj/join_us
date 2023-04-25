@@ -95,7 +95,7 @@ import { notification,message  } from "ant-design-vue";
 import type { Rule } from "ant-design-vue/es/form";
 import type { FormInstance } from "ant-design-vue";
 import { getValidateCoder } from "validate-coder";
-import { sendCode, userLoginReq } from "@/api";
+// import { sendCode, userLoginReq } from "@/api";
 const router = useRouter()
 interface FormState {
   email: string;
@@ -122,28 +122,28 @@ const disabledSendCodeBtn = ref(false);
 const clickSendCode = async () => {
   // await  formRef .value?.validate(["email"])
   disabledSendCodeBtn.value = true;
-  const res: any = await sendCode();
-  console.log(res);
-  if (res.code === 200) {
-    notification.success({
-      message: "验证码发送成功，请注意查收",
-    });
-    let timeout = 60;
-    let timer = setInterval(() => {
-      timeout--;
-      if (timeout === 0) {
-        clearInterval(timer);
-        disabledSendCodeBtn.value = false;
-        return (sendCodeBtnText.value = "发送验证码");
-      }
-      sendCodeBtnText.value = `${timeout}后再次尝试发送`;
-    }, 1000);
-  } else {
-    disabledSendCodeBtn.value = false;
-    notification.error({
-      message: "验证码发送失败",
-    });
-  }
+  // const res: any = await sendCode();
+  // console.log(res);
+  // if (res.code === 200) {
+  //   notification.success({
+  //     message: "验证码发送成功，请注意查收",
+  //   });
+  //   let timeout = 60;
+  //   let timer = setInterval(() => {
+  //     timeout--;
+  //     if (timeout === 0) {
+  //       clearInterval(timer);
+  //       disabledSendCodeBtn.value = false;
+  //       return (sendCodeBtnText.value = "发送验证码");
+  //     }
+  //     sendCodeBtnText.value = `${timeout}后再次尝试发送`;
+  //   }, 1000);
+  // } else {
+  //   disabledSendCodeBtn.value = false;
+  //   notification.error({
+  //     message: "验证码发送失败",
+  //   });
+  // }
 };
 
 //更新验证码

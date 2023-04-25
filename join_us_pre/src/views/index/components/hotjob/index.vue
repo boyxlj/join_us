@@ -65,19 +65,9 @@ import { jobDetailStore } from "@/store/jobDetail";
 const router = useRouter();
 const lis = ref();
 const cardContainer = ref();
-interface obj {
-  id: string;
-  jobName: string;
-  salary: string;
-  place: string;
-  worktime: string;
-  companyName: string;
-  jobType: string;
-  education: string;
-  avatar: string;
-}
-const jobList = ref<Array<obj>>([]);
-let allJobList = ref<Array<obj>>([]);
+import { Iobj } from '@/types/jobType'
+const jobList = ref<Array<Iobj>>([]);
+let allJobList = ref<Array<Iobj>>([]);
 const job = jobDetailStore();
 allJobList.value = job.allJobList;
 jobList.value = job.allJobList
@@ -95,7 +85,7 @@ const changeOn = (e: any): void => {
     .filter((item) => item.jobType === e.target.innerHTML)
     .slice(0, 9);
 };
-const toDetail = (item: obj) => {
+const toDetail = (item: Iobj) => {
   router.push({
     path: "/home/jobDetail",
     query: {

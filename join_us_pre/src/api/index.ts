@@ -15,29 +15,29 @@ export const companyLoginReq = (data: Record<string, string>) => {
     data: data
   })
 }
-// 注册
-export const register = (data: Record<string, string>) => {
-  return request({
-    url: '/register',
-    method: 'post',
-    data: data
-  })
-}
-// 发送验证码
-export const sendCode = () => {
-  return request({
-    url: '/code',
-    method: 'get'
-  })
-}
+// // 注册
+// export const register = (data: Record<string, string>) => {
+//   return request({
+//     url: '/register',
+//     method: 'post',
+//     data: data
+//   })
+// }
+// // 发送验证码
+// export const sendCode = () => {
+//   return request({
+//     url: '/code',
+//     method: 'get'
+//   })
+// }
 
-//获取职位列表
-export const getJobList = () => {
-  return request({
-    url: '/jobList',
-    method: 'get'
-  })
-}
+// //获取职位列表
+// export const getJobList = () => {
+//   return request({
+//     url: '/jobList',
+//     method: 'get'
+//   })
+// }
 //获取职位类型
 export const getPositionType = () => {
   return request({
@@ -68,4 +68,14 @@ export const getPositionByHot = () => {
     url: '/position/hotSearch',
     method: 'get'
   })
+}
+
+export const getJobDetail = (position_id: string) => {
+    return request({
+        url: `/positionDetail`,
+        method: 'get',
+        params: {
+            position_id: position_id
+        }
+    })
 }
