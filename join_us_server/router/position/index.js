@@ -1,6 +1,6 @@
-const express = require("express")
-const positionRouter = express.Router()
-const query = require('../../utils/mysql')
+const express = require("express");
+const positionRouter = express.Router();
+const query = require("../../utils/mysql");
 //职位信息表
 //http://localhost:3303/api/positions?pageOn=1&pageSize=20&experiences=1%E5%B9%B4%E4%BB%A5%E5%86%85
 positionRouter.post('/positions', (req, res) => {
@@ -80,8 +80,20 @@ positionRouter.post('/positions', (req, res) => {
 })
 
 
-module.exports = positionRouter
 
 
 
+// 职位详情接口,query参数传递position_id
+positionRouter.get("/positionDetail", (req, res) => {
+	const position_id = req.query.position_id;
+	const sql = `select * from company, pos where pos.company_id = company.company_id and position_id = '${position_id}'`;
+	query(sql, (result) => {
+		res.send({
+			code: 200,
+			msg: "请求成功",
+			data: result[0],
+		});
+	});
+});
 
+module.exports = positionRouter;

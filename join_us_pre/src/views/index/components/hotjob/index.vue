@@ -2,13 +2,13 @@
   <div class="hotjob-container">
     <p class="title">热招职位</p>
     <ul class="job-type" ref="lis" @click="changeOn($event)">
-      <li class="on">互联网</li>
+      <li class="on">技术</li>
       <li>金融</li>
-      <li>娱乐传媒</li>
+      <li>产品</li>
       <li>物流</li>
       <li>教育培训</li>
-      <li>采购贸易</li>
-      <li>法律咨询</li>
+      <li>采购/贸易</li>
+      <li>法律/咨询</li>
       <li>房地产</li>
       <li>医疗健康</li>
     </ul>
