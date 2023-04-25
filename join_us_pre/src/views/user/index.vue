@@ -265,6 +265,9 @@ const clearCondition = ()=>{
 
 onMounted(()=>{
   cityQuList.value = (allCityList.value?.filter(item=>item.name===preventCity.value)[0]?.subLevelModelList[0].subLevelModelList) as [] 
+  if(preventCity.value=='全国'){
+    showQu.value= false
+  }
   getPositionData()
 })
 </script>
