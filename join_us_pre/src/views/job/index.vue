@@ -3,10 +3,10 @@
     <div class="bg">
       <div class="top">
         <div class="search">
-          <Search  :center="false">
+          <Search  :center="false" >
             <template #searchSelect>
               <div @click="showCityModel" class="citySelect">
-                <span class="name">{{
+                <span  class="name">{{
                   cityData.city ? cityData.city : "城市选择"
                 }}</span>
                 <span class="arrow"></span>
@@ -139,7 +139,7 @@
 <script setup lang="ts">
 import { ExportOutlined } from "@ant-design/icons-vue";
 import Search from "@/components/common/search/index.vue";
-import JobList from "./components/jobList/index.vue";
+import JobList from "@/components/common/jobList/index.vue";
 import NavBar from "@/components/common/navbar/index.vue";
 import DropDownlist from "@/components/common/dropDownlist/index.vue";
 import Empty from "@/components/common/empty/index.vue";
@@ -159,6 +159,8 @@ const keyName = [
   "financing",
 ];
 const keyword = ref(route.query.keyword as string )
+const position_type1 = ref(route.query.position_type1 as string )
+const position_type2 = ref(route.query.position_type2 as string )
 
 watch(()=>route.query,()=>{
   pageNationParams.pageOn = 1
@@ -170,13 +172,12 @@ const positionData = ref([]);
 const pageNationParams = reactive({
   pageOn: 1,
   pageSize: 10,
-  total: 100,
+  total: 0,
 });
 const changePageNation = (page: number, pageSize: number) => {
-  document.documentElement.scrollTo({ top: 0, behavior: "smooth" });
   pageNationParams.pageOn = page;
+  document.documentElement.scrollTo({ top: 0, behavior: "smooth" });
   getPositionData();
-
 };
 
 //选择城市模态框
@@ -184,17 +185,21 @@ const visible = ref(false);
 const handleOk = () => {
   visible.value = false;
 };
+
+
+//切换城市
 const clickCityItem = (cityName: string, code: number) => {
   cityData.city = cityName;
+  paramsCity.value = cityName
   if (cityName === "全国") {
     showQu.value = false;
   } else {
     showQu.value = true;
+    getQu(cityName);
   }
   visible.value = false;
   //发送请求
   activeCityId.value = code;
-  getQu(cityName);
   pageNationParams.pageOn = 1
   getPositionData();
 };
@@ -209,7 +214,10 @@ const getPositionData = async () => {
     region: cityData.qu,
     keyword:keyword.value,
     ...newObj,
-    cityName: cityData.city,
+    position_type1:position_type1.value,
+    position_type2:position_type2.value,
+    cityName:keyword.value || position_type1 ||  position_type2? paramsCity.value:cityData.city,
+    // cityName: cityData.city,
     ...pageNationParams,
   };
 
@@ -259,7 +267,7 @@ const getClickValue = (val: string, idx: number) => {
 //区域不限
 const quAll = () => {
   cityData.qu = "";
-
+  activeQuId.value = -1;
   getPositionData();
 };
 //清空选中内容
@@ -280,17 +288,19 @@ const cityData = reactive({
   city: preventCity,
   cityId: "",
 });
+
+const paramsCity = ref('')
 const clickCity = (e: any) => {
   if (!e.target.dataset.id) return;
   if (e.target.innerText === "全国") {
     showQu.value = false;
-    cityData.city = e.target.innerText;
   } else {
     showQu.value = true;
     getQu(e.target.innerText);
-    activeCityId.value = e.target.dataset.id * 1;
-    cityData.city = e.target.innerText;
   }
+  activeCityId.value = e.target.dataset.id * 1;
+  paramsCity.value = e.target.innerText;
+  cityData.city = e.target.innerText;
   cityData.qu = "";
   pageNationParams.pageOn = 1
   getPositionData();

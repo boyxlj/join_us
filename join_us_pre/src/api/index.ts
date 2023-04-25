@@ -54,22 +54,22 @@ export const getPositionList = (data:any) => {
     data,
   })
 }
-//查询热搜职位列表
+//查询首页搜索框热搜职位列表
 export const getPositionHotSearchList = () => {
   return request({
-    url: '/position/hot',
+    url: `/position/hot`,
     method: 'get'
   })
 }
 
-//查询热招职位列表
-export const getPositionByHot = () => {
+//查询首页热招职位列表
+export const getPositionByHot = (position_type1: string) => {
   return request({
-    url: '/position/hotSearch',
+    url: `/position/hotSearch?position_type1=${position_type1}`,
     method: 'get'
   })
 }
-
+// 获取职位详情
 export const getJobDetail = (position_id: string) => {
     return request({
         url: `/positionDetail`,

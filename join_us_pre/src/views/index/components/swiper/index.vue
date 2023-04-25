@@ -51,14 +51,14 @@
 <script setup lang="ts">
 import { LeftCircleOutlined, RightCircleOutlined } from "@ant-design/icons-vue";
 import { useJobTypeStore } from "@/store/positionType";
-import {IPositionType,IPositionTypeChild} from "@/types/jobType"
+import {IPositionType1,IPositionTypeChild} from "@/types/jobType"
 const router = useRouter()
 const onChange = (current: number) => {
   // console.log(current);
 };
 const showBox = ref(false);
 
-const data = ref<IPositionType[]>([]);
+const data = ref<IPositionType1[]>([]);
 const showBoxData = ref<IPositionTypeChild[]>([]);
 //获取职位类型
 const store = useJobTypeStore();
@@ -72,7 +72,9 @@ const mouseenter = (id: string) => {
 };
 
 const navigateJob = (id:string)=>{
-  router.push(`/home/user/profile?position_type1=${activeKey.value}&position_type2=${id}`)
+  router.push(
+    `/home/job?position_type1=${activeKey.value}&position_type2=${id}`
+  );
 }
 
 const leaveShowBox = () => {

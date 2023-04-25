@@ -22,6 +22,8 @@ declare module '@vue/runtime-core' {
     DropDownlist: typeof import('./src/components/common/dropDownlist/index.vue')['default']
     Empty: typeof import('./src/components/common/empty/index.vue')['default']
     Footer: typeof import('./src/components/common/footer/index.vue')['default']
+    IndexJob: typeof import('./src/components/common/indexJob/index.vue')['default']
+    JobList: typeof import('./src/components/common/jobList/index.vue')['default']
     Navbar: typeof import('./src/components/common/navbar/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

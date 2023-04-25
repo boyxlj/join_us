@@ -21,6 +21,11 @@ export interface Iobj {
 export interface IPositionType {
   position_type_id: string;
   position_type_name: string;
+  children?: IPositionTypeChild[];
+}
+export interface IPositionType1 {
+  position_type_id: string;
+  position_type_name: string;
   children: IPositionTypeChild[];
 }
 

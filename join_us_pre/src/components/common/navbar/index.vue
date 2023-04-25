@@ -30,22 +30,22 @@
         <li>消息</li>
         <li class="line">简历</li>
         <li>上传</li>
-        <div class="userProfile" @click.self="$router.push('/home/user/job')">
-          <div class="cons">
+        <div class="userProfile">
+          <div class="cons" @click="$router.push('/home/user/job')">
             <span>{{ users.nickName }}</span>
             <div class="avatar">
               <img :src="users.avatar" alt="" />
             </div>
             <div class="hovers">
-              <router-link to="/home/user/profile" class="centers">
+              <a  @click.stop="$router.push('/home/user/profile')" class="centers">
                 <span class="center_title">个人中心</span>
                 <span class="center_others">推荐职位、编辑在线简历</span>
-              </router-link>
+              </a>
               <router-link to="#">账号与安全中心</router-link>
               <router-link to="#">隐私保护</router-link>
               <router-link to="#">消息通知</router-link>
               <router-link to="#" class="line">切换为招聘者</router-link>
-              <a  class="line" @click.prevent="cancelLogin">退出登录</a>
+              <a class="line" @click.prevent="cancelLogin">退出登录</a>
             </div>
           </div>
         </div>
@@ -101,7 +101,7 @@ const clickCity = (e: any) => {
   if (!e.target.dataset.id) return;
   city.changeCity(e.target.innerText);
   visible.value = false;
-  router.go(0)
+  router.go(0);
 };
 const changeCity = () => {
   visible.value = true;
@@ -110,10 +110,10 @@ const navigateLogin = () => {
   router.push("/login");
 };
 
-const cancelLogin = (e:Event)=>{
-  localStorage.removeItem('token')
-  router.go(0)
-}
+const cancelLogin = (e: Event) => {
+  localStorage.removeItem("token");
+  router.go(0);
+};
 </script>
 
 <style lang="less" scoped>
@@ -279,12 +279,12 @@ const cancelLogin = (e:Event)=>{
               box-sizing: border-box;
               border-radius: 6px;
               transition: all 0.2s linear;
-              
+
               &:hover {
                 color: var(--themeColor);
                 background: #f8f8f8;
                 font-weight: 500;
-                span{
+                span {
                   color: #999;
                 }
                 .center_title {
@@ -307,7 +307,7 @@ const cancelLogin = (e:Event)=>{
                 font-size: 14px;
                 color: #222;
               }
-              .center_others{
+              .center_others {
                 margin-top: 3px;
               }
             }
@@ -325,7 +325,8 @@ const cancelLogin = (e:Event)=>{
               }
               &:hover {
                 color: var(--themeColor);
-                background: none;}
+                background: none;
+              }
             }
           }
           span {

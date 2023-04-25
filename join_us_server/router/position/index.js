@@ -98,6 +98,8 @@ positionRouter.post('/positions', (req, res) => {
     const sql = `select * from pos inner join company on pos.company_id = company.company_id ${ResStr} order by pos.id desc
     limit ${(pageOn - 1) * pageSize},${pageSize}
   `
+
+  console.log(sql)
     query(sqlCount, count => {
       query(sql, result => {
         res.status(200).send({ code: 200, msg: 'ok', data: result, total: count[0]['count(*)'] })
@@ -115,12 +117,12 @@ positionRouter.get("/position/hotSearch", (req, res) => {
   if (num <= 6 || num > 20) {
     num = 9
   }
-  const sql = `select * from pos where position_type1='${position_type1}' order by id desc limit ${num}`
-  query(sql, result => {
-    if (result.length) {
-      res.status(200).send({ code: 200, msg: '请求成功', data: result })
-    } else {
-      res.status(200).send({ code: 200, msg: '请求成功', data: [] })
+  const sql= `select * from pos inner join company on pos.company_id = company.company_id where position_type1='${position_type1}' order by pos.id desc limit ${num}`
+  query(sql,result=>{
+    if(result.length){
+      res.status(200).send({code:200,msg:'请求成功',data:result})
+    }else{
+      res.status(200).send({code:200,msg:'请求成功',data:[]})
     }
   })
 })

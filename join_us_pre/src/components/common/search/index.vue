@@ -1,11 +1,17 @@
 <template>
   <div class="search" :style="{ height: height ? `${height}px` : '120px' }">
-    <div class="container">
+    <div
+      class="container"
+      :style="{ width: inputWidth ? `${inputWidth}px` : '1200px' }"
+    >
       <div class="box" :style="{ margin: center ? '0 auto' : '0' }">
-        <div class="options">
-          <slot name="searchSelect"  >
+        <div
+          class="options"
+          :style="{ width: optionWidth ? `${optionWidth}%` : '88%' }"
+        >
+          <slot name="searchSelect">
             <div
-            @click.stop="clickJobType"
+              @click.stop="clickJobType"
               :class="jobTypeFocusBox ? 'activeJob jobs' : 'jobs'"
             >
               <span class="name">职位类型</span>
@@ -17,10 +23,12 @@
             @blur="inputNoFocus"
             @keyup.enter="searchSubmit"
             type="text"
+            autocomplete="off"
             name=""
             id="input"
             v-model.trim="inpVal"
             placeholder="搜索职位、公司"
+            style="width: 50%"
           />
         </div>
         <div @mouseleave="leaveJobLi">
@@ -44,12 +52,15 @@
               </div>
             </div>
             <div class="right" v-show="showJobTypeContent">
-                <!-- <p>{{ item. }}</p> -->
-                <div class="tags">
-                  <span @click="navigateProfile(item1.position_type_id)"  v-for="item1 in showBoxData" :key="item1.position_type_id">{{
-                    item1.type_name
-                  }}</span>
-                </div>
+              <!-- <p>{{ item. }}</p> -->
+              <div class="tags">
+                <span
+                  @click="navigateProfile(item1.position_type_id)"
+                  v-for="item1 in showBoxData"
+                  :key="item1.position_type_id"
+                  >{{ item1.type_name }}</span
+                >
+              </div>
             </div>
           </div>
         </div>
@@ -58,6 +69,8 @@
           @mouseleave="leaveSearchFocusBox"
           v-show="showSearchFocusBox"
           class="searchFocusBox"
+          :style="{ width: showBoxWidth ? `${showBoxWidth}px` : '650px' }"
+          
         >
           <p class="title">
             <span>历史搜索</span>
@@ -69,14 +82,22 @@
             >
           </p>
           <div class="historyContent">
-            <span @click="navigateJob(item)" v-for="(item, index) in historyData" :key="index">{{
-              item
-            }}</span>
+            <span
+              @click="navigateJob(item)"
+              v-for="(item, index) in historyData"
+              :key="index"
+              >{{ item }}</span
+            >
             <b v-if="!historyData.length">暂无搜索记录</b>
           </div>
           <p class="title">搜索发现</p>
           <div class="historyContent">
-            <span @click="navigateProfilePage(item)" v-for="item in hotSearchPositionList" :key="item">{{ item }}</span>
+            <span
+              @click="navigateProfilePage(item)"
+              v-for="item in hotSearchPositionList"
+              :key="item"
+              >{{ item }}</span
+            >
           </div>
         </div>
         <div class="searchBtn" @click="searchSubmit">搜索</div>
@@ -90,26 +111,39 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { createVNode } from "vue";
 import { Modal } from "ant-design-vue";
 import { useJobTypeStore } from "@/store/positionType";
-import {IPositionType,IPositionTypeChild}  from "@/types/jobType"
-import {useHotSearchPosition} from "@/store/position"
+import { IPositionTypeChild, IPositionType1 } from "@/types/jobType";
+import { useHotSearchPosition } from "@/store/position";
 const inpVal = ref("");
-const router = useRouter()
+const router = useRouter();
 
-const hotSearchPositionList = computed(()=>useHotSearchPosition().hotSearchPositionList)
-const navigateProfilePage  = (val:string)=>{
-  router.push(`/home/user/profile?position_name=${val}`)
-}
-const navigateJob = (val:string)=>{
-  router.push(`/home/job?keyword=${val}`)
-}
- withDefaults(defineProps<{ center?: boolean; height?: number}>(), {
+const hotSearchPositionList = computed(
+  () => useHotSearchPosition().hotSearchPositionList
+);
+const navigateProfilePage = (val: string) => {
+  router.push(`/home/job?keyword=${val}`);
+};
+const navigateJob = (val: string) => {
+  router.push(`/home/job?keyword=${val}`);
+};
+
+type TSearchStyle = {
+  center?: boolean;
+  height?: number;
+  inputWidth?: number;
+  optionWidth?: number;
+  showBoxWidth?: number;
+};
+withDefaults(defineProps<TSearchStyle>(), {
   center: true,
   height: 120,
+  inputWidth: 1200,
+  optionWidth: 88,
+  showBoxWidth: 480,
 });
-const route = useRoute()
-inpVal.value = route.query.keyword as string
+const route = useRoute();
+inpVal.value = route.query.keyword as string;
 //获取职位类型数据
-const data = ref<IPositionType[]>([]);
+const data = ref<IPositionType1[]>([]);
 const showBoxData = ref<IPositionTypeChild[]>([]);
 const store = useJobTypeStore();
 data.value = store.positionTypeList;
@@ -137,6 +171,7 @@ const leaveSearchFocusBox = () => {
 const jobTypeFocusBox = ref(false);
 const enterJobTypeFocusBoxValue = ref(false);
 const showJobTypeContent = ref(false);
+
 const clickJobType = () => {
   jobTypeFocusBox.value = true;
 };
@@ -157,12 +192,16 @@ const activeKey = ref();
 const enterJobLi = (id: string) => {
   showJobTypeContent.value = true;
   activeKey.value = id;
-  showBoxData.value = data.value?.filter((item) => item.position_type_id == id)[0]?.children
+  showBoxData.value = data.value?.filter(
+    (item) => item.position_type_id == id
+  )[0]?.children;
 };
 
-const navigateProfile = (id:string)=>{
-  router.push(`/home/job?position_type1=${activeKey.value}&position_type2=${id}`)
-}
+const navigateProfile = (id: string) => {
+  router.push(
+    `/home/job?position_type1=${activeKey.value}&position_type2=${id}`
+  );
+};
 
 const leaveJobLi = () => {
   showJobTypeContent.value = false;
@@ -187,7 +226,7 @@ const getHistorySearchList = () => {
 
 //存储搜索历史记录
 const setHistorySearchList = (key: string) => {
-  if(!key) return
+  if (!key) return;
   const newList = [key, ...historyData.value];
   localStorage.setItem("searchList", JSON.stringify(newList));
   getHistorySearchList();
@@ -204,7 +243,7 @@ const clearHistorySearchList = () => {
       "您确定要清空所有搜索历史记录吗?"
     ),
     cancelText: "取消",
-    centered:true,
+    centered: true,
     okText: "确定",
     onOk() {
       localStorage.removeItem("searchList");
@@ -217,9 +256,11 @@ const clearHistorySearchList = () => {
 
 //提交搜索
 const searchSubmit = () => {
-  // if (!inpVal.value) return;
+  if (!inpVal.value){
+    return router.push('/home/job');
+  } 
   setHistorySearchList(inpVal.value);
-  router.push(`/home/job?keyword=${inpVal.value}`)
+  router.push(`/home/job?keyword=${inpVal.value}`);
 };
 </script>
 
@@ -242,7 +283,7 @@ const searchSubmit = () => {
       justify-content: space-between;
       justify-content: flex-start !important;
       position: relative;
-      :slotted(.citySelect){
+      :slotted(.citySelect) {
         min-width: 120px;
         display: flex;
         justify-content: center;
@@ -250,27 +291,27 @@ const searchSubmit = () => {
         cursor: pointer;
         padding-left: 0px;
         &:hover {
-            .name {
-              color: var(--themeColor);
-            }
-            .arrow {
-              border-top: 5px solid var(--themeColor);
-            }
-          }
           .name {
-            transition: all 0.2s;
-            color: #222;
-            font-size: 16px;
+            color: var(--themeColor);
           }
           .arrow {
-            transition: all 0.2s;
-            display: inline-block;
-            border: 5px solid transparent;
-            border-top: 5px solid #cbcbcb;
-            margin-left: 15px;
-            position: relative;
-            top: 3px;
+            border-top: 5px solid var(--themeColor);
           }
+        }
+        .name {
+          transition: all 0.2s;
+          color: #222;
+          font-size: 16px;
+        }
+        .arrow {
+          transition: all 0.2s;
+          display: inline-block;
+          border: 5px solid transparent;
+          border-top: 5px solid #cbcbcb;
+          margin-left: 15px;
+          position: relative;
+          top: 3px;
+        }
       }
       .searchFocusBox {
         position: absolute;
