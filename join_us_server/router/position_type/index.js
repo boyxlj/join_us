@@ -3,9 +3,7 @@ const positionTypeRouter = express.Router()
 const query = require('../../utils/mysql')
 //职位类型表
 
-positionTypeRouter.get('/',(req,res)=>{
-  res.send({code:200,msg:'ok'})
-})
+
 // 职位类型接口
 positionTypeRouter.get('/positionType', (req, res) => {
   const sql = 'select * from position_type'

@@ -6,13 +6,12 @@
     <div class="content">
       <Search />
       <div class="topKey">
+        <div class="left">
         <span>热搜职位：</span>
-        <li>Java</li>
-        <li>Python</li>
-        <li>Android</li>
-        <li>运维工程师</li>
-        <li>IT技术支持</li>
-        <li>前端开发工程师</li>
+        </div>
+        <div class="right">
+        <li @click="navigateJob(item)" v-for="item in hotSearchPositionList" :key="item">{{item  }}</li>
+        </div>
       </div>
       <Swiper />
       <HotJOb />
@@ -31,7 +30,13 @@ import NavBar from "@/components/common/navbar/index.vue";
 import Search from "@/components/common/search/index.vue";
 import Swiper from "./components/swiper/index.vue";
 import HotJOb from "./components/hotjob/index.vue";
+import {useHotSearchPosition} from "@/store/position"
 const showNavBar = ref(false)
+const router = useRouter()
+const hotSearchPositionList = computed(()=>useHotSearchPosition().hotSearchPositionList)
+const navigateJob  = (val:string)=>{
+  router.push(`/home/user/profile?position_name=${val}`)
+}
 onMounted(() => {
   window.addEventListener("scroll", getScrollTop);
 });
@@ -67,13 +72,26 @@ const getScrollTop = () => {
     .topKey {
       width: 75%;
       display: flex;
-      margin: -15px auto 30px;
+      justify-content: flex-start;
+      margin: -15px auto 6px;
+      .left{
+        width: 70px;
+      }
+      .right{
+        flex: 1;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
       li {
         background: #fff;
         color: var(--themeColor);
         margin: 0 12px;
+        
         border-radius: 4px;
         transition: all 0.2s;
+        justify-content: flex-start;
+        margin-bottom: 15px;
         cursor: pointer;
         padding: 1px 5px;
         &:hover {

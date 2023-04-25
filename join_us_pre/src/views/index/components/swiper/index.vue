@@ -2,28 +2,25 @@
   <div class="swiperCom" @mouseleave="mouseleaveBox">
     <div class="jobList">
       <li
-        @mouseenter="mouseenter(item.id)"
+        @mouseenter="mouseenter(item.position_type_id,)"
         v-for="item in data?.slice(0, 7)"
-        :key="item.id"
-        :class="activeKey === item.id ? 'actives' : ''"
+        :key="item.position_type_id"
+        :class="activeKey === item.position_type_id ? 'actives' : ''"
       >
-        <p class="weight">{{ item.name }}</p>
-        <span v-for="name in item.children?.slice(0, 4)" :key="name.id">{{
-          name.name
+        <p class="weight">{{ item.position_type_name }}</p>
+        <span  @click="navigateJob(item.position_type_id)" v-for="item1 in item.children?.slice(0, 2)" :key="item1.id">{{
+          item1.type_name
         }}</span>
         <p class="arrow"><span></span></p>
       </li>
     </div>
 
     <div @mouseleave="leaveShowBox" class="showBox" v-show="showBox">
-      <div v-for="item in showBoxData" :key="item.id">
-        <p>{{ item.name }}</p>
-        <div class="tags">
-          <span v-for="item1 in item.children" :key="item1.id">{{
-            item1.name
+      <div class="tags">
+          <span @click="navigateJob(item.position_type_id)" v-for="item in showBoxData" :key="item.id">{{
+            item.type_name
           }}</span>
         </div>
-      </div>
     </div>
     <div class="swiperBox">
       <a-carousel arrows autoplay :after-change="onChange">
@@ -53,26 +50,31 @@
 
 <script setup lang="ts">
 import { LeftCircleOutlined, RightCircleOutlined } from "@ant-design/icons-vue";
-import {IJobType} from "@/types/jobType"
-import { useJobTypeStore } from "@/store/jobType";
-
+import { useJobTypeStore } from "@/store/positionType";
+import {IPositionType,IPositionTypeChild} from "@/types/jobType"
+const router = useRouter()
 const onChange = (current: number) => {
   // console.log(current);
 };
 const showBox = ref(false);
 
-const data = ref<IJobType[]>([]);
-const showBoxData = ref<IJobType[]>([]);
+const data = ref<IPositionType[]>([]);
+const showBoxData = ref<IPositionTypeChild[]>([]);
 //获取职位类型
 const store = useJobTypeStore();
-data.value = store.jobTypeList;
+data.value = store.positionTypeList;
 
-const activeKey = ref<any>("");
-const mouseenter = (id: any) => {
+const activeKey = ref<string>("");
+const mouseenter = (id: string) => {
   showBox.value = true;
   activeKey.value = id;
-  showBoxData.value = data.value?.filter((item) => item.id == id);
+  showBoxData.value = data.value?.filter((item) => item.position_type_id == id)[0]?.children;
 };
+
+const navigateJob = (id:string)=>{
+  router.push(`/home/user/profile?position_type1=${activeKey.value}&position_type2=${id}`)
+}
+
 const leaveShowBox = () => {
   showBox.value = false;
 };
@@ -113,9 +115,11 @@ const mouseleaveBox = () => {
       padding: 0 8px 0 16px;
       box-sizing: border-box;
       width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
       border-radius: var(--radiusSize);
       position: relative;
-
+      box-sizing: border-box;
       &:hover {
         cursor: pointer;
         box-shadow: 0 4px 16px 0 rgba(153, 153, 153, 0.2);
@@ -190,7 +194,6 @@ const mouseleaveBox = () => {
       font-size: 30px;
       color: #fff;
       color: var(--themeColor);
-      // background-color: rgba(31, 45, 61, 0.11);
       transition: ease all 0.3s;
       opacity: 0.3;
       z-index: -1;
@@ -226,6 +229,7 @@ const mouseleaveBox = () => {
     padding: 15px 25px;
     box-sizing: border-box;
     z-index: 88;
+    overflow-y: auto;
     p {
       margin-bottom: 10px;
       font-size: 18px;
@@ -236,7 +240,7 @@ const mouseleaveBox = () => {
             flex-wrap: wrap;
       span {
         margin-right: 30px;
-        line-height: 32px;
+        line-height: 40px;
         cursor: pointer;
         transition: all 0.2s;
         &:hover {

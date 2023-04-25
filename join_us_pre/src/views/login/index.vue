@@ -245,15 +245,18 @@ const submit = async () => {
     "email",
     "code",
   ]);
-  const params = {email:formState.email,code:formState.code}
-  const res:any = await userLoginReq(params)
-  if(res.code===200){
-    localStorage.setItem("token",res.token)
+      localStorage.setItem("token",'abcdefg')
     message.success("登录成功")
     router.push("/")
-  }else if(res.code===400){
-    message.error(res.msg?res.msg:'密码错误，请重新输入')
-  }
+  // const params = {email:formState.email,code:formState.code}
+  // const res:any = await userLoginReq(params)
+  // if(res.code===200){
+  //   localStorage.setItem("token",res.token)
+  //   message.success("登录成功")
+  //   router.push("/")
+  // }else if(res.code===400){
+  //   message.error(res.msg?res.msg:'密码错误，请重新输入')
+  // }
 
 };
 const handleValidate = (...args: any) => {

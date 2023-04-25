@@ -1,20 +1,20 @@
 import { defineStore } from 'pinia'
-import { getJobType } from "@/api";
+import { getPositionType } from "@/api";
 import { message } from 'ant-design-vue'
-export const useJobTypeStore = defineStore('jobType', {
+export const useJobTypeStore = defineStore('positionType', {
   state: () => {
     return {
-      jobTypeList: [],
+      positionTypeList: [],
     }
   },
   actions: {
     async getJobs() {
-      const res: any = await getJobType();
+      const res: any = await getPositionType();
       if (res.code !== 200) {
-        this.jobTypeList = []
+        this.positionTypeList = []
         return message.error('数据获取异常')
       }
-      this.jobTypeList = res.data;
+      this.positionTypeList = res.data;
     },
   },
   persist: {

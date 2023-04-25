@@ -34,25 +34,23 @@
             <div class="left">
               <div class="con">
                 <li
-                  @mouseenter="enterJobLi(item.id)"
+                  @mouseenter="enterJobLi(item.position_type_id)"
                   v-for="item in data"
-                  :key="item.id"
-                  :class="activeKey === item.id ? 'actives' : ''"
+                  :key="item.position_type_id"
+                  :class="activeKey === item.position_type_id ? 'actives' : ''"
                 >
-                  <span class="title">{{ item.name }}</span
+                  <span class="title">{{ item.position_type_name }}</span
                   ><span class="arrow"></span>
                 </li>
               </div>
             </div>
             <div class="right" v-show="showJobTypeContent">
-              <template v-for="item in showBoxData" :key="item.id">
-                <p>{{ item.name }}</p>
+                <!-- <p>{{ item. }}</p> -->
                 <div class="tags">
-                  <span v-for="item1 in item.children" :key="item1.id">{{
-                    item1.name
+                  <span @click="navigateJob(item1.position_type_id)"  v-for="item1 in showBoxData" :key="item1.position_type_id">{{
+                    item1.type_name
                   }}</span>
                 </div>
-              </template>
             </div>
           </div>
         </div>
@@ -79,8 +77,7 @@
           </div>
           <p class="title">搜索发现</p>
           <div class="historyContent">
-            <span v-for="item in 13" :key="item">Java前端</span>
-            <span>Java前端</span>
+            <span @click="navigateJobPage(item)" v-for="item in hotSearchPositionList" :key="item">{{ item }}</span>
           </div>
         </div>
         <div class="searchBtn" @click="searchSubmit">搜索</div>
@@ -94,22 +91,27 @@
 <script setup lang="ts">
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { createVNode } from "vue";
-import { IJobType } from "@/types/jobType";
 import { Modal } from "ant-design-vue";
-import { useJobTypeStore } from "@/store/jobType";
-
+import { useJobTypeStore } from "@/store/positionType";
+import {IPositionType,IPositionTypeChild}  from "@/types/jobType"
+import {useHotSearchPosition} from "@/store/position"
 const inpVal = ref("");
+const router = useRouter()
 
+const hotSearchPositionList = computed(()=>useHotSearchPosition().hotSearchPositionList)
+const navigateJobPage  = (val:string)=>{
+  router.push(`/home/user/profile?position_name=${val}`)
+}
 withDefaults(defineProps<{ center?: boolean; height?: number }>(), {
   center: true,
   height: 120,
 });
 
 //获取职位类型数据
-const data = ref<IJobType[]>([]);
-const showBoxData = ref<IJobType[]>([]);
+const data = ref<IPositionType[]>([]);
+const showBoxData = ref<IPositionTypeChild[]>([]);
 const store = useJobTypeStore();
-data.value = store.jobTypeList;
+data.value = store.positionTypeList;
 //输入框
 const showSearchFocusBox = ref(false);
 const enterSearchFocusBoxValue = ref(false);
@@ -151,11 +153,15 @@ document.body.addEventListener("click", () => {
 
 const activeKey = ref();
 //悬停职位类型li
-const enterJobLi = (id: any) => {
+const enterJobLi = (id: string) => {
   showJobTypeContent.value = true;
   activeKey.value = id;
-  showBoxData.value = data.value?.filter((item) => item.id == id);
+  showBoxData.value = data.value?.filter((item) => item.position_type_id == id)[0]?.children
 };
+
+const navigateJob = (id:string)=>{
+  router.push(`/home/job?position_type1=${activeKey.value}&position_type2=${id}`)
+}
 
 const leaveJobLi = () => {
   showJobTypeContent.value = false;
@@ -396,7 +402,6 @@ const searchSubmit = () => {
           padding-top: 8px;
           box-sizing: border-box;
           background: #fff;
-          // box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08);
           border: 2px solid #eee;
           border-radius: var(--radiusSize) !important;
           overflow: hidden;
@@ -460,6 +465,7 @@ const searchSubmit = () => {
           padding: 10px 15px 0 20px;
           box-sizing: border-box;
           border: 2px solid #eee;
+          overflow-y: auto;
           p {
             margin-bottom: 4px;
             font-size: 16px;

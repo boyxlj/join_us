@@ -30,13 +30,7 @@ export const sendCode = () => {
     method: 'get'
   })
 }
-// 获取职位类型
-export const getJobType = () => {
-  return request({
-    url: '/jobtype',
-    method: 'get'
-  })
-}
+
 //获取职位列表
 export const getJobList = () => {
   return request({
@@ -44,12 +38,34 @@ export const getJobList = () => {
     method: 'get'
   })
 }
+//获取职位类型
+export const getPositionType = () => {
+  return request({
+    url: '/positionType',
+    method: 'get'
+  })
+}
 
-//获取职位列表
+//查询职位列表
 export const getPositionList = (data:any) => {
   return request({
     url: '/positions',
     method: 'post',
     data,
+  })
+}
+//查询热搜职位列表
+export const getPositionHotSearchList = () => {
+  return request({
+    url: '/position/hot',
+    method: 'get'
+  })
+}
+
+//查询热招职位列表
+export const getPositionByHot = () => {
+  return request({
+    url: '/position/hotSearch',
+    method: 'get'
   })
 }
