@@ -1,43 +1,80 @@
 <template>
-  <div class="jobList" v-for="item in 10" :key="item">
+  <div class="jobList" v-for="item in positionData" :key="item.position_id">
     <div class="top">
       <div class="left">
-        <p class="jobName">终端区域经理 [郑州·管城回族区·二里岗]</p>
+        <p class="jobName" @click="navigateDetail(item.position_id)">{{ item.position_name }} [{{item.cityName}}] </p>
         <p class="info">
-          <b class="salary">20-25k</b>
-          <span class="year">3-5年</span>
-          <span class="xl">大专</span>
+          <b class="salary">{{ item.salary }}</b>
+          <span class="year">{{ item.experiences }}</span>
+          <span class="xl">{{ item.degrees }}</span>
         </p>
       </div>
       <div class="right">
         <div class="right_left">
-          <img src="../../../../assets/vue.svg" alt="" />
+          <img :src="item.logo" alt="" />
         </div>
         <div class="right_right">
-          <p class="company">河南酒销售有限公司</p>
+          <p class="company">{{ item.company_name }}</p>
           <p class="infos">
-            <span class="types">食品/饮料/烟酒</span>
-            <span class="rz">不需要融资</span>
-            <span class="num">1000-9999人</span>
+            <span class="types">{{ item.industry }}</span>
+            <span class="rz">{{ item.financing }}</span>
+            <span class="num">{{ item.people_num }}</span>
           </p>
         </div>
       </div>
     </div>
     <div class="bottom">
-      <div class="left">
-        <span>企业(To B)</span>
-        <span>科技医疗</span>
-        <span>客户关系维护社群运营</span>
-        <span>用户运营互联网</span>
+      <div class="left" >
+        <span v-for="item1 in JSON.parse(item.position_tag)" :key="item1">{{ item1 }}</span>
       </div>
       <div class="bottom_right">
-        零食下午茶，五险，股票期权，加班补助，绩效奖金，补充医疗保险，包住，节日福绩效奖金，补充医疗
+        {{ JSON.parse(item.welfare_tag).join(',') }}
       </div>
     </div>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+interface RootObject {
+  id: number;
+  position_id: string;
+  position_name: string;
+  salary: string;
+  cityName: string;
+  region: string;
+  experiences: string;
+  degrees: string;
+  position_tag: string;
+  welfare_tag: string;
+  company_id: string;
+  hr_id: string;
+  position_desc: string;
+  addTime: string;
+  updateTime: string;
+  position_state: string;
+  position_type1: string;
+  position_type2: string;
+  job_type: string;
+  company_name: string;
+  logo: string;
+  people_num: string;
+  industry: string;
+  financing: string;
+  legal_representative: string;
+  create_time: string;
+  reg_city: string;
+  capital: string;
+  state: string;
+  business_scope: string;
+  others: string;
+}
+withDefaults(defineProps<{positionData:RootObject[]}>(),{})
+  // defineProps(['positionData'])
+
+  const navigateDetail = (position_id:string)=>{
+    window.open(`/home/jobDetail?position_id=${position_id}`)
+  }
+</script>
 
 <style lang="less" scoped>
 .jobList {
@@ -194,6 +231,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: right;
   }
 }
 </style>

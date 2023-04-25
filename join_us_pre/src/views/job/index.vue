@@ -60,13 +60,17 @@
     </div>
     <div class="content">
       <div class="left">
-        <JobList />
+        <JobList v-if="positionData.length" :positionData="positionData" />
+        <div class="empty" v-else>
+            <h1 style="font-size: 30px;font-weight: bold;" >暂无数据</h1>
+        </div>
       </div>
     </div>
     <div class="pageNation">
         <a-pagination @change="changePageNation" 
-        v-model:current="pageNationParams.current"
+        v-model:current="pageNationParams.pageOn"
         :showSizeChanger="false"
+        v-show="pageNationParams.total"
         :pageSize="pageNationParams.pageSize"
         :total="pageNationParams.total" />
 
@@ -139,17 +143,24 @@ import DropDownlist from "@/components/common/dropDownlist/index.vue";
 import { useCity } from "@/store/city";
 import { useUserLoginState } from "@/hooks/useUserLoginState";
 import { useGetConditionData } from "@/store/condition";
+import {getPositionList} from "@/api"
+import { message } from "ant-design-vue";
 const { hotCityList, allCityList, preventCity } = useCity();
-const keyName = ['job_type','experience','salary','degrees','people_num','financing']
+const keyName = ['job_type','experiences','salary','degrees','people_num','financing']
+
+const positionData = ref([])
+
 
 
 const pageNationParams = reactive({
-  current:1,
+  pageOn:1,
   pageSize:10,
   total:100,
 })
 const changePageNation = (page:number, pageSize:number)=>{
-  console.log(page, pageSize)
+  document.documentElement.scrollTo({top:0,behavior:'smooth'})
+  pageNationParams.pageOn = page
+  getPositionData()
 }
 
 //选择城市模态框
@@ -172,17 +183,34 @@ const clickCityItem = (cityName: string, code: number) => {
 };
 
 //获取职位列表数据
-const getPositionData = () => {
+const getPositionData =async () => {
   const newObj:any = {}
   for(let i in formData){
     newObj[keyName[(i.slice(5) as any)*1]] = formData[i]
   }
   const params = {
-    city:cityData.city,
     region:cityData.qu,
     ...newObj,
+    cityName:cityData.city,
+    ...pageNationParams,
   };
-  console.log("发送请求数据--参数",params)
+
+  for(let item in params){
+    if(params[item]=='不限' || !params[item]){
+      delete params[item]
+    }
+  }
+
+  console.log('@@@@',params)
+   const res:any = await getPositionList(params)
+  console.log("#########",res)
+  if(res.code!==200){
+    positionData.value = []
+    message.error('服务异常')
+  }else{
+    pageNationParams.total = res.total
+    positionData.value = res.data
+  }
 };
 const showCityModel = () => {
   visible.value = true;
@@ -240,10 +268,11 @@ const clickCity = (e: any) => {
     cityData.city = e.target.innerText;
   } else {
     showQu.value = true;
+    getQu(e.target.innerText);
+    activeCityId.value = e.target.dataset.id * 1;
+    cityData.city = e.target.innerText;
   }
-  activeCityId.value = e.target.dataset.id * 1;
-  getQu(e.target.innerText);
-  cityData.city = e.target.innerText;
+  cityData.qu = '';
   getPositionData()
 };
 const clickQu = (e: any) => {
@@ -255,14 +284,15 @@ const clickQu = (e: any) => {
 
 onMounted(() => {
   if(cityData.city){
-    console.log(cityData.city)
     if(cityData.city==='全国'){
+      getPositionData()
      return showQu.value = false;
     }
     getQu(cityData.city);
   }else{
     getQu("武汉");
   }
+  getPositionData()
 });
 const getQu = (cityName: string = "武汉") => {
   quList.value = allCities.value.filter((item) => {
@@ -440,7 +470,8 @@ const getScrollTop = () => {
   }
   .pageNation{
     width: 1200px;
-    margin: 40px auto;
+    margin: 40px auto 70px;
+    // text-align: center;
   }
 }
 
