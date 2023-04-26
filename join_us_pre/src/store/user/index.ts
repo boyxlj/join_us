@@ -4,6 +4,7 @@ export const useUserInfo = defineStore('userInfo',{
   state:()=>{
     return {
       loginState:false,
+      userInfoList:[],
       userInfo:{
         token:'',
         avatar:'https://img.bosszhipin.com/boss/avatar/avatar_15.png',
@@ -22,6 +23,9 @@ export const useUserInfo = defineStore('userInfo',{
     },
     async getUseInfo(id:string){
       //
+    },
+    saveUserInfo(arr:any){
+      this.userInfoList = arr
     }
   },
   persist: {

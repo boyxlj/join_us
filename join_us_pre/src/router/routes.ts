@@ -47,6 +47,11 @@ export const routes: RouteRecordRaw[] = [
     meta:{title:'用户登录'}
   },
   {
+    path: "/company",
+    component: lazyLoad('company'),
+    meta:{title:'企业管理'}
+  },
+  {
     path: "/notfound",
     component: lazyLoad('notfound'),
   },

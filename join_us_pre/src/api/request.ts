@@ -9,7 +9,7 @@ request.interceptors.request.use(config => {
     if (localStorage.getItem('token')) {
         config.headers.Authorization = localStorage.getItem('token')
     } else {
-        message.warn('token不存在', 1)
+        // message.warn('token不存在', 1)
     }
     return config
 })

@@ -1,12 +1,24 @@
 import request from '@/api/request'
 // 用户登陆
-export const userLoginReq = (data: Record<string, string>) => {
+export const userLogin = (data:{email:string,validateCode:string}) => {
   return request({
-    url: '/userLogin',
+    url: '/user/login',
     method: 'post',
     data: data
   })
 }
+
+//用户发送验证码
+export const userSendCode = (email:string) => {
+  return request({
+    url: '/user/email/coder',
+    method: 'post',
+    data: {
+      email
+    }
+  })
+}
+
 // 企业登陆
 export const companyLoginReq = (data: Record<string, string>) => {
   return request({
@@ -15,29 +27,8 @@ export const companyLoginReq = (data: Record<string, string>) => {
     data: data
   })
 }
-// // 注册
-// export const register = (data: Record<string, string>) => {
-//   return request({
-//     url: '/register',
-//     method: 'post',
-//     data: data
-//   })
-// }
-// // 发送验证码
-// export const sendCode = () => {
-//   return request({
-//     url: '/code',
-//     method: 'get'
-//   })
-// }
 
-// //获取职位列表
-// export const getJobList = () => {
-//   return request({
-//     url: '/jobList',
-//     method: 'get'
-//   })
-// }
+
 //获取职位类型
 export const getPositionType = () => {
   return request({
@@ -55,9 +46,9 @@ export const getPositionList = (data:any) => {
   })
 }
 //查询首页搜索框热搜职位列表
-export const getPositionHotSearchList = () => {
+export const getPositionHotSearchList = (cityName:string) => {
   return request({
-    url: `/position/hot`,
+    url: `/position/hot?cityName=${cityName}`,
     method: 'get'
   })
 }
@@ -78,4 +69,13 @@ export const getJobDetail = (position_id: string) => {
             position_id: position_id
         }
     })
+}
+
+//随机排序查询职位列表  /position/by/rand?cityName=天津&num=6&isRandom=true
+export const getSortOrRandomPosition = (data:{cityName:string,num?:number,isRandom?:boolean}) => {
+  return request({
+      url: `/position/by/rand`,
+      method: 'get',
+      params: data
+  })
 }

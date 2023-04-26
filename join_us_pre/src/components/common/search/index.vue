@@ -138,7 +138,7 @@ withDefaults(defineProps<TSearchStyle>(), {
   height: 120,
   inputWidth: 1200,
   optionWidth: 88,
-  showBoxWidth: 480,
+  showBoxWidth: 650,
 });
 const route = useRoute();
 inpVal.value = route.query.keyword as string;

@@ -78,6 +78,7 @@
               style="width: 100%"
               type="primary"
               @click="submit"
+              :disabled="disabledSubmit"
               >登录/注册</a-button
             >
             <!-- <a-button style="margin-left: 10px" @click="resetForm"
@@ -91,12 +92,15 @@
 </template>
 
 <script setup lang="ts">
-import { notification,message  } from "ant-design-vue";
+import { notification, message } from "ant-design-vue";
 import type { Rule } from "ant-design-vue/es/form";
 import type { FormInstance } from "ant-design-vue";
 import { getValidateCoder } from "validate-coder";
-// import { sendCode, userLoginReq } from "@/api";
-const router = useRouter()
+import { userSendCode, userLogin } from "@/api";
+import {useUserInfo} from "@/store/user"
+import { fail } from "assert";
+const router = useRouter();
+const route = useRoute();
 interface FormState {
   email: string;
   code: string;
@@ -107,6 +111,14 @@ interface FormState {
 const activeKey = ref(0);
 const validateCoder = ref<string>();
 
+onMounted(() => {
+  if (route.query?.query === "boss") {
+    activeKey.value = 1;
+  } else {
+    activeKey.value = 0;
+  }
+});
+
 // const inputCodeValue = ref<string>();
 const validateContainer = ref<HTMLDivElement>();
 const changeActive = (actIdx: number) => {
@@ -116,34 +128,34 @@ const changeActive = (actIdx: number) => {
   refresh();
 };
 
+const disabledSubmit = ref(false)
 //验证码按钮
 const sendCodeBtnText = ref("发送验证码");
 const disabledSendCodeBtn = ref(false);
 const clickSendCode = async () => {
-  // await  formRef .value?.validate(["email"])
+  await formRef.value?.validate(["email"]);
   disabledSendCodeBtn.value = true;
-  // const res: any = await sendCode();
-  // console.log(res);
-  // if (res.code === 200) {
-  //   notification.success({
-  //     message: "验证码发送成功，请注意查收",
-  //   });
-  //   let timeout = 60;
-  //   let timer = setInterval(() => {
-  //     timeout--;
-  //     if (timeout === 0) {
-  //       clearInterval(timer);
-  //       disabledSendCodeBtn.value = false;
-  //       return (sendCodeBtnText.value = "发送验证码");
-  //     }
-  //     sendCodeBtnText.value = `${timeout}后再次尝试发送`;
-  //   }, 1000);
-  // } else {
-  //   disabledSendCodeBtn.value = false;
-  //   notification.error({
-  //     message: "验证码发送失败",
-  //   });
-  // }
+  const res: any = await userSendCode(formState.email);
+  if (res.code === 200) {
+    notification.success({
+      message: "验证码发送成功，请注意查收",
+    });
+    let timeout = 60;
+    let timer = setInterval(() => {
+      timeout--;
+      if (timeout === 0) {
+        clearInterval(timer);
+        disabledSendCodeBtn.value = false;
+        return (sendCodeBtnText.value = "发送验证码");
+      }
+      sendCodeBtnText.value = `${timeout}后再次尝试发送`;
+    }, 1000);
+  } else {
+    disabledSendCodeBtn.value = false;
+    notification.error({
+      message: "验证码发送失败",
+    });
+  }
 };
 
 //更新验证码
@@ -160,10 +172,10 @@ onMounted(() => {
 
 const formRef = ref<FormInstance>();
 const formState = reactive<FormState>({
-  code: "123456",
-  email: "x123@126.com",
-  username: "18812756574",
-  psd: "WasD123",
+  code: "",
+  email: "x709500@126.com",
+  username: "",
+  psd: "",
   inputCodeValue: "",
 });
 
@@ -237,35 +249,33 @@ const handleFinish = (values: FormState) => {
 const handleFinishFailed = (errors: any) => {
   // console.log(errors);
 };
-// const resetForm = () => {
-//   formRef.value?.resetFields();
-// };
 const submit = async () => {
-  await formRef.value?.validateFields([
-    "email",
-    "code",
-  ]);
-      localStorage.setItem("token",'abcdefg')
-    message.success("登录成功")
-    router.push("/")
-  // const params = {email:formState.email,code:formState.code}
-  // const res:any = await userLoginReq(params)
-  // if(res.code===200){
-  //   localStorage.setItem("token",res.token)
-  //   message.success("登录成功")
-  //   router.push("/")
-  // }else if(res.code===400){
-  //   message.error(res.msg?res.msg:'密码错误，请重新输入')
-  // }
-
+  
+  if (activeKey.value == 1) {
+    localStorage.setItem("companyToken", "abcdefg");
+    message.success("企业登录成功");
+    router.push("/company");
+  } else {
+    await formRef.value?.validateFields(["email", "code"]);
+    const params = { email: formState.email, validateCode: formState.code };
+    const res: any = await userLogin(params);
+    disabledSubmit.value = true
+    console.log("$$$$$$", res);
+    if (res.code != 200)  {
+      disabledSubmit.value = false
+      return message.error(res.msg);
+    }
+    localStorage.setItem("token", res.token);
+    message.success("登录成功");
+    useUserInfo().saveUserInfo(res.userInfo)
+    router.push("/");
+  }
 };
 const handleValidate = (...args: any) => {
-  // console.log(args);
 };
 </script>
 
 <style lang="less" scoped>
-
 .login {
   width: 100vw;
   height: 100vh;

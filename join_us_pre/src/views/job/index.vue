@@ -75,6 +75,10 @@
           />
         </div>
       </div>
+      <div class="right">
+          <PositionCard origin="sort" title="最新职位"></PositionCard>
+        <PositionCard></PositionCard>
+      </div>
     </div>
 
     <div
@@ -148,6 +152,7 @@ import { useUserLoginState } from "@/hooks/useUserLoginState";
 import { useGetConditionData } from "@/store/condition";
 import { getPositionList } from "@/api";
 import { message } from "ant-design-vue";
+import PositionCard from "@/components/common/positionCard/index.vue";
 const route = useRoute()
 const { hotCityList, allCityList, preventCity } = useCity();
 const keyName = [

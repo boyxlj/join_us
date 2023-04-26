@@ -21,9 +21,9 @@
         <router-link to="/" active-class="homeLinkActive">首页</router-link>
       </ul>
       <ul class="profile" v-if="!loginState">
-        <li>上传简历</li>
-        <li>我要找工作</li>
-        <li>我要招聘</li>
+        <li @click="$router.push('/login')">上传简历</li>
+        <li @click="$router.push('/login')">我要找工作</li>
+        <li @click="$router.push('/login?query=boss')">我要招聘</li>
         <div class="loginBtn" @click="navigateLogin">登录/注册</div>
       </ul>
       <ul class="profile profile2" v-else>
@@ -44,7 +44,7 @@
               <router-link to="#">账号与安全中心</router-link>
               <router-link to="#">隐私保护</router-link>
               <router-link to="#">消息通知</router-link>
-              <router-link to="#" class="line">切换为招聘者</router-link>
+              <a @click.stop.prevent="$router.push('/login?query=boss')" class="line">切换为招聘者</a>
               <a class="line" @click.prevent="cancelLogin">退出登录</a>
             </div>
           </div>
@@ -112,7 +112,7 @@ const navigateLogin = () => {
 
 const cancelLogin = (e: Event) => {
   localStorage.removeItem("token");
-  router.go(0);
+  location.href = '/'
 };
 </script>
 
