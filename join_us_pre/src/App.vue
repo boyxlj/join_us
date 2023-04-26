@@ -1,8 +1,11 @@
 <template>
+ <a-config-provider :locale="locale">
   <router-view></router-view>
+</a-config-provider>
 </template>
 
 <script setup lang="ts">
+ import locale from 'ant-design-vue/es/date-picker/locale/zh_CN';
 import { useJobTypeStore } from "@/store/positionType";
 import { useHotSearchPosition } from "@/store/position";
 import { useCity } from "@/store/city";

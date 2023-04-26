@@ -23,19 +23,23 @@
       </a-form-item>
       <a-form-item class="infoItem" name="apply_state">
         <span>求职状态</span>
-        <a-select v-model:value="formState.apply_state" style="width: 120px" >
+        <a-select
+          placeholder="请选择您的求职状态"
+          v-model:value="formState.apply_state"
+          style="width: 120px"
+        >
           <a-select-option value="在职">在职</a-select-option>
           <a-select-option value="离职">离职</a-select-option>
         </a-select>
       </a-form-item>
       <a-form-item class="infoItem" name="gender">
         <span>性别</span>
-        <a-radio-group v-model:value="gender" size="large">
-        <a-radio-button value="0">男</a-radio-button>
-        <a-radio-button value="1">女</a-radio-button>
-      </a-radio-group>
+        <a-radio-group v-model:value="formState.gender" size="large">
+          <a-radio-button value="0">男</a-radio-button>
+          <a-radio-button value="1">女</a-radio-button>
+        </a-radio-group>
       </a-form-item>
-   
+
       <a-form-item class="infoItem" name="phone">
         <span>电话</span>
         <a-input
@@ -47,7 +51,13 @@
       </a-form-item>
       <a-form-item class="infoItem" name="born">
         <span>生日</span>
-        <a-date-picker v-model:value="born" picker="month" />
+        <a-date-picker
+          format="YYYY-MM"
+          value-format="YYYY-MM"
+          placeholder="请选择您的生日"
+          v-model:value="formState.born"
+          picker="month"
+        />
       </a-form-item>
       <a-form-item class="infoItem" name="email">
         <span>邮箱</span>
@@ -68,58 +78,95 @@
 
 <script setup lang="ts">
 import type { Rule } from "ant-design-vue/es/form";
+import dayjs, { Dayjs } from "dayjs";
 import type { FormInstance } from "ant-design-vue";
+ const props =  withDefaults(defineProps<{changeInfoForm:any}>(),{})
+
 interface FormState {
   pass: string;
   checkPass: string;
   age: number | undefined;
 }
-
+const monthFormat = "YYYY/MM";
 const formRef = ref<FormInstance>();
 const formState = reactive<FormState>({
-  name: "",
-  gender:"",
-  apply_state: "",
-  phone: "",
-  born: "",
-  email: "",
+  name: "二狗子",
+  gender: "0",
+  apply_state: "离职",
+  phone: "18812766666",
+  born: "2001-06",
+  email: "x709500@126.com",
 });
 let validateName = async (_rule: Rule, value: number) => {
   if (!value) {
     return Promise.reject("请填写您的姓名");
   }
-  if (value.length<=2 || value.length>=8) {
+  if (value.length <= 2 || value.length >= 8) {
     return Promise.reject("长度在2-10之间");
-  }  else {
-      return Promise.resolve();
+  } else {
+    return Promise.resolve();
   }
 };
 let validateGender = async (_rule: Rule, value: number) => {
   if (!value) {
-    return Promise.reject("请填写您的姓名");
-  }
-  if (!Number.isInteger(value)) {
-    return Promise.reject("Please input digits");
+    return Promise.reject("请选择您的性别");
   } else {
-    if (value < 18) {
-      return Promise.reject("Age must be greater than 18");
-    } else {
-      return Promise.resolve();
-    }
+    return Promise.resolve();
+  }
+};
+let checkApply_state = async (_rule: Rule, value: number) => {
+  if (!value) {
+    return Promise.reject("请选择您目前的求职状态");
+  } else {
+    return Promise.resolve();
   }
 };
 
+let checkBorn = async (_rule: Rule, value: number) => {
+  if (!value) {
+    return Promise.reject("请选择您的生日");
+  } else {
+    return Promise.resolve();
+  }
+};
 
-
-
+let checkEmail = async (_rule: Rule, value: number) => {
+  const reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+  if (!value) {
+    return Promise.reject("请填写您的邮箱");
+  }
+  if (!reg.test(value)) {
+    return Promise.reject("请填写合法的邮箱");
+  } else {
+    return Promise.resolve();
+  }
+};
+let checkPhone = async (_rule: Rule, value: number) => {
+  const reg =
+    /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+  if (!value) {
+    return Promise.reject("请填写您的手机号");
+  }
+  if (!reg.test(value)) {
+    return Promise.reject("请填写合法的手机号");
+  } else {
+    return Promise.resolve();
+  }
+};
 
 const rules: Record<string, Rule[]> = {
-  name: [{ required: true, validator: validateName, trigger: "change" }],
-  gender: [{required: true, validator: validateGender, trigger: "change" }],
-  apply_state: [{ required: true,required: true,validator: checkApply_state, trigger: "change" }],
-  phone: [{ required: true,validator: checkPhone, trigger: "change" }],
-  born: [{ required: true,validator: checkBorn, trigger: "change" }],
-  email: [{required: true, validator: checkEmail, trigger: "change" }],
+  name: [{required: true,  validator: validateName, trigger: "change" }],
+  gender: [{ required: true, validator: validateGender, trigger: "change" }],
+  apply_state: [
+    {
+      required: true,
+      validator: checkApply_state,
+      trigger: "change",
+    },
+  ],
+  phone: [{ required: true, validator: checkPhone, trigger: "change" }],
+  born: [{ required: true, validator: checkBorn, trigger: "change" }],
+  email: [{required: true,  validator: checkEmail, trigger: "change" }],
 };
 const layout = {
   labelCol: { span: 4 },
@@ -127,12 +174,15 @@ const layout = {
 };
 const handleFinish = (values: FormState) => {
   console.log(values, formState);
+  console.log(formState.born);
+   props.changeInfoForm()
 };
 const handleFinishFailed = (errors) => {
-  console.log(errors);
+  // console.log('@@',errors.values.born);
 };
 const resetForm = () => {
   formRef.value.resetFields();
+  props.changeInfoForm()
 };
 const handleValidate = (...args) => {
   // console.log(args);
@@ -167,27 +217,27 @@ const handleValidate = (...args) => {
       ::v-deep(.ant-form-item-control) {
         max-width: 100% !important;
       }
-      ::v-deep(.ant-select){
+      ::v-deep(.ant-select) {
         width: 100% !important;
-        .ant-select-selector{
-          height: 40px ;
-          border-radius: 0 ;
+        .ant-select-selector {
+          height: 40px;
+          border-radius: 0;
         }
       }
-      ::v-deep(.ant-picker){
+      ::v-deep(.ant-picker) {
         width: 100% !important;
-        border-radius: 0 ;
-        height: 40px ;
+        border-radius: 0;
+        height: 40px;
       }
-      ::v-deep(.ant-radio-group ){
+      ::v-deep(.ant-radio-group) {
         width: 100% !important;
         display: flex;
         justify-content: space-between;
-        .ant-radio-button-wrapper{
+        .ant-radio-button-wrapper {
           width: 155px;
           text-align: center;
-          height: 40px ;
-          border-radius: 0 ;
+          height: 40px;
+          border-radius: 0;
         }
       }
       ::v-deep(.ant-input) {
