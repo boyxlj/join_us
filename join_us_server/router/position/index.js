@@ -1,6 +1,8 @@
 const express = require("express");
 const positionRouter = express.Router();
 const query = require("../../utils/mysql");
+const {returnErr} = require("../../utils/returnErr.js")
+
 //职位信息表  post:参数传递{}
 //http://localhost:3303/api/positions?pageOn=1&pageSize=20&experiences=1%E5%B9%B4%E4%BB%A5%E5%86%85
 positionRouter.post('/positions', (req, res) => {
@@ -99,7 +101,6 @@ positionRouter.post('/positions', (req, res) => {
     limit ${(pageOn - 1) * pageSize},${pageSize}
   `
 
-  console.log(sql)
     query(sqlCount, count => {
       query(sql, result => {
         res.status(200).send({ code: 200, msg: 'ok', data: result, total: count[0]['count(*)'] })
@@ -130,12 +131,73 @@ positionRouter.get("/position/hotSearch", (req, res) => {
 //热搜职位  get:参数传递position_name
 positionRouter.get("/position/hot", (req, res) => {
   const random = Math.floor(Math.random() * (10 + 1 - 6)) + 6
-  const sql = `select position_name from pos order by rand() limit ${random} `
+  let {cityName} = req.query
+  if(!cityName) return res.status(400).send({ code: 400, msg: '参数错误', data: null })
+  let str = ''
+  if(cityName=='全国'){
+    str = ''
+  }else{
+    str = `where cityName = '${cityName}'`
+  }
+  const sql = `select position_name from pos ${str} order by rand() limit ${random} `
   query(sql, result => {
     if (result.length) {
-      res.status(200).send({ code: 200, msg: '请求成功', data: [...new Set(result?.map(item => item.position_name))] })
+      res.status(200).send({ code: 200, msg: '请求成功', data: [...new Set(result?.map(item => item.position_name)?.filter(item=>item.length<=13))] })
     } else {
-      res.status(200).send({ code: 200, msg: '请求成功', data: [] })
+      str = ``
+      const sql1 = `select position_name from pos ${str} order by rand() limit ${random} `
+      query(sql1, result1 => {
+        if (result1.length) {
+          res.status(200).send({ code: 200, msg: '请求成功', data: [...new Set(result1?.map(item => item.position_name)?.filter(item=>item.length<=13))] })
+        } 
+      })
+    }
+  })
+})
+
+
+//随机查询职位列表  get:参数传递cityName,num,isRandom,sortNum,
+positionRouter.get("/position/by/rand", (req, res) => {
+  let {isRandom=true, num,cityName,sortNum} = req.query
+  if(!cityName) return res.status(400).send({code:400,msg:'参数错误',data:null})
+  
+   if(!num){
+    num = Math.floor(Math.random() * (8 + 1 - 4)) + 4
+   }else{
+     num>=15?num=15:num=num
+     num<=2?num=2:num=num
+   }
+   if(!sortNum){
+    sortNum = Math.floor(Math.random() * (10 + 1 - 5)) + 5
+   }else{
+    sortNum>=15?sortNum=15:sortNum=sortNum
+    sortNum<=2?sortNum=2:sortNum=sortNum
+   }
+   
+  var str = ''
+  if(isRandom){
+    str = 'order by rand()'
+  }
+
+  let cityStr = ''
+  if(cityName!='全国'){
+    cityStr = `where cityName='${cityName}' `
+  }
+  const sortSql = `select * from pos inner join company on pos.company_id = company.company_id  order by pos.id desc limit ${sortNum} `
+  const randomSql = `select * from pos inner join company on pos.company_id = company.company_id ${cityStr}  ${str}  limit ${num} `
+  query(randomSql, randomResult => {
+    if (randomResult.length) {
+      if(randomResult=='err')  return returnErr(res)
+      query(sortSql, sortResult => {
+        if(sortResult=='err')  return returnErr(res)
+        if (sortResult.length) {
+          res.status(200).send({ code: 200, msg: '请求成功', data: {sortPositionData:sortResult,randomPositionData:randomResult} })
+        } else {
+          res.status(200).send({ code: 200, msg: '请求成功', data: {sortPositionData:[],randomPositionData:[]} })
+        }
+      })
+    } else {
+      res.status(400).send({ code: 400, msg: '请求失败', data: null })
     }
   })
 })
