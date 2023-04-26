@@ -49,7 +49,38 @@ export const routes: RouteRecordRaw[] = [
   {
     path: "/company",
     component: lazyLoad('company'),
-    meta:{title:'企业管理'}
+    meta: { title: '企业管理' },
+    redirect: '/company/dataAnalysis',
+    children: [
+      {
+        path: '/company/dataAnalysis',
+        component: () => import('@/views/company/components/dataAnalysis/index.vue')
+      },
+      {
+        path: '/company/positionManage',
+        component: () => import('@/views/company/components/positionManage/index.vue')
+      },
+      {
+        path: '/company/searchCattle',
+        component: () => import('@/views/company/components/searchCattle/index.vue')
+      },
+      {
+        path: '/company/resumeReview',
+        component: () => import('@/views/company/components/resumeReview/index.vue')
+      },
+      {
+        path: '/company/toolBox',
+        component: () => import('@/views/company/components/toolBox/index.vue')
+      },
+      {
+        path: '/company/companyInfo',
+        component: () => import('@/views/company/components/companyInfo/index.vue')
+      },
+      {
+        path: '/company/more',
+        component: () => import('@/views/company/components/more/index.vue')
+      }
+    ]
   },
   {
     path: "/notfound",
