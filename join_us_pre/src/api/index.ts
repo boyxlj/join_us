@@ -79,3 +79,45 @@ export const getSortOrRandomPosition = (data:{cityName:string,num?:number,isRand
       params: data
   })
 }
+
+// hr登陆注册
+export const hrLoginOrRegister = (data: { telephone: string, password: string }) => {
+  return request({
+    url: '/hr/LoginOrRegister',
+    method: 'post',
+    data: data
+  })
+}
+
+// 企业端职位管理
+export const hrPositionManage = (company_id: string, pageIndex: number, pageSize: number) => {
+  return request({
+    url: '/hr/positionManage',
+    method: 'get',
+    params: {
+      company_id: company_id,
+      pageIndex: pageIndex,
+      pageSize: pageSize
+    }
+  })
+}
+
+// 企业端查看职位详情
+export const hrPositionDetail = (position_id: string) => {
+  return request({
+    url: '/hr/positionDetail',
+    method: 'get',
+    params: {
+      position_id: position_id
+    }
+  })
+}
+
+// hr发布职位
+export const hrAddPosition = (data: Record<string, string>) => {
+  return request({
+    url: '/hr/addPosition',
+    method: 'post',
+    data: data
+  })
+}
