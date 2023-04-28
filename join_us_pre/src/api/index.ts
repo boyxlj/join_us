@@ -114,7 +114,7 @@ export const hrPositionDetail = (position_id: string) => {
 }
 
 // hr发布职位
-export const hrAddPosition = (data: Record<string, string>) => {
+export const hrAddPosition = (data: Record<string, any>) => {
   return request({
     url: '/hr/addPosition',
     method: 'post',

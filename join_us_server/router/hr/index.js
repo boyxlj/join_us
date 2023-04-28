@@ -50,20 +50,23 @@ hrRouter.post('/hr/LoginOrRegister', (req, res) => {
 // 企业职位列表管理
 hrRouter.get('/hr/positionManage', (req, res) => {
   const { company_id, pageIndex, pageSize } = req.query
-  const sql = `select * from pos where company_id = '${company_id}' limit ${(pageIndex - 1) * pageSize}, ${pageSize}`
-  query(sql, (result) => {
-    if (result.length) {
-      res.status(200).send({
-        code: 200,
-        msg: '请求成功',
-        data: result,
-        total: result.length
-      })
-    } else {
-      return returnErr(res, '请求失败')
-    }
+  const sql1 = `select * from pos where company_id = '${company_id}'`
+  query(sql1, (result1) => {
+    const sql = `select * from pos where company_id = '${company_id}' limit ${(pageIndex - 1) * pageSize}, ${pageSize}`
+    query(sql, (result) => {
+      if (result.length) {
+        res.status(200).send({
+          code: 200,
+          msg: '请求成功',
+          data: result,
+          total: result1.length
+        })
+      } else {
+        return returnErr(res, '请求失败')
+      }
+    })
   })
-})
+  })
 
 // 查看企业职位详情
 hrRouter.get('/hr/positionDetail', (req, res) => {
@@ -87,9 +90,26 @@ hrRouter.get('/hr/positionDetail', (req, res) => {
 
 // hr发布职位
 hrRouter.post("/hr/addPosition", (req, res) => {
-  const { company_id, telephone } = req.body
-  res.send({
-    code: 200
+  const { company_id, telephone, formData } = req.body
+  const hr_id_sql = `select hr_id from hr where telephone = '${telephone}'`
+  query(hr_id_sql, (result) => {
+    const hr_id = result[0].hr_id
+    const orderNumSql = 'select count(*) as num from pos'
+    query(orderNumSql, (result2) => {
+      const orderNum = result2[0].num
+      const sql = `insert into pos values(${orderNum + 1}, '${v4()}', '${formData.position_name}', '${formData.salary}', '${formData.cityArr[1]}', '${formData.cityArr[2]}', '${formData.experiences}', '${formData.degrees}',  '${JSON.stringify([formData.experiences, formData.degrees])}', '${JSON.stringify(formData.welfare_tag.split(','))}', '${company_id}', '${hr_id}', '${formData.position_desc}', '${new Date().toLocaleString()}', '${new Date().toLocaleString()}', '0', '${formData.position_type[0]}', '${formData.position_type[1]}', '${formData.job_type}')`
+      query(sql, (result3) => {
+        if (result3.affectedRows === 1) {
+          res.status(200).send({
+            code: 200,
+            msg: '发布职位成功',
+            data: null
+          })
+        } else {
+          return returnErr(res, '职位发布失败')
+        }
+      })
+    })
   })
 });
 
