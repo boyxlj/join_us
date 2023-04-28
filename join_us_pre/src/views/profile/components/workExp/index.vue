@@ -91,7 +91,7 @@
           <a-select
           v-model:value="formState.skill"
           mode="tags"
-          placeholder="请选择您预备的技能"
+          placeholder="请选择您具备的技能"
           style="width: 200px"
         >
         <option  :value="item" v-for="(item,index) in skillTag" :key="index">{{ item }}</option>
