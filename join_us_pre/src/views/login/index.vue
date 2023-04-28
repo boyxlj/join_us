@@ -50,7 +50,7 @@
           <a-form-item class="sendCode" v-if="activeKey === 0" name="code">
             <a-input
               v-model:value="formState.code"
-              type="password"
+              type="text"
               autocomplete="off"
               placeholder="验证码"
             />
@@ -267,7 +267,8 @@ const submit = async () => {
     }
     localStorage.setItem("token", res.token);
     message.success("登录成功");
-    useUserInfo().saveUserInfo(res.userInfo)
+    useUserInfo().saveUserId(res.userInfo[0]?.userId)
+    useUserInfo().getUseInfo(res.userInfo[0]?.userId)
     router.push("/");
   }
 };

@@ -232,9 +232,7 @@ const getPositionData = async () => {
     }
   }
 
-  console.log("@@@@", params);
   const res: any = await getPositionList(params);
-  console.log("#########", res);
   if (res.code !== 200) {
     positionData.value = [];
     message.error("服务异常");

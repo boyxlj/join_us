@@ -19,6 +19,42 @@ export const userSendCode = (email:string) => {
   })
 }
 
+//获取用户信息
+export const getUser = (userId:string) => {
+  return request({
+    url: '/user',
+    method: 'post',
+    data: {
+      userId
+    }
+  })
+}
+
+//修改用户信息
+export const updateUser = (data:any) => {
+  return request({
+    url: '/user',
+    method: 'patch',
+    data
+  })
+}
+//添加用户简历
+export const addUserResume = (data:any) => {
+  return request({
+    url: '/user/add/resume',
+    method: 'post',
+    data
+  })
+}
+//修改用户简历
+export const updateUserResume = (data:any) => {
+  return request({
+    url: '/user/resume',
+    method: 'patch',
+    data
+  })
+}
+
 // 企业登陆
 export const companyLoginReq = (data: Record<string, string>) => {
   return request({

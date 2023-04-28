@@ -15,7 +15,7 @@
       <a-form-item class="infoItem" name="name">
         <span>姓名</span>
         <a-input
-          v-model:value="formState.name"
+          v-model:value.trim="formState.name"
           type="text"
           autocomplete="off"
           placeholder="请填写您的姓名"
@@ -43,7 +43,7 @@
       <a-form-item class="infoItem" name="phone">
         <span>电话</span>
         <a-input
-          v-model:value="formState.phone"
+          v-model:value.trim="formState.phone"
           type="text"
           autocomplete="off"
           placeholder="请填写您的手机号"
@@ -62,14 +62,14 @@
       <a-form-item class="infoItem" name="email">
         <span>邮箱</span>
         <a-input
-          v-model:value="formState.email"
+          v-model:value.trim="formState.email"
           type="text"
           autocomplete="off"
           placeholder="请填写您的邮箱"
         />
       </a-form-item>
       <a-form-item class="buttons" :wrapper-col="{ span: 3, offset: 21 }">
-        <a-button style="margin-right: 26px" @click="resetForm">取消</a-button>
+        <a-button style="margin-right: 15px" @click="resetForm">取消</a-button>
         <a-button type="primary" html-type="submit">完成</a-button>
       </a-form-item>
     </a-form>
@@ -80,28 +80,43 @@
 import type { Rule } from "ant-design-vue/es/form";
 import dayjs, { Dayjs } from "dayjs";
 import type { FormInstance } from "ant-design-vue";
- const props =  withDefaults(defineProps<{changeInfoForm:any}>(),{})
+import {useUserInfo} from "@/store/user"
+const userStore = useUserInfo()
+const userInfoList = ref<any[]>(userStore.userInfoList)
+const arr = computed(()=>userInfoList.value[0])
+const props =  withDefaults(defineProps<{changeInfoForm:any,userInfo:any}>(),{})
+onMounted(()=>{
+  formState.name = props.userInfo.name
+  formState.email = props.userInfo.email
+  formState.apply_state = props.userInfo.apply_state?props.userInfo.apply_state:undefined
+  formState.born = props.userInfo.born
+  formState.gender = props.userInfo.gender
+  formState.phone = props.userInfo.phone
+})
 
 interface FormState {
-  pass: string;
-  checkPass: string;
-  age: number | undefined;
+  name: string,
+  gender: string,
+  apply_state: string | undefined,
+  phone: string,
+  born: string,
+  email: string,
 }
 const monthFormat = "YYYY/MM";
 const formRef = ref<FormInstance>();
 const formState = reactive<FormState>({
-  name: "二狗子",
-  gender: "0",
-  apply_state: "离职",
-  phone: "18812766666",
-  born: "2001-06",
-  email: "x709500@126.com",
+  name: "",
+  gender: "",
+  apply_state: undefined,
+  phone: "",
+  born: "",
+  email: "",
 });
-let validateName = async (_rule: Rule, value: number) => {
+let validateName = async (_rule: Rule, value: string) => {
   if (!value) {
     return Promise.reject("请填写您的姓名");
   }
-  if (value.length <= 2 || value.length >= 8) {
+  if (value.length < 2 || value.length >= 8) {
     return Promise.reject("长度在2-10之间");
   } else {
     return Promise.resolve();
@@ -114,7 +129,7 @@ let validateGender = async (_rule: Rule, value: number) => {
     return Promise.resolve();
   }
 };
-let checkApply_state = async (_rule: Rule, value: number) => {
+let checkApply_state = async (_rule: Rule, value: string) => {
   if (!value) {
     return Promise.reject("请选择您目前的求职状态");
   } else {
@@ -122,7 +137,7 @@ let checkApply_state = async (_rule: Rule, value: number) => {
   }
 };
 
-let checkBorn = async (_rule: Rule, value: number) => {
+let checkBorn = async (_rule: Rule, value: string) => {
   if (!value) {
     return Promise.reject("请选择您的生日");
   } else {
@@ -130,7 +145,7 @@ let checkBorn = async (_rule: Rule, value: number) => {
   }
 };
 
-let checkEmail = async (_rule: Rule, value: number) => {
+let checkEmail = async (_rule: Rule, value: string) => {
   const reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
   if (!value) {
     return Promise.reject("请填写您的邮箱");
@@ -141,7 +156,7 @@ let checkEmail = async (_rule: Rule, value: number) => {
     return Promise.resolve();
   }
 };
-let checkPhone = async (_rule: Rule, value: number) => {
+let checkPhone = async (_rule: Rule, value: string) => {
   const reg =
     /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
   if (!value) {
@@ -172,19 +187,19 @@ const layout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 14 },
 };
-const handleFinish = (values: FormState) => {
-  console.log(values, formState);
-  console.log(formState.born);
-   props.changeInfoForm()
+const handleFinish =async (values: FormState) => {
+  const res =await userStore.updateUseInfo(values)
+  if(res===200){
+     props.changeInfoForm()
+  }
 };
-const handleFinishFailed = (errors) => {
-  // console.log('@@',errors.values.born);
+const handleFinishFailed = (errors:any) => {
 };
 const resetForm = () => {
-  formRef.value.resetFields();
+  formRef.value?.resetFields();
   props.changeInfoForm()
 };
-const handleValidate = (...args) => {
+const handleValidate = (...args:any) => {
   // console.log(args);
 };
 </script>
@@ -253,6 +268,9 @@ const handleValidate = (...args) => {
       ::v-deep(.ant-form-item-control-input-content) {
         display: flex;
         justify-content: flex-end;
+      }
+      ::v-deep(.ant-btn){
+        border-radius: 0;
       }
     }
   }

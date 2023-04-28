@@ -32,9 +32,9 @@
         <li>上传</li>
         <div class="userProfile">
           <div class="cons" @click="$router.push('/home/user/job')">
-            <span>{{ users.nickName }}</span>
+            <span>{{ userInfo.name }}</span>
             <div class="avatar">
-              <img :src="users.avatar" alt="" />
+              <img :src="userInfo.avatar" alt="" />
             </div>
             <div class="hovers">
               <a  @click.stop="$router.push('/home/user/profile')" class="centers">
@@ -84,10 +84,11 @@ import { AimOutlined } from "@ant-design/icons-vue";
 import { useCity } from "@/store/city";
 import { useUserInfo } from "@/store/user";
 import { useUserLoginState } from "@/hooks/useUserLoginState";
+import { getPositionList } from "@/api";
+const userStore = useUserInfo()
+const userInfo = computed(()=>userStore.userInfoList[0])
 const visible = ref<boolean>(false);
-const useList = useUserInfo();
 const loginState = useUserLoginState();
-const users = computed(() => useList.userInfo);
 const router = useRouter();
 const clickLogo = () => {
   router.push("/");

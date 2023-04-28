@@ -53,24 +53,37 @@ userInfoRouter.post('/user/email/coder', (req, res) => {
 })
 
 
-//获取用户信息
-userInfoRouter.get('/user', (req, res) => {
-  const { userId } = req.query
-  const sql = `select * from userinfo where userId = '${userId}'`
-  // query('')
+
+// 查询用户信息
+userInfoRouter.post('/user', (req, res) => {
+  const {userId} = req.body
+  if(!userId) return returnErr(res,"参数不合法")
+  const sql = ` select * from userinfo  where userId = '${userId}'`
+  const resumeSql = ` select * from resume  where userId = '${userId}' order by id desc`
+  query(sql,result=>{
+    query(resumeSql,resumeResult=>{
+      res.send({code:200,msg:'查询成功',data:{userInfo:result,resumeData:resumeResult}})
+    })
+  })
 })
 
 // 修改用户信息
 userInfoRouter.patch('/user', (req, res) => {
   let saveUserId = ''
-  const { userId, name,
-    gender,
-    apply_state,
-    phone,
-    born,
-    email } = req.body
+  const validateTypeName = [ 'userId','hope_city','hope_industry','hope_job_type' ,'name', 'age', 'gender', 'degree', 'hope_salary', 'born', 'apply_state', 'phone', 'email', 'identity', 'hope_job', 'address',  'major', 'avatar', 'posted',  'school', 'enter_schoolTime', 'leave_schoolTime', 'advantage', 'school_type', 'school_exp']
+  const { userId} = req.body
   saveUserId = userId
   delete req.body.userId
+  for(let i in req.body){
+    if(validateTypeName.findIndex((item)=>item===i)==-1){
+      delete req.body[i]
+    }
+  }
+  for(let i in req.body){
+    if(!req.body[i]){
+      delete req.body[i]
+    }
+  }
   let str = 'set'
   if(Object.keys(req.body).length){
     for(let i in req.body){
@@ -93,4 +106,6 @@ userInfoRouter.patch('/user', (req, res) => {
   })
 })
 
+
 module.exports = userInfoRouter
+

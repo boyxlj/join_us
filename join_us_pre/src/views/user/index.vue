@@ -77,16 +77,16 @@
           <div class="info">
             <div class="left">
               <img
-                src="https://img.bosszhipin.com/boss/avatar/avatar_15.png"
+                :src="userInfo.avatar"
                 alt=""
               />
             </div>
             <div class="right">
-              <div class="top">二狗子</div>
+              <div class="top">{{ userInfo.name }}</div>
               <div class="bottom">
-                <span>22岁</span>
-                <span>23年应届生</span>
-                <span>博士</span>
+                <span>{{ getAge(userInfo.born) }}岁</span>
+                <span>{{ userInfo.leave_schoolTime?.split('-')[0] }}年应届生</span>
+                <span>{{ userInfo.degree }}</span>
               </div>
             </div>
           </div>
@@ -152,7 +152,11 @@ import { useGetConditionData } from "@/store/condition";
 import DropDownlist from "@/components/common/dropDownlist/index.vue";
 import JobList from "@/components/common/jobList/index.vue";
 import PositionCard from "@/components/common/positionCard/index.vue";
+import {getAge} from "@/utils/getAge"
 import { getPositionList } from "@/api";
+import {useUserInfo} from "@/store/user"
+const userStore = useUserInfo()
+const userInfo = computed(()=>userStore.userInfoList[0])
 const hotCityList = computed(() => useCity().hotCityList);
 const allCityList = computed(() => useCity().allCityList);
 const preventCity = ref(useCity().preventCity);
@@ -272,9 +276,9 @@ const getPositionData = async () => {
     }
   }
 
-  console.log("@@@@", paramsReq);
+  // console.log("@@@@", paramsReq);
   const res: any = await getPositionList(paramsReq);
-  console.log("#########", res);
+  // console.log("#########", res);
   if (res.code !== 200) {
     positionData.value = [];
     message.error("服务异常");
@@ -296,7 +300,6 @@ const getQu = (cityName: string = "武汉") => {
       return item.subLevelModelList;
     }
   })[0]?.subLevelModelList;
-  // cityQuList.value = allCityList.value?.filter(item=>item.name==cityName)[0]?.subLevelModelList[0].subLevelModelList as []
 };
 //点击区
 const clickQu = (id: number, name: string) => {
