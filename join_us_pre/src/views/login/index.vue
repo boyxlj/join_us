@@ -11,40 +11,16 @@
         </li>
       </div>
       <div class="formBox">
-        <a-form
-          class="form"
-          ref="formRef"
-          name="custom-validation"
-          :model="formState"
-          :rules="rules"
-          v-bind="layout"
-          @finish="handleFinish"
-          @validate="handleValidate"
-          @finishFailed="handleFinishFailed"
-        >
+        <a-form class="form" ref="formRef" name="custom-validation" :model="formState" :rules="rules" v-bind="layout"
+          @finish="handleFinish" @validate="handleValidate" @finishFailed="handleFinishFailed">
           <a-form-item v-if="activeKey === 0" name="email">
-            <a-input
-              v-model:value="formState.email"
-              type="text"
-              autocomplete="off"
-              placeholder="请输入您的邮箱"
-            />
+            <a-input v-model:value="formState.email" type="text" autocomplete="off" placeholder="请输入您的邮箱" />
           </a-form-item>
           <a-form-item v-if="activeKey === 1" name="username">
-            <a-input
-              v-model:value="formState.username"
-              type="text"
-              autocomplete="off"
-              placeholder="请输入您的手机号"
-            />
+            <a-input v-model:value="formState.username" type="text" autocomplete="off" placeholder="请输入您的手机号" />
           </a-form-item>
           <a-form-item v-if="activeKey === 1" name="psd">
-            <a-input
-              v-model:value="formState.psd"
-              type="password"
-              autocomplete="off"
-              placeholder="请输入您的登录密码"
-            />
+            <a-input v-model:value="formState.psd" type="password" autocomplete="off" placeholder="请输入您的登录密码" />
           </a-form-item>
 
           <a-form-item class="sendCode" v-if="activeKey === 0" name="code">
@@ -60,27 +36,15 @@
               @click="clickSendCode"
               >{{ sendCodeBtnText }}</a-button
             >
+           
           </a-form-item>
-          <a-form-item
-            class="coders"
-            name="inputCodeValue"
-            v-show="activeKey === 1"
-          >
-            <a-input
-              v-model:value="formState.inputCodeValue"
-              placeholder="请输入数字验证码"
-            />
+          <a-form-item class="coders" name="inputCodeValue" v-show="activeKey === 1">
+            <a-input v-model:value="formState.inputCodeValue" placeholder="请输入数字验证码" />
             <div class="photo" @click="refresh()" ref="validateContainer"></div>
           </a-form-item>
           <a-form-item :wrapper-col="{ span: 24, offset: 0 }">
-            <a-button
-              class="submitBtn"
-              style="width: 100%"
-              type="primary"
-              @click="submit"
-              :disabled="disabledSubmit"
-              >登录/注册</a-button
-            >
+            <a-button class="submitBtn" style="width: 100%" type="primary" @click="submit"
+              :disabled="disabledSubmit">登录/注册</a-button>
             <!-- <a-button style="margin-left: 10px" @click="resetForm"
               >Reset</a-button
             > -->
@@ -88,6 +52,10 @@
         </a-form>
       </div>
     </div>
+    <a-modal v-model:visible="visible" centered title="注册后信息填写" @ok="handleOk">
+      <a-input style="margin: 15px 0;" placeholder="请填写您的真实姓名"></a-input>
+      <a-input style="margin: 15px 0;" placeholder="请填写您所在的公司名称"></a-input>
+    </a-modal>
   </div>
 </template>
 
@@ -96,8 +64,8 @@ import { notification, message } from "ant-design-vue";
 import type { Rule } from "ant-design-vue/es/form";
 import type { FormInstance } from "ant-design-vue";
 import { getValidateCoder } from "validate-coder";
-import { userSendCode, userLogin } from "@/api";
-import {useUserInfo} from "@/store/user"
+import { userSendCode, userLogin, hrLoginOrRegister } from "@/api";
+import { useUserInfo } from "@/store/user"
 import { fail } from "assert";
 const router = useRouter();
 const route = useRoute();
@@ -110,6 +78,8 @@ interface FormState {
 }
 const activeKey = ref(0);
 const validateCoder = ref<string>();
+// 控制填写hr信息的对话框显示隐藏
+let visible = ref(false)
 
 onMounted(() => {
   if (route.query?.query === "boss") {
@@ -250,18 +220,30 @@ const handleFinishFailed = (errors: any) => {
   // console.log(errors);
 };
 const submit = async () => {
-  
+
   if (activeKey.value == 1) {
-    localStorage.setItem("companyToken", "abcdefg");
+    await formRef.value?.validateFields(['username', 'psd'])
+    const res: any = await hrLoginOrRegister({ telephone: formState.username, password: formState.psd })
+    if (res.code === 200) {
+      localStorage.setItem("hrToken", res.token);
+      if (res.remark) {
+        // 首次注册后续操作，填写表单等
+        visible.value = true
+      } else {
+        localStorage.setItem('company_id', res.company_id)
+        localStorage.setItem('loginInfo', JSON.stringify({ telephone: formState.username }))
+        router.push('/company')
+      }
+    }
     message.success("企业登录成功");
-    router.push("/company");
+    // router.push("/company");
   } else {
     await formRef.value?.validateFields(["email", "code"]);
     const params = { email: formState.email, validateCode: formState.code };
     const res: any = await userLogin(params);
     disabledSubmit.value = true
     console.log("$$$$$$", res);
-    if (res.code != 200)  {
+    if (res.code != 200) {
       disabledSubmit.value = false
       return message.error(res.msg);
     }
@@ -274,6 +256,10 @@ const submit = async () => {
 };
 const handleValidate = (...args: any) => {
 };
+const handleOk = () => {
+  visible.value = false
+  console.log('ok');
+}
 </script>
 
 <style lang="less" scoped>
@@ -283,6 +269,10 @@ const handleValidate = (...args: any) => {
   background: url("../../assets/images/login_bg.webp") no-repeat center center;
   background-size: 100% 100%;
   user-select: none;
+  .reg-modal-input{
+    margin: 15px 0;
+  }
+
   .box {
     width: 550px;
     height: 550px;
@@ -296,10 +286,12 @@ const handleValidate = (...args: any) => {
     box-shadow: 0 0 10px #ddd;
     border-radius: 20px;
     background: #fff;
+
     h1 {
       font-size: 30px;
       margin: 20px 0 30px;
     }
+
     .tabs {
       width: 85%;
       height: 50px;
@@ -310,6 +302,7 @@ const handleValidate = (...args: any) => {
       box-sizing: border-box;
       display: flex;
       justify-content: space-between;
+
       li {
         width: 88%;
         height: 100%;
@@ -321,27 +314,34 @@ const handleValidate = (...args: any) => {
         cursor: pointer;
         transition: all 0.2s;
       }
+
       .active {
         color: var(--themeColor);
         background: #fff;
       }
     }
+
     .formBox {
       width: 85%;
       margin: 0 auto;
       margin-top: 40px;
+
       .form {
         text-align: left;
+
         .ant-form-item {
           padding-bottom: 10px;
         }
+
         .sendCode {
           display: flex;
           justify-content: space-between;
           position: relative;
+
           .ant-input {
             width: 282px;
           }
+
           .sendCodeBtn {
             flex: 1;
             height: 45px;
@@ -351,12 +351,15 @@ const handleValidate = (...args: any) => {
             // padding: 0 35px;
           }
         }
+
         .coders {
           position: relative;
           height: 100%;
+
           ::v-deep(.ant-form-item-explain-error) {
             margin-top: 12px !important;
           }
+
           .ant-input {
             height: 45px;
             position: absolute;
@@ -365,6 +368,7 @@ const handleValidate = (...args: any) => {
             right: 0;
             top: 0;
           }
+
           .photo {
             position: absolute;
             right: 0;
@@ -376,9 +380,11 @@ const handleValidate = (...args: any) => {
             height: 45px !important;
           }
         }
+
         .ant-input {
           height: 45px;
         }
+
         .submitBtn {
           height: 45px;
         }
