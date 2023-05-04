@@ -90,7 +90,7 @@
               </div>
             </div>
           </div>
-          <div class="btns">编辑</div>
+          <div class="btns" @click="$router.push('/home/user/resume')">编辑</div>
           <div class="sendInfo">
             <li><span class="weight">842</span><span>已投递</span></li>
             <li><span class="weight">45</span><span>不合适</span></li>
@@ -155,12 +155,13 @@ import PositionCard from "@/components/common/positionCard/index.vue";
 import {getAge} from "@/utils/getAge"
 import { getPositionList } from "@/api";
 import {useUserInfo} from "@/store/user"
+import {IUserInfo} from "@/types/userInfo"
 const userStore = useUserInfo()
-const userInfo = computed(()=>userStore.userInfoList[0])
+const userInfo =(computed(()=>userStore.userInfoList[0]) as unknown) as  IUserInfo
 const hotCityList = computed(() => useCity().hotCityList);
 const allCityList = computed(() => useCity().allCityList);
 const preventCity = ref(useCity().preventCity);
-const cityQuList = ref<any[]>([]);
+const cityQuList = ref<any>([]);
 const activeQuId = ref();
 const route = useRoute();
 //获取条件帅选数据
@@ -276,9 +277,7 @@ const getPositionData = async () => {
     }
   }
 
-  // console.log("@@@@", paramsReq);
   const res: any = await getPositionList(paramsReq);
-  // console.log("#########", res);
   if (res.code !== 200) {
     positionData.value = [];
     message.error("服务异常");
@@ -292,11 +291,8 @@ const allCities = ref(
 );
 //获取当前城市所有区域
 const getQu = (cityName: string = "武汉") => {
-  console.log(cityName);
   cityQuList.value = allCities.value?.filter((item) => {
-    console.log(item);
     if (item.name == cityName) {
-      console.log();
       return item.subLevelModelList;
     }
   })[0]?.subLevelModelList;
@@ -331,6 +327,7 @@ onMounted(() => {
   cityQuList.value = allCityList.value?.filter(
     (item) => item.name === preventCity.value
   )[0]?.subLevelModelList[0].subLevelModelList as [];
+  getQu(preventCity.value)
   if (preventCity.value == "全国") {
     showQu.value = false;
   }

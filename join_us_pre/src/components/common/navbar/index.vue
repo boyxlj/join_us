@@ -28,7 +28,7 @@
       </ul>
       <ul class="profile profile2" v-else>
         <li>消息</li>
-        <li class="line">简历</li>
+        <li class="line" @click="$router.push('/home/user/resume')">简历</li>
         <li>上传</li>
         <div class="userProfile">
           <div class="cons" @click="$router.push('/home/user/job')">
@@ -37,7 +37,7 @@
               <img :src="userInfo.avatar" alt="" />
             </div>
             <div class="hovers">
-              <a  @click.stop="$router.push('/home/user/profile')" class="centers">
+              <a  @click.stop="$router.push('/home/user/resume')" class="centers">
                 <span class="center_title">个人中心</span>
                 <span class="center_others">推荐职位、编辑在线简历</span>
               </a>
@@ -84,9 +84,9 @@ import { AimOutlined } from "@ant-design/icons-vue";
 import { useCity } from "@/store/city";
 import { useUserInfo } from "@/store/user";
 import { useUserLoginState } from "@/hooks/useUserLoginState";
-import { getPositionList } from "@/api";
+import {IUserInfo} from "@/types/userInfo"
 const userStore = useUserInfo()
-const userInfo = computed(()=>userStore.userInfoList[0])
+const userInfo:IUserInfo =(computed(()=>userStore.userInfoList[0]) as unknown) as  IUserInfo
 const visible = ref<boolean>(false);
 const loginState = useUserLoginState();
 const router = useRouter();

@@ -28,6 +28,8 @@ declare module '@vue/runtime-core' {
     ASelectOption: typeof import('ant-design-vue/es')['SelectOption']
     ASpin: typeof import('ant-design-vue/es')['Spin']
     ATextarea: typeof import('ant-design-vue/es')['Textarea']
+    ATooltip: typeof import('ant-design-vue/es')['Tooltip']
+    AUpload: typeof import('ant-design-vue/es')['Upload']
     DropDownlist: typeof import('./src/components/common/dropDownlist/index.vue')['default']
     Empty: typeof import('./src/components/common/empty/index.vue')['default']
     Footer: typeof import('./src/components/common/footer/index.vue')['default']

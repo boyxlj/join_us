@@ -38,6 +38,7 @@ export const updateUser = (data:any) => {
     data
   })
 }
+
 //添加用户简历
 export const addUserResume = (data:any) => {
   return request({

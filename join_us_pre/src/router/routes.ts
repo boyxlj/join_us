@@ -35,8 +35,8 @@ export const routes: RouteRecordRaw[] = [
         meta:{title:'用户职位'}
       },
       {
-        path: "user/profile",
-        component: lazyLoad('profile'),
+        path: "user/resume",
+        component: lazyLoad('resume'),
         meta:{title:'个人中心'}
       }
     ]
