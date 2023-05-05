@@ -31,7 +31,7 @@
                         编辑
                     </a-button>
                     <br>
-                    <a-button style="font-size: 14px; margin-bottom: 5px;" type="primary" size="small">
+                    <a-button @click="delPosition(record.position_id)" style="font-size: 14px; margin-bottom: 5px;" type="primary" size="small">
                         <template #icon>
                             <DeleteOutlined />
                         </template>
@@ -66,7 +66,7 @@
         </a-descriptions>
     </a-modal>
     <a-modal style="width: 900px;" ok-text="确认" cancel-text="关闭" v-model:visible="addVisible" title="职位信息填写"
-        @ok="addPositionHandle">
+        @ok="addPositionHandle" @cancel="cancel">
         <a-form :rules="rulesRef" :model="formState" :label-col="{ span: 5 }" :wrapper-col="{ span: 16 }">
             <a-form-item label="职位名称" name="position_name">
                 <a-input v-model:value="formState.position_name" />
@@ -110,7 +110,7 @@
 </template>
 
 <script setup lang="ts">
-import { hrPositionManage, hrPositionDetail, hrAddPosition } from '@/api'
+import { hrPositionManage, hrPositionDetail, hrAddPosition, hrDelPosition, hrEditPosition, hrEditPosition2 } from '@/api'
 import { EyeOutlined, EditOutlined, DeleteOutlined, PlusSquareOutlined } from '@ant-design/icons-vue'
 import { Form, message } from 'ant-design-vue'
 interface position {
@@ -218,7 +218,7 @@ const job_typeArr = ref([
     }
 ])
 const positionTypeList = ref(JSON.parse(localStorage.getItem('positionType') as string).positionTypeList)
-const positionTypeListCom = computed(() => {
+const positionTypeListCom = computed<[]>(() => {
     const resultArr = positionTypeList.value.map((item: any) => {
         return {
             position_type_name: item.position_type_name,
@@ -298,6 +298,7 @@ getDetail()
 const detailVisible = ref(false)
 const addVisible = ref(false)
 const btnText = ref('')
+const position_id_variable = ref('')
 // 切换页数
 const changePage = (page: number) => {
     console.log(page)
@@ -313,10 +314,27 @@ const lookDetail = (position_id: string) => {
         }
     })
 }
-// 发布职位
+// 发布/编辑职位
 const addPositionHandle = async () => {
     if (btnText.value === 'edit') {
-        addVisible.value = false
+        await validate()
+        hrEditPosition2({ position_id: position_id_variable.value, formData: formState }).then((res: any) => {
+            if (res.code === 200) {
+                message.success(res.msg)
+            } else {
+                message.error(res.msg)
+            }
+            getDetail()
+            let i: keyof formType
+            for (i in formState) {
+                if (Array.isArray(formState[i])) {
+                    formState[i] = <string | any>[]
+                } else {
+                    formState[i] = '' as any
+                }
+            }
+            addVisible.value = false
+        })
     } else {
         await validate()
         const company_id = localStorage.getItem('company_id') as string
@@ -331,6 +349,14 @@ const addPositionHandle = async () => {
                 addVisible.value = false
                 getDetail()
             }
+            let i: keyof formType
+            for (i in formState) {
+                if (Array.isArray(formState[i])) {
+                    formState[i] = <string | any>[]
+                } else {
+                    formState[i] = '' as any
+                }
+            }
             addVisible.value = false
         })
     }
@@ -338,10 +364,48 @@ const addPositionHandle = async () => {
 const editOrAddPosition = (position_id?: string) => {
     addVisible.value = true
     if (position_id) {
-        btnText.value = 'edit'
+        position_id_variable.value = position_id
+        hrEditPosition(position_id).then((res: any) => {
+            const data = res.data
+            formState.position_name = data.position_name
+            formState.position_desc = data.position_desc
+            formState.salary = data.salary
+            formState.experiences = data.experiences
+            formState.degrees = data.degrees
+            formState.welfare_tag = JSON.parse(data.welfare_tag).toString()
+            formState.job_type = job_typeArr.value.filter(item => item.value === data.job_type)[0].value
+            formState.position_type.push(data.position_type1 as never)
+            formState.position_type.push(data.position_type2 as never)
+            formState.cityArr.push(data.cityName, data.cityName, data.pos_region)
+            btnText.value = 'edit'
+        })
     } else {
         btnText.value = 'add'
     }
+}
+
+// 删除职位
+const delPosition = (position_id: string) => {
+    hrDelPosition(position_id).then((res: any) => {
+        if (res.code === 200) {
+            message.success(res.msg)
+            getDetail()
+        } else {
+            message.error(res.msg)
+            getDetail()
+        }
+    })
+}
+const cancel = () => {
+    let i: keyof formType
+    for (i in formState) {
+        if (Array.isArray(formState[i])) {
+            formState[i] = <string | any>[]
+        } else {
+            formState[i] = '' as any
+        }
+    }
+    addVisible.value = false
 }
 </script>
 
