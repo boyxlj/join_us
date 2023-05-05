@@ -24,9 +24,19 @@
           </a-form-item>
 
           <a-form-item class="sendCode" v-if="activeKey === 0" name="code">
-            <a-input v-model:value="formState.code" type="password" autocomplete="off" placeholder="验证码" />
-            <a-button :disabled="disabledSendCodeBtn" class="sendCodeBtn" @click="clickSendCode">{{ sendCodeBtnText
-            }}</a-button>
+            <a-input
+              v-model:value="formState.code"
+              type="text"
+              autocomplete="off"
+              placeholder="验证码"
+            />
+            <a-button
+              :disabled="disabledSendCodeBtn"
+              class="sendCodeBtn"
+              @click="clickSendCode"
+              >{{ sendCodeBtnText }}</a-button
+            >
+           
           </a-form-item>
           <a-form-item class="coders" name="inputCodeValue" v-show="activeKey === 1">
             <a-input v-model:value="formState.inputCodeValue" placeholder="请输入数字验证码" />
@@ -239,7 +249,8 @@ const submit = async () => {
     }
     localStorage.setItem("token", res.token);
     message.success("登录成功");
-    useUserInfo().saveUserInfo(res.userInfo)
+    useUserInfo().saveUserId(res.userInfo[0]?.userId)
+    useUserInfo().getUseInfo(res.userInfo[0]?.userId)
     router.push("/");
   }
 };

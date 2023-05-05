@@ -8,5 +8,6 @@ router.use(require("./hr"))
 router.use(require("./position"))
 router.use(require("./resume"))
 router.use(require("./userInfo"))
+router.use('/upload',require("./upload"))
 
 module.exports = router

@@ -77,20 +77,20 @@
           <div class="info">
             <div class="left">
               <img
-                src="https://img.bosszhipin.com/boss/avatar/avatar_15.png"
+                :src="userInfo.avatar"
                 alt=""
               />
             </div>
             <div class="right">
-              <div class="top">二狗子</div>
+              <div class="top">{{ userInfo.name }}</div>
               <div class="bottom">
-                <span>22岁</span>
-                <span>23年应届生</span>
-                <span>博士</span>
+                <span>{{ getAge(userInfo.born) }}岁</span>
+                <span>{{ userInfo.leave_schoolTime?.split('-')[0] }}年应届生</span>
+                <span>{{ userInfo.degree }}</span>
               </div>
             </div>
           </div>
-          <div class="btns">编辑</div>
+          <div class="btns" @click="$router.push('/home/user/resume')">编辑</div>
           <div class="sendInfo">
             <li><span class="weight">842</span><span>已投递</span></li>
             <li><span class="weight">45</span><span>不合适</span></li>
@@ -152,11 +152,16 @@ import { useGetConditionData } from "@/store/condition";
 import DropDownlist from "@/components/common/dropDownlist/index.vue";
 import JobList from "@/components/common/jobList/index.vue";
 import PositionCard from "@/components/common/positionCard/index.vue";
+import {getAge} from "@/utils/getAge"
 import { getPositionList } from "@/api";
+import {useUserInfo} from "@/store/user"
+import {IUserInfo} from "@/types/userInfo"
+const userStore = useUserInfo()
+const userInfo =(computed(()=>userStore.userInfoList[0]) as unknown) as  IUserInfo
 const hotCityList = computed(() => useCity().hotCityList);
 const allCityList = computed(() => useCity().allCityList);
 const preventCity = ref(useCity().preventCity);
-const cityQuList = ref<any[]>([]);
+const cityQuList = ref<any>([]);
 const activeQuId = ref();
 const route = useRoute();
 //获取条件帅选数据
@@ -272,9 +277,7 @@ const getPositionData = async () => {
     }
   }
 
-  console.log("@@@@", paramsReq);
   const res: any = await getPositionList(paramsReq);
-  console.log("#########", res);
   if (res.code !== 200) {
     positionData.value = [];
     message.error("服务异常");
@@ -288,15 +291,11 @@ const allCities = ref(
 );
 //获取当前城市所有区域
 const getQu = (cityName: string = "武汉") => {
-  console.log(cityName);
   cityQuList.value = allCities.value?.filter((item) => {
-    console.log(item);
     if (item.name == cityName) {
-      console.log();
       return item.subLevelModelList;
     }
   })[0]?.subLevelModelList;
-  // cityQuList.value = allCityList.value?.filter(item=>item.name==cityName)[0]?.subLevelModelList[0].subLevelModelList as []
 };
 //点击区
 const clickQu = (id: number, name: string) => {
@@ -328,6 +327,7 @@ onMounted(() => {
   cityQuList.value = allCityList.value?.filter(
     (item) => item.name === preventCity.value
   )[0]?.subLevelModelList[0].subLevelModelList as [];
+  getQu(preventCity.value)
   if (preventCity.value == "全国") {
     showQu.value = false;
   }

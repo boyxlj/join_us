@@ -18,15 +18,9 @@ async function sendEmail(mail,code) {
     to: `${mail}`, // list of receivers
     subject: "用户登录验证", // Subject line
     // text: "用户登录验证", // plain text body
-    html: `欢迎访问！您的验证码为<b> ${code} </b>,请勿泄漏,有效时间6分钟！`, // html body
+    html: `欢迎访问zhaopin！您的验证码为<b> ${code} </b>,请勿泄漏,有效时间6分钟！`, // html body
   });
 
 }
 
-
 exports.sendEmail = sendEmail
-// sendEmail('x709500@126.com',123123).then(res=>{
-//   console.log(res)
-// },(err)=>{
-//   console.log(err)
-// })

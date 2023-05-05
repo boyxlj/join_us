@@ -222,7 +222,6 @@ const getPositionData = async () => {
     position_type1:position_type1.value,
     position_type2:position_type2.value,
     cityName:keyword.value || position_type1 ||  position_type2? paramsCity.value:cityData.city,
-    // cityName: cityData.city,
     ...pageNationParams,
   };
 
@@ -232,9 +231,7 @@ const getPositionData = async () => {
     }
   }
 
-  console.log("@@@@", params);
   const res: any = await getPositionList(params);
-  console.log("#########", res);
   if (res.code !== 200) {
     positionData.value = [];
     message.error("服务异常");
@@ -320,7 +317,7 @@ const clickQu = (e: any) => {
 
 onMounted(() => {
   if (cityData.city) {
-    if (cityData.city === "全国") {
+    if (cityData.city == "全国") {
       getPositionData();
       return (showQu.value = false);
     }
