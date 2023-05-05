@@ -73,31 +73,7 @@
         </div>
       </div>
       <div class="right">
-        <div class="userCard">
-          <div class="info">
-            <div class="left">
-              <img
-                :src="userInfo.avatar"
-                alt=""
-              />
-            </div>
-            <div class="right">
-              <div class="top">{{ userInfo.name }}</div>
-              <div class="bottom">
-                <span>{{ getAge(userInfo.born) }}岁</span>
-                <span>{{ userInfo.leave_schoolTime?.split('-')[0] }}年应届生</span>
-                <span>{{ userInfo.degree }}</span>
-              </div>
-            </div>
-          </div>
-          <div class="btns" @click="$router.push('/home/user/resume')">编辑</div>
-          <div class="sendInfo">
-            <li><span class="weight">842</span><span>已投递</span></li>
-            <li><span class="weight">45</span><span>不合适</span></li>
-            <li><span class="weight">0</span><span>面试</span></li>
-            <li><span class="weight">329</span><span>感兴趣</span></li>
-          </div>
-        </div>
+        <UserInfoBox/>
         <div class="resume">
           <div class="title">附件简历</div>
           <div class="resumeContent">
@@ -147,12 +123,12 @@ import { message } from "ant-design-vue";
 import { DeleteOutlined } from "@ant-design/icons-vue";
 import Search from "@/components/common/search/index.vue";
 import Empty from "@/components/common/empty/index.vue";
+import UserInfoBox from "@/components/common/userInfoBox/index.vue";
 import { useCity } from "@/store/city";
 import { useGetConditionData } from "@/store/condition";
 import DropDownlist from "@/components/common/dropDownlist/index.vue";
 import JobList from "@/components/common/jobList/index.vue";
 import PositionCard from "@/components/common/positionCard/index.vue";
-import {getAge} from "@/utils/getAge"
 import { getPositionList } from "@/api";
 import {useUserInfo} from "@/store/user"
 import {IUserInfo} from "@/types/userInfo"
@@ -496,112 +472,7 @@ onMounted(() => {
     }
     .right {
       width: 25.5%;
-      // background: #fff;
       border-radius: var(--radiusSize);
-      .userCard {
-        width: 100%;
-        background: #fff;
-        height: 195px;
-        margin-bottom: 20px;
-        border-radius: var(--radiusSize);
-        padding: 10px 20px;
-        box-sizing: border-box;
-        .info {
-          width: 100%;
-          height: 60px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 10px 0;
-          box-sizing: border-box;
-          .left {
-            width: 47px;
-            height: 47px;
-            border-radius: 50%;
-            img {
-              border-radius: 50%;
-              width: 100%;
-            }
-          }
-          .right {
-            flex: 1;
-            margin-left: 12px;
-            .top {
-              font-size: 16px;
-              color: #222;
-            }
-            .bottom {
-              font-size: 12px;
-              color: #666;
-              span {
-                margin-right: 24px;
-                position: relative;
-                &::after {
-                  content: "";
-                  position: absolute;
-                  width: 1px;
-                  height: 12px;
-                  top: 51%;
-                  right: -12px;
-                  transform: translateY(-50%);
-                  background: #e0e0e0;
-                }
-                &:last-child {
-                  &::after {
-                    display: none;
-                  }
-                }
-              }
-            }
-          }
-        }
-        .btns {
-          width: 100%;
-          border-radius: var(--radiusSize);
-          cursor: pointer;
-          height: 38px;
-          margin: 10px auto;
-          transition: all 0.2s linear;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          border: 1px solid #d4d5d6;
-          &:hover {
-            color: var(--themeColor);
-            border: 1px solid var(--themeColor);
-          }
-        }
-        .sendInfo {
-          width: 100%;
-          height: 50px;
-          display: flex;
-          background: linear-gradient(90deg, #f5fcfc, #fcfbfa);
-          justify-content: space-between;
-          li {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            &:hover {
-              .weight {
-                color: var(--themeColor);
-              }
-            }
-            span {
-              font-size: 12px;
-              color: #666;
-              font-weight: 400;
-            }
-            .weight {
-              font-size: 18px;
-              font-family: kanzhun;
-              color: #222;
-              transition: all 0.1s linear;
-            }
-          }
-        }
-      }
       .resume {
         width: 100%;
         margin-bottom: 20px;

@@ -23,7 +23,7 @@ import {Iposition_type} from '@/types/jobType'
 
 const data = ref<Iposition_type[]>(randomPositionData)
 
- const props =  withDefaults(defineProps<{origin?:string,title?:string,dataList?:any[]}>(),{
+ const props =  withDefaults(defineProps<{origin?:string,title?:string,dataList?:any}>(),{
     title:'推荐职位',
     dataList:[],
     origin:'random'   //sort,random
