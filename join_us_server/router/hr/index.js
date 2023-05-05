@@ -113,4 +113,73 @@ hrRouter.post("/hr/addPosition", (req, res) => {
   })
 });
 
+//hr删除职位
+hrRouter.get('/hr/delPosition', (req, res) => {
+  const { position_id } = req.query
+  const del_sql = `delete from pos where position_id = '${position_id}'`
+  query(del_sql, (result) => {
+    if (result.affectedRows === 1) {
+      res.status(200).send({
+        code: 200,
+        msg: '删除成功',
+        data: null
+      })
+    } else {
+      return returnErr(res, '删除失败')
+    }
+  })
+})
+
+// hr职位信息
+hrRouter.get('/hr/editPosition', (req, res) => {
+  const { position_id } = req.query;
+  const sql = `select position_name, salary, cityName, pos_region, position_type1, position_type2, experiences, degrees, welfare_tag, position_desc, job_type from pos where position_id = '${position_id}'`
+  query(sql, (result) => {
+    if (result.length) {
+      res.status(200).send({
+        code: 200,
+        msg: '查询成功',
+        data: result[0]
+      })
+    } else {
+      return returnErr(res, '查询失败')
+    }
+  })
+})
+
+// hr编辑职位信息
+hrRouter.post('/hr/editPositionR', (req, res) => {
+  const { formData, position_id } = req.body
+  console.log(position_id, formData);
+  const sql = `update pos set
+                    position_name='${formData.position_name}', 
+                    salary='${formData.salary}',
+                    cityName='${formData.cityArr[1]}',
+                    pos_region='${formData.cityArr[2]}',
+                    experiences='${formData.experiences}',
+                    degrees='${formData.degrees}',
+                    position_desc='${formData.position_desc}',
+                    position_type1='${formData.position_type[0]}',
+                    position_type2='${formData.position_type[1]}',
+                    job_type='${formData.job_type}',
+                    position_tag='${JSON.stringify([
+											formData.experiences,
+											formData.degrees,
+										])}',
+                    welfare_tag='${JSON.stringify(
+											formData.welfare_tag.split(",")
+										)}',
+                    updateTime='${new Date().toLocaleString()}' where position_id='${position_id}'`;
+  query(sql, (result) => {
+    if (result.affectedRows > 0) {
+			res.status(200).send({
+        code: 200,
+        data: null,
+        msg: '职位信息更新成功'
+			});
+    } else {
+      return returnErr(res, "职位信息更新失败");
+    }
+  })
+})
 module.exports = hrRouter

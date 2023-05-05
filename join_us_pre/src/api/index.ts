@@ -229,3 +229,33 @@ export const allSendNum = (userId:string) => {
     params:{userId}
   })
 }
+// hr删除职位
+export const hrDelPosition = (position_id: string) => {
+  return request({
+    url: '/hr/delPosition',
+    method: 'get',
+    params: {
+      position_id: position_id
+    }
+  })
+}
+
+// hr修改职位
+export const hrEditPosition = (position_id: string) => {
+  return request({
+    url: '/hr/editPosition',
+    method: 'get',
+    params: {
+      position_id: position_id
+    }
+  })
+}
+
+// hr修改职位
+export const hrEditPosition2 = (data: Record<string, any>) => {
+  return request({
+    url: '/hr/editPositionR',
+    method: 'post',
+    data: data
+  })
+}
