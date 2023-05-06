@@ -1,12 +1,11 @@
 <template>
   <div class="home">
     <NavBar />
-      <!-- <router-view v-slot="{ Component }">
-        <transition>
+    <router-view v-slot="{ Component }">
+      <transition  name="view">
           <component :is="Component"></component>
-        </transition>
-      </router-view> -->
-      <router-view></router-view>
+      </transition>
+    </router-view>
     <Footer />
   </div>
 </template>
@@ -20,12 +19,13 @@ import Footer from "@/components/common/footer/index.vue";
 .home {
   user-select: none;
 }
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.1s linear;
-}
-.v-enter-from,
-.fade-leave-to {
+.view-enter-from,
+.view-leave-to {
   opacity: 0;
+}
+.view-enter-to,
+.view-leave-from {
+  opacity: 1;
+  transition: all .5s ease;
 }
 </style>

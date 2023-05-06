@@ -1,5 +1,5 @@
 import {defineStore} from "pinia"
-import {getUser,updateUser} from "../../api"
+import {getUser,updateUser,allSendNum} from "../../api"
 import { message } from "ant-design-vue"
 export const useUserInfo = defineStore('userInfo',{
   state:()=>{
@@ -8,15 +8,11 @@ export const useUserInfo = defineStore('userInfo',{
       userInfoList:[],
       resumeList:[],
       userId:'',
-      userInfo:{
-        token:'',
-        avatar:'https://img.bosszhipin.com/boss/avatar/avatar_15.png',
-        nickName:'Miraitowa',
-        age:'22',
-        telephone:'188127666666',
-        scroll:'家里蹲大学',
-        email:'x709500@163.com',
-        userId:'666',
+      sendNum:{
+        sendAllNum: 0,
+        sendOkNum: 0,
+        sendErrNum: 0,
+        collectNum: 0
       }
     }
   },
@@ -26,7 +22,6 @@ export const useUserInfo = defineStore('userInfo',{
     },
     async getUseInfo(userId:string){
       const res:any  = await getUser(userId)
-      console.log(res)
       if(res.code!=200) {
         message.error("数据请求异常")
           this.userInfoList=[]
@@ -35,7 +30,10 @@ export const useUserInfo = defineStore('userInfo',{
       } 
       this.userInfoList=res.data.userInfo
       this.resumeList=res.data.resumeData
+      this.getAllSendNum()
     },
+
+    //修改用户信息
     async updateUseInfo(data:any){
       const res:any  = await updateUser({...data,userId:this.userId})
       if(res.code!==200) {
@@ -47,6 +45,23 @@ export const useUserInfo = defineStore('userInfo',{
       return Promise.resolve(200)
      
     },
+
+    //查询用户所有投递状态(数量)
+    async getAllSendNum (){
+      const res:any  = await allSendNum(this.userId)
+      if(res.code!==200) {
+        return Promise.reject(400)
+      } 
+      this.sendNum.collectNum = res.data.sendNum.collectNum
+      this.sendNum.sendOkNum = res.data.sendNum.sendOkNum
+      this.sendNum.sendErrNum = res.data.sendNum.sendErrNum
+      this.sendNum.sendAllNum = res.data.sendNum.sendAllNum
+      return Promise.resolve(200)
+     
+    },
+
+
+    //保存用户id
     saveUserId(userId:string){
       this.userId = userId
     }

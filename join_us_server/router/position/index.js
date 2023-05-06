@@ -51,7 +51,7 @@ positionRouter.post('/positions', (req, res) => {
       pageSize = 10
     }
     const sqlCount = `select count(*) from  pos inner join company on pos.company_id = company.company_id ${ResStr}`
-    const sql = `select * from pos inner join company on pos.company_id = company.company_id ${ResStr} order by pos.id desc
+    const sql = `select * from pos inner join company on pos.company_id = company.company_id ${ResStr} where position_state = '1' order by pos.id desc 
     limit ${(pageOn - 1) * pageSize},${pageSize}
   `
     query(sqlCount, count => {
@@ -141,6 +141,7 @@ positionRouter.get("/position/hot", (req, res) => {
   }
   const sql = `select position_name from pos ${str} order by rand() limit ${random} `
   query(sql, result => {
+ 
     if (result.length) {
       res.status(200).send({ code: 200, msg: '请求成功', data: [...new Set(result?.map(item => item.position_name)?.filter(item=>item.length<=13))] })
     } else {

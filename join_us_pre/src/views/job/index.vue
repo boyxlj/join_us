@@ -77,7 +77,7 @@
       </div>
       <div class="right">
           <PositionCard origin="sort" title="最新职位"></PositionCard>
-        <PositionCard></PositionCard>
+          <PositionCard></PositionCard>
       </div>
     </div>
 
@@ -146,13 +146,13 @@ import Search from "@/components/common/search/index.vue";
 import JobList from "@/components/common/jobList/index.vue";
 import NavBar from "@/components/common/navbar/index.vue";
 import DropDownlist from "@/components/common/dropDownlist/index.vue";
+import PositionCard from "@/components/common/positionCard/index.vue";
 import Empty from "@/components/common/empty/index.vue";
 import { useCity } from "@/store/city";
 import { useUserLoginState } from "@/hooks/useUserLoginState";
 import { useGetConditionData } from "@/store/condition";
 import { getPositionList } from "@/api";
 import { message } from "ant-design-vue";
-import PositionCard from "@/components/common/positionCard/index.vue";
 const route = useRoute()
 const { hotCityList, allCityList, preventCity } = useCity();
 const keyName = [

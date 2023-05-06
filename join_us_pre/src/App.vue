@@ -1,10 +1,10 @@
 <template>
-    <!-- <router-view v-slot="{ Component }">
-      <transition>
-        <component :is="Component"></component>
-      </transition>
-    </router-view> -->
-    <router-view></router-view>
+    <router-view v-slot="{ Component }">
+      <transition name="view" >
+            <component :is="Component"></component>
+        </transition>
+    </router-view>
+    <!-- <router-view></router-view> -->
 </template>
 
 <script setup lang="ts">
@@ -21,12 +21,12 @@ hotSearchPosition.getSortOrRandomData(preventCity); //热招职位
 </script>
 
 <style scoped>
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.2s ease;
-}
-.v-enter-from,
-.fade-leave-to {
+.view-enter-from,.view-leave-to{
   opacity: 0;
 }
+.view-enter-to,.view-leave-from{
+  opacity: 1;
+  transition: all .5s ease;
+}
+
 </style>

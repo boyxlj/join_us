@@ -159,6 +159,76 @@ export const hrAddPosition = (data: Record<string, any>) => {
   })
 }
 
+
+//-------------投递相关
+//添加投递记录
+export const addSend = (data: Record<string, any>) => {
+  return request({
+    url: 'send',
+    method: 'post',
+    data
+  })
+}
+//查询用户投递记录
+export const selectSend = (data:any) => {
+  return request({
+    url: 'sends',
+    method: 'get',
+    params:data
+  })
+}
+//取消/删除用户投递
+export const cancelOrDelSend = (data:any) => {
+  return request({
+    url: 'send',
+    method: 'delete',
+    data
+  })
+}
+
+//-------------收藏相关
+//添加收藏
+export const addCollect = (data: Record<string, any>) => {
+  return request({
+    url: 'collect',
+    method: 'post',
+    data
+  })
+}
+//查询用户收藏
+export const selectCollect= (data:any) => {
+  return request({
+    url: 'collects',
+    method: 'get',
+    params:data
+  })
+}
+//删除用户收藏
+export const deleteCollect = (data:any) => {
+  return request({
+    url: 'collect',
+    method: 'delete',
+    data
+  })
+}
+
+
+//获取用户的收藏和投递状态
+export const collectOrSendState = (data:any) => {
+  return request({
+    url: 'state',
+    method: 'get',
+    params:data
+  })
+}
+//查询用户所有投递状态(数量)
+export const allSendNum = (userId:string) => {
+  return request({
+    url: '/send/num',
+    method: 'get',
+    params:{userId}
+  })
+}
 // hr删除职位
 export const hrDelPosition = (position_id: string) => {
   return request({

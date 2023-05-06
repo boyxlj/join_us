@@ -38,7 +38,22 @@ export const routes: RouteRecordRaw[] = [
         path: "user/resume",
         component: lazyLoad('resume'),
         meta:{title:'个人中心'}
-      }
+      },
+      {
+        path: "user/jobs/fromChat",
+        component: lazyLoad('jobFormChat'),
+        meta:{title:'投递记录'}
+      },
+      {
+        path: "corporation",
+        component: lazyLoad('corporation'),
+        meta:{title:'公司'}
+      },
+      {
+        path: "consult",
+        component: lazyLoad('consult'),
+        meta:{title:'咨询'}
+      },
     ]
   },
   {

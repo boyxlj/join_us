@@ -15,36 +15,34 @@
         <router-link to="/home/job" active-class="homeLinkActive"
           >职位</router-link
         >
-        <router-link to="/" active-class="homeLinkActive">首页</router-link>
-        <router-link to="/" active-class="homeLinkActive">首页</router-link>
-        <router-link to="/" active-class="homeLinkActive">首页</router-link>
-        <router-link to="/" active-class="homeLinkActive">首页</router-link>
+        <router-link to="/home/corporation" active-class="homeLinkActive">公司</router-link>
+        <router-link to="/home/consult" active-class="homeLinkActive">咨询</router-link>
       </ul>
       <ul class="profile" v-if="!loginState">
-        <li @click="$router.push('/login')">上传简历</li>
-        <li @click="$router.push('/login')">我要找工作</li>
-        <li @click="$router.push('/login?query=boss')">我要招聘</li>
+        <li @click="navigateLinks('/login')">上传简历</li>
+        <li @click="navigateLinks('/login')">我要找工作</li>
+        <li @click="navigateLinks('/login?query=boss')">我要招聘</li>
         <div class="loginBtn" @click="navigateLogin">登录/注册</div>
       </ul>
       <ul class="profile profile2" v-else>
         <li>消息</li>
-        <li class="line" @click="$router.push('/home/user/resume')">简历</li>
+        <li class="line" @click="navigateLinks('/home/user/resume')">简历</li>
         <li>上传</li>
         <div class="userProfile">
-          <div class="cons" @click="$router.push('/home/user/job')">
+          <div class="cons" @mouseleave="leaveUserInfo" @mouseenter="enterUserInfo"  @click="navigateLinks('/home/user/job')">
             <span>{{ userInfo.name }}</span>
             <div class="avatar">
               <img :src="userInfo.avatar" alt="" />
             </div>
-            <div class="hovers">
-              <a  @click.stop="$router.push('/home/user/resume')" class="centers">
-                <span class="center_title">个人中心</span>
+            <div class="hovers" ref="hoverBox">
+              <a  @click.stop="navigateLinks('/home/user/resume')" class="centers">
+                <span class="center_title" style="text-align: left;">个人中心</span>
                 <span class="center_others">推荐职位、编辑在线简历</span>
               </a>
-              <router-link to="#">账号与安全中心</router-link>
-              <router-link to="#">隐私保护</router-link>
-              <router-link to="#">消息通知</router-link>
-              <a @click.stop.prevent="$router.push('/login?query=boss')" class="line">切换为招聘者</a>
+              <a  @click.stop="navigateLinks('/')">账号与安全中心</a>
+              <a  @click.stop="navigateLinks('/')">隐私保护</a>
+              <a  @click.stop="navigateLinks('/home/user/jobs/fromChat')">投递记录</a>
+              <a @click.stop.prevent="navigateLinks('/login?query=boss')" class="line">切换为招聘者</a>
               <a class="line" @click.prevent="cancelLogin">退出登录</a>
             </div>
           </div>
@@ -94,7 +92,7 @@ const clickLogo = () => {
   router.push("/");
 };
 const city = useCity();
-
+const hoverBox = ref()
 const hotCityList = computed(() => city.hotCityList);
 const positionCity = computed(() => city.preventCity);
 const otherCityList = computed(() => city.otherCityList);
@@ -115,6 +113,19 @@ const cancelLogin = (e: Event) => {
   localStorage.removeItem("token");
   location.href = '/'
 };
+
+const navigateLinks = (path:string)=>{
+  hoverBox.value.style.display = 'none'
+  if(path){
+    router.push(path)
+  }
+}
+const enterUserInfo = ()=>{
+  hoverBox.value.style.display = 'block'
+}
+const leaveUserInfo = ()=>{
+  hoverBox.value.style.display = 'none'
+}
 </script>
 
 <style lang="less" scoped>
@@ -136,7 +147,7 @@ const cancelLogin = (e: Event) => {
       display: flex;
       align-items: center;
       height: 100%;
-
+      min-width: 230px;
       p {
         margin: 0;
       }
@@ -145,7 +156,6 @@ const cancelLogin = (e: Event) => {
         cursor: pointer;
         height: 100%;
         line-height: 54px;
-
         .weight {
           color: var(--themeColor);
         }
@@ -161,9 +171,9 @@ const cancelLogin = (e: Event) => {
     .links {
       height: 100%;
       line-height: 54px;
-      margin: 0 40px;
+      width: 500px;
       a {
-        margin: 0 25px;
+        margin: 0 30px;
         color: #fff;
         transition: all 0.2s;
         &:hover {
@@ -202,8 +212,9 @@ const cancelLogin = (e: Event) => {
       }
     }
     .profile2 {
-      margin-left: 100px;
-
+      width: 460px;
+      display: flex;
+      justify-content: flex-end;
       .line {
         position: relative;
         &::after {
@@ -229,7 +240,6 @@ const cancelLogin = (e: Event) => {
         display: flex;
         position: relative;
         align-items: center;
-
         &:hover {
           .cons {
             background: #4d4f54;
@@ -333,6 +343,7 @@ const cancelLogin = (e: Event) => {
           span {
             display: inline-block;
             min-width: 80px;
+            text-align: right;
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
@@ -343,7 +354,6 @@ const cancelLogin = (e: Event) => {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            margin-left: 7px;
             overflow: hidden;
             img {
               width: 100%;
