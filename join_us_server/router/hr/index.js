@@ -94,10 +94,10 @@ hrRouter.post("/hr/addPosition", (req, res) => {
   const hr_id_sql = `select hr_id from hr where telephone = '${telephone}'`
   query(hr_id_sql, (result) => {
     const hr_id = result[0].hr_id
-    const orderNumSql = 'select count(*) as num from pos'
+    const orderNumSql = 'select max(id) as num from pos'
     query(orderNumSql, (result2) => {
       const orderNum = result2[0].num
-      const sql = `insert into pos values(${orderNum + 1}, '${v4()}', '${formData.position_name}', '${formData.salary}', '${formData.cityArr[1]}', '${formData.cityArr[2]}', '${formData.experiences}', '${formData.degrees}',  '${JSON.stringify([formData.experiences, formData.degrees])}', '${JSON.stringify(formData.welfare_tag.split(','))}', '${company_id}', '${hr_id}', '${formData.position_desc}', '${new Date().toLocaleString()}', '${new Date().toLocaleString()}', '0', '${formData.position_type[0]}', '${formData.position_type[1]}', '${formData.job_type}')`
+      const sql = `insert into pos values(${orderNum + 1},'${v4()}', '${formData.position_name}', '${formData.salary}', '${formData.cityArr[1]}', '${formData.cityArr[2]}', '${formData.experiences}', '${formData.degrees}',  '${JSON.stringify([formData.experiences, formData.degrees])}', '${JSON.stringify(formData.welfare_tag)}', '${company_id}', '${hr_id}', '${formData.position_desc}', '${new Date().toLocaleString()}', '${new Date().toLocaleString()}', '0', '${formData.position_type[0]}', '${formData.position_type[1]}', '${formData.job_type}')`
       query(sql, (result3) => {
         if (result3.affectedRows === 1) {
           res.status(200).send({
@@ -117,16 +117,24 @@ hrRouter.post("/hr/addPosition", (req, res) => {
 hrRouter.get('/hr/delPosition', (req, res) => {
   const { position_id } = req.query
   const del_sql = `delete from pos where position_id = '${position_id}'`
+  const orderNumSql = "select max(id) as num from pos"
   query(del_sql, (result) => {
-    if (result.affectedRows === 1) {
-      res.status(200).send({
-        code: 200,
-        msg: '删除成功',
-        data: null
+    query(orderNumSql, (result2) => {
+      const orderNum = result2[0].num
+      const sql = `alter table pos AUTO_INCREMENT=${orderNum + 1}`
+      query(sql, (result3) => {
+        if (result.affectedRows === 1) {
+          // const sql = 'alter table '
+          res.status(200).send({
+            code: 200,
+            msg: '删除成功',
+            data: null
+          })
+        } else {
+          return returnErr(res, '删除失败')
+        }
       })
-    } else {
-      return returnErr(res, '删除失败')
-    }
+    })
   })
 })
 
@@ -167,7 +175,7 @@ hrRouter.post('/hr/editPositionR', (req, res) => {
 											formData.degrees,
 										])}',
                     welfare_tag='${JSON.stringify(
-											formData.welfare_tag.split(",")
+											formData.welfare_tag
 										)}',
                     updateTime='${new Date().toLocaleString()}' where position_id='${position_id}'`;
   query(sql, (result) => {
