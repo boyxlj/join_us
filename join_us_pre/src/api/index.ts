@@ -259,3 +259,16 @@ export const hrEditPosition2 = (data: Record<string, any>) => {
     data: data
   })
 }
+
+export const deliveryRecord = (company_id: string, telephone: string, pageIndex: number, pageSize: number) => {
+  return request({
+    url: '/send/deliveryRecord',
+    method: 'get',
+    params: {
+      company_id: company_id,
+      telephone: telephone,
+      pageIndex: pageIndex,
+      pageSize: pageSize
+    }
+  })
+}
