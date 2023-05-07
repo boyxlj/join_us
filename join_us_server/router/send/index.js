@@ -103,6 +103,7 @@ sendRouter.get("/send/deliveryRecord", (req, res) => {
     query(sql, (result2) => {
       const user_sql = `
         SELECT
+          sendId,
           send.userId,
           position_name,
           name,
@@ -125,7 +126,8 @@ sendRouter.get("/send/deliveryRecord", (req, res) => {
           school_exp,
           hope_city,
           hope_job_type,
-          sendTime
+          sendTime,
+          types
         FROM
           send
           INNER JOIN pos ON pos.position_id = send.position_id
@@ -139,7 +141,7 @@ sendRouter.get("/send/deliveryRecord", (req, res) => {
             code: 200,
             data: result3,
             msg: '查询成功',
-            total: result3.length
+            total: result2.length
           })
         } else {
           return returnErr(res, '查询失败')
@@ -148,4 +150,49 @@ sendRouter.get("/send/deliveryRecord", (req, res) => {
     })
   })
 });
+
+// 修改投递状态
+sendRouter.get('/send/updateDeliveryState', (req, res) => {
+  const { sendId, type } = req.query;
+  console.log(sendId, type);
+  let sql = ''
+  if (type === 'interview') {
+    sql = `update send set types='${1}' where sendId = '${sendId}'`
+  } else {
+    sql = `update send set types='${2}' where sendId = '${sendId}'`;
+  }
+  query(sql, (result) => {
+    if (result.affectedRows === 1) {
+      res.send({
+        code: 200,
+        msg: '更新状态成功'
+      })
+    } else {
+      return returnErr(res, "更新状态失败");
+    }
+  })
+})
+
+// 查看在线简历
+sendRouter.get('/send/onlineResume', (req, res) => {
+  const { userId } = req.query
+  console.log(userId);
+  const resume_sql = `select * from resume where userId = '${userId}'`
+  const userInfo_sql = `select * from userinfo where userId = '${userId}'`
+  query(resume_sql, (result1) => {
+      query(userInfo_sql, (result2) => {
+        if (result2.length) {
+          const data = result2[0]
+          data.resume = result1
+          res.send({
+            code: 200,
+            data: data,
+            msg: '查询成功'
+          })
+        } else {
+          return returnErr(res, '查询失败!')
+        }
+      })
+  })
+})
 module.exports = sendRouter

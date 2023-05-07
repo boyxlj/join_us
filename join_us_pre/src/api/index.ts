@@ -260,6 +260,7 @@ export const hrEditPosition2 = (data: Record<string, any>) => {
   })
 }
 
+// 获取投递继立列表
 export const deliveryRecord = (company_id: string, telephone: string, pageIndex: number, pageSize: number) => {
   return request({
     url: '/send/deliveryRecord',
@@ -269,6 +270,29 @@ export const deliveryRecord = (company_id: string, telephone: string, pageIndex:
       telephone: telephone,
       pageIndex: pageIndex,
       pageSize: pageSize
+    }
+  })
+}
+
+// 更改投递状态
+export const updateDeliveryState = (sendId: string, type: string) => {
+  return request({
+    url: '/send/updateDeliveryState',
+    method: 'get',
+    params: {
+      sendId,
+      type
+    }
+  })
+}
+
+// hr查看在线简历
+export const onlineResume = (userId: string) => {
+  return request({
+    url: '/send/onlineResume',
+    method: 'get',
+    params: {
+      userId
     }
   })
 }

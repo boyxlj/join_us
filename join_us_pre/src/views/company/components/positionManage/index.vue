@@ -311,7 +311,7 @@ const rulesRef = reactive({
     position_type2: [{ required: true, message: '该字段不能为空!', trigger: 'blur' }]
 })
 const router = useRouter()
-const { validate, resetFields } = useForm(formState, rulesRef)
+const { validate } = useForm(formState, rulesRef)
 const getDetail = () => {
     hrPositionManage(localStorage.getItem('company_id') as string, pageIndex.value, pageSize.value).then((res: any) => {
         columns.value = Object.keys(propertyMap).map((item, index) => {
@@ -348,7 +348,6 @@ const btnText = ref('')
 const position_id_variable = ref('')
 // 切换页数
 const changePage = (page: number) => {
-    console.log(page)
     pageIndex.value = page
     getDetail()
 }
@@ -365,7 +364,7 @@ const lookDetail = (position_id: string) => {
 const addPositionHandle = async () => {
     if (btnText.value === 'edit') {
         await validate()
-        if (!formState.salary.includes('k')) {
+        if (!formState.salary.includes('k') && !formState.salary.includes('K')) {
             formState.salary = formState.salary + 'k'
         }
         hrEditPosition2({ position_id: position_id_variable.value, formData: formState }).then((res: any) => {
