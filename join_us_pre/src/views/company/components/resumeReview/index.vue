@@ -21,7 +21,7 @@
         </a-table>
         <a-pagination style="margin: 10px auto;" @change="changePage" :pageSize="pageSize" v-model:current="pageIndex" :total="total" show-less-items />
     </div>
-    <a-modal width="1200px" v-model:visible="visible" title="在线简历" ok-text="确认" @ok="visible = false">
+    <a-modal width="1000px" v-model:visible="visible" title="在线简历" ok-text="确认" @ok="visible = false">
         <template #footer>
             <a-button key="submit" type="primary" @click="visible = false">确认</a-button>
         </template>
@@ -58,7 +58,7 @@ interface deliveryRecordType {
     school_type: string
 }
 const propertyMap: Record<string, string> = {
-    position_name: '职位名称',
+    position_name: '投递职位名称',
     name: '姓名',
     phone: '手机号',
     email: '邮箱',

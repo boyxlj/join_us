@@ -32,8 +32,11 @@ declare module '@vue/runtime-core' {
     ATable: typeof import('ant-design-vue/es')['Table']
     ATag: typeof import('ant-design-vue/es')['Tag']
     ATextarea: typeof import('ant-design-vue/es')['Textarea']
+    BirthCake: typeof import('./src/components/common/onlineResume/components/BirthCake/index.vue')['default']
+    DegreeIcon: typeof import('./src/components/common/onlineResume/components/degreeIcon/index.vue')['default']
     DropDownlist: typeof import('./src/components/common/dropDownlist/index.vue')['default']
     Empty: typeof import('./src/components/common/empty/index.vue')['default']
+    ExpIcon: typeof import('./src/components/common/onlineResume/components/expIcon/index.vue')['default']
     FemaleIcon: typeof import('./src/components/common/femaleIcon/index.vue')['default']
     Footer: typeof import('./src/components/common/footer/index.vue')['default']
     IndexJob: typeof import('./src/components/common/indexJob/index.vue')['default']
@@ -45,6 +48,7 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Search: typeof import('./src/components/common/search/index.vue')['default']
+    StateIcon: typeof import('./src/components/common/onlineResume/components/stateIcon/index.vue')['default']
     UserInfoBox: typeof import('./src/components/common/userInfoBox/index.vue')['default']
   }
 }

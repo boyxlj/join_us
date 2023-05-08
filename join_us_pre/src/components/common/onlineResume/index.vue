@@ -3,9 +3,66 @@
         <div class="userinfo-container">
             <img class="user-avatar" :src="data.avatar" alt="">
             <div class="userinfo">
-                <p>
+                <p style="display: flex; align-items: center;">
                     <span class="username">{{ data.name }}</span><component :is="data.gender === '0' ? femaleIcon : maleIcon"></component>
+                    <span class="flex-span" style="margin-left: auto;"><birthcakeIcon/>{{ data.age }}岁</span>
+                    <span class="flex-span"><expIcon/>{{ data.leave_schoolTime }}</span>
+                    <span class="flex-span"><degreeIcon/>{{ data.degree }}</span>
+                    <span class="flex-span"><stateIcon/>{{ data.apply_state }}</span>
+                    <span class="flex-span">{{ data.phone }}</span>
+                    <span class="flex-span">{{ data.email }}</span>
                 </p>
+                <div class="user-skill">
+                    <pre>
+{{ data.advantage }}
+                    </pre>
+                </div>
+            </div>
+        </div>
+        <div class="hope-job">
+            <p>
+                <span class="title">期望职位</span>
+                <span class="hope-detail">{{ data.hope_job }}</span>
+                <span class="hope-detail">{{ data.hope_industry }}</span>
+                <span class="hope-detail">{{ data.hope_salary }}</span>
+            </p>
+        </div>
+        <div class="job-exp">
+            <span class="title">工作经历</span>
+            <div class="job-exp-detail">
+                <template v-for="item in data.resume" :key="item.resume_id">
+                    <p style="display: flex;">
+                        <span class="job-exp-title">{{ item.company }}</span>
+                        <span class="job-exp-title">{{ item.department }}-{{ item.post }}</span>
+                        <span style="margin-left: auto;">{{ item.enter_time }}至{{ item.leave_time }}</span>
+                    </p>
+                    <div class="job-exp-content">
+                        <p>工作内容:</p>
+                        <pre>
+{{ item.content }}
+                        </pre>
+                        <a-tag :key="index" :closable="false" v-for="(item2, index) in JSON.parse(item.skill)">{{ item2 }}</a-tag>
+                    </div>
+                    <hr style="margin: 20px 0;">
+                </template>
+            </div>
+        </div>
+        <div class="school-exp">
+            <span class="title">
+                校园经历
+            </span>
+            <div class="school-exp-detail">
+                <p style="display: flex;">
+                    <span class="school-exp-tiltle">{{ data.school }}</span>
+                    <span class="school-exp-tiltle">{{ data.major }}</span>
+                    <span class="school-exp-tiltle">{{ data.school_type }}</span>
+                    <span style="margin-left: auto;">{{ data.enter_schoolTime }}至{{ data.leave_schoolTime }}</span>
+                </p>
+                <div>
+                    <pre>
+{{ data.school_exp }}
+                    </pre>
+                </div>
             </div>
         </div>
     </div>
@@ -15,6 +72,10 @@
 import { onlineResume } from '@/api'
 import maleIcon from '@/components/common/maleIcon/index.vue'
 import femaleIcon from '@/components/common/femaleIcon/index.vue'
+import birthcakeIcon from './components/BirthCake/index.vue'
+import degreeIcon from './components/degreeIcon/index.vue'
+import stateIcon from './components/stateIcon/index.vue'
+import expIcon from './components/expIcon/index.vue'
 const props = defineProps({
     userId: {
         type: String
@@ -95,7 +156,7 @@ watch(userId, (newVal, oldVal) => {
     padding: 15px;
     .userinfo-container{
         width: 95%;
-        height: 300px;
+        min-height: 150px;
         display: flex;
         .user-avatar{
             width: 80px;
@@ -105,11 +166,79 @@ watch(userId, (newVal, oldVal) => {
         .userinfo{
             width: calc(100% - 100px);
             margin-left: 20px;
-            height: 300px;
+            min-height: 150px;
             .username{
                 font-size: 26px;
                 font-weight: bold;
             }
+            .flex-span{
+                display: inline-flex;
+                margin-right: 20px;
+                padding-right: 20px;
+                border-right: 1px solid #bebebe;
+            }
+            .user-skill{
+                width: 100%;
+                min-height: 150px;
+            }
+        }
+    }
+    .hope-job{
+        .title{
+            display: inline-block;
+            width: 80px;
+            text-align: right;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .hope-detail{
+            margin: 0 20px;
+        }
+    }
+    .job-exp{
+        display: flex;
+        width: 95%;
+        &>.title{
+            display: inline-block;
+            width: 80px;
+            text-align: right;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .job-exp-detail{
+            margin-left: 20px;
+            width: calc(100% - 100px);
+            min-height: 300px;
+            padding: 15px;
+            .job-exp-title{
+                display: inline-block;
+                &:first-of-type{
+                    padding-right: 15px;
+                    margin-right: 15px;
+                    border-right: 1px solid #bebebe;
+                }
+            }
+        }
+    }
+    .school-exp{
+        display: flex;
+        width: 95%;
+        &>.title{
+            display: inline-block;
+            width: 80px;
+            text-align: right;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .school-exp-detail{
+            margin-left: 20px;
+            width: calc(100% - 100px);
+            min-height: 300px;
+        }
+        .school-exp-tiltle{
+            padding-right: 20px;
+            margin-right: 20px;
+            border-right: 1px solid #bebebe;
         }
     }
 }

@@ -184,6 +184,7 @@ sendRouter.get('/send/onlineResume', (req, res) => {
         if (result2.length) {
           const data = result2[0]
           data.resume = result1
+          // data.advantage.replaceAll(/\\n/, '<br/>')
           res.send({
             code: 200,
             data: data,
