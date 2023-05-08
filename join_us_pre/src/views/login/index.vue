@@ -144,8 +144,8 @@ const formRef = ref<FormInstance>();
 const formState = reactive<FormState>({
   code: "",
   email: "x709500@126.com",
-  username: "",
-  psd: "",
+  username: "13870000000",
+  psd: "zzq123456",
   inputCodeValue: "",
 });
 
@@ -195,8 +195,6 @@ let validateUserPsd = async (_rule: Rule, value: string) => {
 let validateInputCodeValue = async (_rule: Rule, value: string) => {
   if (value === "") {
     return Promise.reject("请填写数字验证码");
-  } else if (value !== formState.email) {
-    return Promise.reject("Two inputs don't match!");
   } else {
     return Promise.resolve();
   }

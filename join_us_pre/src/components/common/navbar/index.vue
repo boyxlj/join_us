@@ -16,7 +16,7 @@
           >职位</router-link
         >
         <router-link to="/home/corporation" active-class="homeLinkActive">公司</router-link>
-        <router-link to="/home/consult" active-class="homeLinkActive">咨询</router-link>
+        <router-link to="/home/consult" active-class="homeLinkActive">资讯百科</router-link>
       </ul>
       <ul class="profile" v-if="!loginState">
         <li @click="navigateLinks('/login')">上传简历</li>
@@ -86,7 +86,7 @@ import {IUserInfo} from "@/types/userInfo"
 const userStore = useUserInfo()
 const userInfo:IUserInfo =(computed(()=>userStore.userInfoList[0]) as unknown) as  IUserInfo
 const visible = ref<boolean>(false);
-const loginState = useUserLoginState();
+const loginState = useUserLoginState(true);
 const router = useRouter();
 const clickLogo = () => {
   router.push("/");

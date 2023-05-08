@@ -20,7 +20,8 @@
     "unplugin-auto-import": "^0.15.3",
     "unplugin-vue-components": "^0.24.1",
     "vue": "^3.2.47",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vue3-lazy": "^1.0.0-alpha.1"
   },
   "devDependencies": {
     "@types/node": "^18.15.12",

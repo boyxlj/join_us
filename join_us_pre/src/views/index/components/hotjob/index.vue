@@ -55,8 +55,8 @@ const changeTab = (position_type_id: string, index: number) => {
 <style lang="less" scoped>
 .hotjob-container {
   width: 1200px;
-  height: 850px;
-  margin: 0 auto;
+  min-height: 750px;
+  margin: 50px auto 0;
 
   .title {
     width: 200px;
@@ -73,15 +73,24 @@ const changeTab = (position_type_id: string, index: number) => {
     width: 1200px;
     height: 40px;
     display: flex;
-    border-bottom: 1px solid #888;
+    border-bottom: 1px solid #e6e6e6;
     font-size: 18px;
     line-height: 40px;
-    justify-content: space-evenly;
+    justify-content: space-between;
+    padding: 0 30px;
+    
     li {
+      cursor: pointer;
       text-align: center;
-      width: 100px;
+      color: #666;
+      font-size: 16px;
+      transition: color .2s linear;
+      &:hover{
+        color: var(--themeColor);
+      }
 
       &.on {
+        color: var(--themeColor);
         border-bottom: 3px solid var(--themeColor);
       }
     }

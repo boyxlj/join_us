@@ -259,3 +259,30 @@ export const hrEditPosition2 = (data: Record<string, any>) => {
     data: data
   })
 }
+
+
+//-------公司相关
+//查询所有公司
+export const selectCompanys = (data: Record<string, any>) => {
+  return request({
+    url: '/companys',
+    method: 'post',
+    data
+  })
+}
+//查询公司所有职位
+export const selectCompanysPositions = (data: Record<string, any>) => {
+  return request({
+    url: '/company/positions',
+    method: 'post',
+    data
+  })
+}
+//查询公司所有职位以及公司信息及公司详情
+export const selectCompanysDetail = (company_id:string) => {
+  return request({
+    url: '/companyInfo',
+    method: 'post',
+    data:{company_id}
+  })
+}

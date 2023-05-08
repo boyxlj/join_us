@@ -120,9 +120,11 @@ const hotSearchPositionList = computed(
   () => useHotSearchPosition().hotSearchPositionList
 );
 const navigateProfilePage = (val: string) => {
+  showSearchFocusBox.value = false
   router.push(`/home/job?keyword=${val}`);
 };
 const navigateJob = (val: string) => {
+  showSearchFocusBox.value = false
   router.push(`/home/job?keyword=${val}`);
 };
 

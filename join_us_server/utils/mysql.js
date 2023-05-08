@@ -14,7 +14,7 @@ const query = async (sql, callback) => {
     const res = await client.query(sql)
     callback(res[0])
   } catch (err) { 
-    callback('err')
+    callback('err',err)
     console.log("数据库连接异常",err)
   }
 }

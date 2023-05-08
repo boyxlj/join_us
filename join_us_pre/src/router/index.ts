@@ -7,7 +7,7 @@ const router = createRouter({
 })
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token')
-  const companyToken = localStorage.getItem('companyToken')
+  const hrToken = localStorage.getItem('hrToken')
   if (token && to.path.includes('/login')) {
     return next('/')
   }
@@ -16,7 +16,7 @@ router.beforeEach((to, from, next) => {
     return next('/login')
   }
   
-  if(!companyToken && to.fullPath.includes('/company')){
+  if(!hrToken && to.fullPath.includes('/company')){
      message.warning("请登录后进行访问")
     return next('/login')
   }

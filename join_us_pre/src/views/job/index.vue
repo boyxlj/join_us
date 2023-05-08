@@ -246,7 +246,7 @@ const showCityModel = () => {
 
 const condition = useGetConditionData();
 const conditionData = ref(condition.conditionData);
-const loginState = useUserLoginState();
+const loginState = useUserLoginState(true);
 
 const allCities = ref(allCityList.map((item) => item.subLevelModelList).flat());
 const quList = ref<any>([]);

@@ -14,7 +14,7 @@
           <img :src="item.logo" alt="" />
         </div>
         <div class="right_right">
-          <p class="company">{{ item.company_name }}</p>
+          <p class="company" @click="navigateCompanyDetail(item.company_id)">{{ item.company_name }}</p>
           <p class="infos">
             <span class="types">{{ item.industry }}</span>
             <span class="rz">{{ item.financing }}</span>
@@ -40,6 +40,9 @@ withDefaults(defineProps<{ positionData: Iposition_type[] }>(), {})
 
 const navigateDetail = (position_id: string) => {
   window.open(`/home/jobDetail?position_id=${position_id}`)
+}
+const navigateCompanyDetail = (company_id: string) => {
+  window.open(`/home/companyDetail?company_id=${company_id}`)
 }
 </script>
 

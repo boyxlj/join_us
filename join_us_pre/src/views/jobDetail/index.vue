@@ -39,21 +39,29 @@
           v-if="!collectState"
           @click="clickCollectBtn"
           class="gxq"
-          @mouseenter="isIn = !isIn"
-          @mouseleave="isIn = !isIn"
+          @mouseenter="isIn = true"
+          @mouseleave="isIn = false"
         >
           <template #icon>
-            <component :is="isIn ? StarFilled : StarOutlined"></component>
+            <StarOutlined v-if="!isIn" />
+            <StarFilled v-else />
           </template>
           <span>感兴趣</span>
         </a-button>
-        <a-button class="gxq" @click="cancelCollectBtn" v-else
-          >取消收藏</a-button
-        >
-        <a-button v-if="!sendState" class="chat" @click="clickSendBtn"
+        <a-button class="gxq" @click="cancelCollectBtn" v-else>
+          <template #icon>
+            <StarFilled />
+          </template>
+          <span>取消感兴趣</span>
+        </a-button>
+        <a-button
+          type="primary"
+          v-if="!sendState"
+          class="chat"
+          @click="clickSendBtn"
           >立即投递</a-button
         >
-        <a-button v-else class="chat" @click="cancelSendBtn">取消投递</a-button>
+        <a-button v-else  type="primary" class="chat" @click="cancelSendBtn">取消投递</a-button>
       </div>
     </div>
     <div class="info-container">
@@ -76,7 +84,7 @@
         </div>
         <div ref="desc" class="position-desc"></div>
         <div class="company-info-container">
-          <div class="info">
+          <div class="info" @click="navigateCompanyDetail(jobDetailData.company_id)">
             <img class="company-avatar" :src="jobDetailData.logo" alt="" />
             <div class="detail-info">
               <span>{{ jobDetailData.company_name }}</span>
@@ -115,6 +123,7 @@ import {
   cancelOrDelSend,
 } from "@/api";
 import { useUserInfo } from "@/store/user";
+import { useUserLoginState } from "@/hooks/useUserLoginState";
 import { message } from "ant-design-vue";
 const router = useRouter();
 const route = useRoute();
@@ -127,6 +136,7 @@ let desc_tagArr = ref<string[]>([]);
 const desc = ref<HTMLDivElement>();
 const { userId } = useUserInfo();
 const clickSendBtn = async () => {
+  if (!useUserLoginState()) return;
   const { position_id, company_id, hr_id } = jobDetailData.value;
   const res: any = await addSend({ position_id, company_id, hr_id, userId });
   if (res.code !== 200) return message.error(res.msg);
@@ -134,6 +144,7 @@ const clickSendBtn = async () => {
   getState();
 };
 const clickCollectBtn = async () => {
+  if (!useUserLoginState()) return;
   const { position_id, company_id } = jobDetailData.value;
   const res: any = await addCollect({ position_id, company_id, userId });
   if (res.code !== 200) return message.error(res.msg);
@@ -145,6 +156,7 @@ const clickCollectBtn = async () => {
 const collectState = ref(false);
 const sendState = ref(false);
 const getState = async () => {
+  if (!useUserLoginState()) return;
   const res: any = await collectOrSendState({ userId, position_id: jobId });
   collectState.value = res.collectState;
   sendState.value = res.sendState;
@@ -153,6 +165,7 @@ const getState = async () => {
 
 //取消投递
 const cancelSendBtn = async () => {
+  if (!useUserLoginState()) return;
   const res: any = await cancelOrDelSend({ userId, position_id: jobId });
   if (res.code !== 200) return message.error("取消投递失败");
   message.success("已取消投递");
@@ -160,6 +173,7 @@ const cancelSendBtn = async () => {
 };
 //取消收藏
 const cancelCollectBtn = async () => {
+  if (!useUserLoginState()) return;
   const res: any = await deleteCollect({ userId, position_id: jobId });
   if (res.code !== 200) return message.error("删除收藏失败");
   message.success("已从感兴趣中移除");
@@ -168,15 +182,23 @@ const cancelCollectBtn = async () => {
 
 onMounted(() => {
   getJobDetail(jobId as string).then((res) => {
+    if (!res.data) return router.replace("/notFound");
     jobDetailData.value = res.data as Iposition_type;
     welfare_tagArr.value = JSON.parse(jobDetailData.value.welfare_tag);
     desc_tagArr.value = JSON.parse(jobDetailData.value.position_tag);
     // 添加感叹号表示该元素一定存在
+    if (res.data.position_name) {
+      document.title =  res.data.position_name;
+    }
     desc.value!.innerHTML = jobDetailData.value.position_desc;
     if (res.data.position_state !== "1") return router.replace("/notFound");
   });
   getState();
 });
+
+const navigateCompanyDetail = (company_id: string) => {
+  window.open(`/home/companyDetail?company_id=${company_id}`)
+}
 </script>
 
 <style lang="less" scoped>
@@ -201,14 +223,19 @@ onMounted(() => {
 
       .row-first {
         span:first-of-type {
-          color: #fff;
           font-size: 22px;
           margin-right: 20px;
+          font-size: 28px;
+          font-weight: 600;
+          color: #fff;
         }
 
         span:last-of-type {
-          font-size: 28px;
           color: #f26d49;
+          font-size: 34px;
+          position: relative;
+          top: 3px;
+          font-family: kanzhun-Regular, kanzhun;
         }
       }
 
@@ -220,13 +247,12 @@ onMounted(() => {
           display: inline-block;
           min-width: 40px;
           height: 25px;
-          background-color: rgba(#fff, 0.5);
+          background: rgba(255, 255, 255, 0.05);
           margin-right: 10px;
           text-align: center;
           line-height: 15px;
           padding: 5px;
-          color: var(--themeColor);
-          font-weight: bold;
+          color: #fff;
           border-radius: 5px;
         }
       }
@@ -235,7 +261,7 @@ onMounted(() => {
         right: 30px;
         top: 35px;
         max-width: 600px;
-        height: 130px;
+        min-height: 70px;
         display: flex;
         flex-wrap: wrap;
         .welfare_tag {
@@ -248,9 +274,8 @@ onMounted(() => {
           line-height: 15px;
           padding: 5px;
           color: #fff;
-          font-weight: bold;
           border-radius: 5px;
-          margin-right: 6px;
+          margin-right: 10px;
           margin-bottom: 5px;
         }
       }
@@ -259,7 +284,7 @@ onMounted(() => {
     .info {
       width: 250px;
       height: 30px;
-      margin: 10px 0 10px 40px;
+      margin: 25px 0 -5px 40px;
 
       span {
         display: inline-block;
@@ -274,12 +299,12 @@ onMounted(() => {
     .gxq {
       margin-left: 40px;
       margin-top: 20px;
-      width: 120px;
+      min-width: 120px;
       height: 50px;
+      font-size: 17px;
       background-color: transparent;
       color: #fff;
-      font-weight: bold;
-      border-color: #5620a8;
+      border-color: var(--themeColor);
     }
 
     .chat {
@@ -287,10 +312,9 @@ onMounted(() => {
       margin-top: 20px;
       width: 120px;
       height: 50px;
-      background-color: #5620a8;
+      font-size: 17px;
       border: none;
       color: #fff;
-      font-weight: bold;
     }
   }
 }
@@ -324,13 +348,13 @@ onMounted(() => {
       span {
         display: inline-block;
         min-width: 60px;
-        height: 40px;
         background-color: #f8f8f8;
-        line-height: 40px;
+        line-height: 20px;
         text-align: center;
         margin-right: 15px;
+        color: #666;
+        padding: 4px 12px;
         border-radius: var(--radiusSize);
-        font-weight: bold;
       }
     }
     .position-desc {
@@ -352,6 +376,7 @@ onMounted(() => {
           width: 80px;
           height: 80px;
           border-radius: 50%;
+          cursor: pointer;
         }
 
         .detail-info {
@@ -360,6 +385,7 @@ onMounted(() => {
           display: flex;
           flex-direction: column;
           justify-content: space-around;
+          cursor: pointer;
 
           & > span:first-of-type {
             font-size: 20px;

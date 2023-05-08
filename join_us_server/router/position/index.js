@@ -50,8 +50,13 @@ positionRouter.post('/positions', (req, res) => {
     if (pageSize >= 10) {
       pageSize = 10
     }
+    if(ResStr.includes('where')){
+      ResStr+=` and pos.position_state = '1'`
+    }else{
+      ResStr+=` where pos.position_state = '1'`
+    }
     const sqlCount = `select count(*) from  pos inner join company on pos.company_id = company.company_id ${ResStr}`
-    const sql = `select * from pos inner join company on pos.company_id = company.company_id ${ResStr} where position_state = '1' order by pos.id desc 
+    const sql = `select * from pos inner join company on pos.company_id = company.company_id ${ResStr}  order by pos.id desc 
     limit ${(pageOn - 1) * pageSize},${pageSize}
   `
     query(sqlCount, count => {
@@ -95,6 +100,11 @@ positionRouter.post('/positions', (req, res) => {
     if (pageSize >= 10) {
       pageSize = 10
     }
+    if(ResStr.includes('where')){
+      ResStr+=` and pos.position_state = '1'`
+    }else{
+      ResStr+=` where pos.position_state = '1'`
+    }
     const sqlCount = `select count(*)  from  pos inner join company on pos.company_id = company.company_id ${ResStr} order by pos.id desc
   `
     const sql = `select * from pos inner join company on pos.company_id = company.company_id ${ResStr} order by pos.id desc
@@ -118,7 +128,7 @@ positionRouter.get("/position/hotSearch", (req, res) => {
   if (num <= 6 || num > 20) {
     num = 9
   }
-  const sql= `select * from pos inner join company on pos.company_id = company.company_id where position_type1='${position_type1}' order by pos.id desc limit ${num}`
+  const sql= `select * from pos inner join company on pos.company_id = company.company_id where position_type1='${position_type1}' and position_state = '1' order by pos.id desc limit ${num}`
   query(sql,result=>{
     if(result.length){
       res.status(200).send({code:200,msg:'请求成功',data:result})
@@ -135,11 +145,11 @@ positionRouter.get("/position/hot", (req, res) => {
   if(!cityName) return res.status(400).send({ code: 400, msg: '参数错误', data: null })
   let str = ''
   if(cityName=='全国'){
-    str = ''
+    str = `where position_state = '1'`
   }else{
-    str = `where cityName = '${cityName}'`
+    str = `where position_state = '1' and cityName = '${cityName}'`
   }
-  const sql = `select position_name from pos ${str} order by rand() limit ${random} `
+  const sql = `select position_name from pos  ${str}  order by rand() limit ${random} `
   query(sql, result => {
  
     if (result.length) {
@@ -180,12 +190,12 @@ positionRouter.get("/position/by/rand", (req, res) => {
     str = 'order by rand()'
   }
 
-  let cityStr = ''
+  let cityStr = `where pos.position_state = '1'`
   if(cityName!='全国'){
-    cityStr = `where cityName='${cityName}' `
+    cityStr = `where pos.position_state = '1' and cityName='${cityName}' `
   }
-  const sortSql = `select * from pos inner join company on pos.company_id = company.company_id  order by pos.id desc limit ${sortNum} `
-  const randomSql = `select * from pos inner join company on pos.company_id = company.company_id ${cityStr}  ${str}  limit ${num} `
+  const sortSql = `select * from pos inner join company on pos.company_id = company.company_id  where pos.position_state = '1'  order by pos.id desc limit ${sortNum} `
+  const randomSql = `select * from pos inner join company on pos.company_id = company.company_id    ${cityStr}  ${str}  limit ${num} `
   query(randomSql, randomResult => {
     if (randomResult.length) {
       if(randomResult=='err')  return returnErr(res)
