@@ -13,7 +13,12 @@
         </li>
       </div>
       <div class="contents">
-        <div class="onLineResume"><span>我的在线简历</span></div>
+        <div class="onLineResume">
+          <span>我的在线简历</span
+          ><span @click="previewResume" class="previewResume"
+            >在线简历预览</span
+          >
+        </div>
         <Info
           :userInfo="userInfo"
           v-if="states.info"
@@ -21,29 +26,31 @@
         />
         <div v-else id="showInfo" class="showInfo" @click="changeInfoForm">
           <div class="name">
-            <span>{{ userInfo.name || '点击编辑昵称' }}</span>
+            <span>{{ userInfo.name || "点击编辑昵称" }}</span>
           </div>
           <div class="degree">
             <li>
-              <img src="../../assets/images/icon/degree.png" alt="" /><span
-                >{{ userInfo.leave_schoolTime?userInfo.leave_schoolTime?.split("-")[0]+'年应届生':'毕业时间' }}</span
-              >
+              <img src="../../assets/images/icon/degree.png" alt="" /><span>{{
+                userInfo.leave_schoolTime
+                  ? userInfo.leave_schoolTime?.split("-")[0] + "年应届生"
+                  : "毕业时间"
+              }}</span>
             </li>
             <li>
               <img src="../../assets/images/icon/degree1.png" alt="" /><span>{{
-                userInfo.degree || '编辑学历'
+                userInfo.degree || "编辑学历"
               }}</span>
             </li>
             <li>
               <img src="../../assets/images/icon/hope_job.png" alt="" /><span>{{
-                userInfo.apply_state || '编辑求职状态'
+                userInfo.apply_state || "编辑求职状态"
               }}</span>
             </li>
           </div>
           <div class="connect">
             <li>
               <img src="../../assets/images/icon/tel.png" alt="" /><span>{{
-                userInfo.phone ||  '点击填写电话'
+                userInfo.phone || "点击填写电话"
               }}</span>
             </li>
             <li>
@@ -81,7 +88,7 @@
             <div class="editor">
               <p><edit-outlined class="icon" /><span>编辑</span></p>
             </div>
-            <pre>{{ userInfo.advantage ||'点击填写您的个人优势' }}</pre>
+            <pre>{{ userInfo.advantage || "点击填写您的个人优势" }}</pre>
           </div>
         </div>
         <HopeJob
@@ -102,16 +109,24 @@
               <p><edit-outlined class="icon" /><span>编辑</span></p>
             </div>
             <li>
-              <sliders-outlined /><span>{{ userInfo.hope_job ||'编辑期望职位' }}</span>
+              <sliders-outlined /><span>{{
+                userInfo.hope_job || "编辑期望职位"
+              }}</span>
             </li>
             <li>
-              <transaction-outlined /><span>{{ userInfo.hope_salary ||'编辑期望薪资' }}</span>
+              <transaction-outlined /><span>{{
+                userInfo.hope_salary || "编辑期望薪资"
+              }}</span>
             </li>
             <li>
-              <fund-outlined /><span>{{ userInfo.hope_industry ||'编辑期望行业' }}</span>
+              <fund-outlined /><span>{{
+                userInfo.hope_industry || "编辑期望行业"
+              }}</span>
             </li>
             <li>
-              <aim-outlined /><span>{{ userInfo.hope_city  ||'编辑期望城市'}}</span>
+              <aim-outlined /><span>{{
+                userInfo.hope_city || "编辑期望城市"
+              }}</span>
             </li>
           </div>
         </div>
@@ -128,7 +143,9 @@
               ><plus-square-outlined class="icons" />添加</span
             >
           </div>
-          <div class="empty" v-show="!resumeList.length"> 请添加您的工作经历</div>
+          <div class="empty" v-show="!resumeList.length">
+            请添加您的工作经历
+          </div>
           <div
             class="workExpContent"
             @click="changeWorkExpForm(item.resume_id)"
@@ -175,7 +192,9 @@
         ></EducationExp>
         <div v-else id="showEducationExp" class="showEducationExp">
           <div class="title"><span class="tips">教育经历</span></div>
-          <div class="empty" v-show="!states.education_exp">请编辑您的教育经历</div>
+          <div class="empty" v-show="!states.education_exp">
+            请编辑您的教育经历
+          </div>
           <div class="workExpContent" @click="changeEducationExpForm">
             <div class="editor">
               <p><edit-outlined class="icon" /><span>编辑</span></p>
@@ -183,7 +202,8 @@
             <li class="name">
               <span class="weight">{{ userInfo.school }}</span
               ><span class="time" v-if="userInfo.enter_schoolTime">
-                {{ userInfo.enter_schoolTime }} - {{ userInfo.leave_schoolTime }}
+                {{ userInfo.enter_schoolTime }} -
+                {{ userInfo.leave_schoolTime }}
               </span>
             </li>
             <li class="role">
@@ -192,13 +212,15 @@
             </li>
             <li class="desc">
               <span class="descTitle">在校经历: </span><br />
-              <pre style="white-space: pre-wrap">{{ userInfo.school_exp || '点击编辑在校经历' }}</pre>
+              <pre style="white-space: pre-wrap">{{
+                userInfo.school_exp || "点击编辑在校经历"
+              }}</pre>
             </li>
           </div>
         </div>
       </div>
       <div class="asides">
-        <UserInfoBox :show="false"/>
+        <UserInfoBox :show="false" />
         <div class="resume">
           <div class="title">附件简历</div>
           <div class="resumeContent">
@@ -211,47 +233,55 @@
             <div class="btns">上传附件简历</div>
           </div>
         </div>
-          <PositionCard></PositionCard>
+        <PositionCard></PositionCard>
         <PositionCard origin="sort" title="最新职位"></PositionCard>
       </div>
     </div>
     <div class="navbar">
-    <Navbar />
-  </div>
+      <Navbar />
+    </div>
 
-  <!-- 编辑用户头像对话框 -->
-  <a-modal
-    cancelText="取消"
-    centered
-    :maskClosable="false"
-    okText="确认"
-    v-model:visible="avatarModelVisible"
-    title="修改用户头像"
-    @ok="handleAvatarModelOk"
-    @cancel="cancelAvatarModelOk"
-  >
-    <a-upload
-      v-model:file-list="fileList"
-      name="avatar"
-      list-type="picture-card"
-      class="avatar-uploader"
-      :show-upload-list="false"
-      :action="uploadUserAvatarUrl"
-      :before-upload="beforeUpload"
-      @change="handleChange"
+    <!-- 编辑用户头像对话框 -->
+    <a-modal
+      cancelText="取消"
+      centered
+      :maskClosable="false"
+      okText="确认"
+      v-model:visible="avatarModelVisible"
+      title="修改用户头像"
+      @ok="handleAvatarModelOk"
+      @cancel="cancelAvatarModelOk"
     >
-      <img style="width: 100%" v-if="imageUrl" :src="imageUrl" alt="avatar" />
-      <div v-else>
-        <loading-outlined v-if="loading"></loading-outlined>
-        <plus-outlined v-else></plus-outlined>
-        <div class="ant-upload-text">上传图像</div>
-      </div>
-    </a-upload>
-    <div>* 图像大小不能超过2MB,且类型必须为jpg、jpeg、png</div>
-  </a-modal>
+      <a-upload
+        v-model:file-list="fileList"
+        name="avatar"
+        list-type="picture-card"
+        class="avatar-uploader"
+        :show-upload-list="false"
+        :action="uploadUserAvatarUrl"
+        :before-upload="beforeUpload"
+        @change="handleChange"
+      >
+        <img style="width: 100%" v-if="imageUrl" :src="imageUrl" alt="avatar" />
+        <div v-else>
+          <loading-outlined v-if="loading"></loading-outlined>
+          <plus-outlined v-else></plus-outlined>
+          <div class="ant-upload-text">上传图像</div>
+        </div>
+      </a-upload>
+      <div>* 图像大小不能超过2MB,且类型必须为jpg、jpeg、png</div>
+    </a-modal>
+    <a-modal
+      v-model:visible="previewResumeVisible"
+      title="在线简历预览"
+      width="1000px"
+      okText="确认"
+      cancelText="关闭"
+      @ok="previewResumeVisible = false"
+    >
+      <OnlineResume :userId="userStore.userId" />
+    </a-modal>
   </div>
-
-
 </template>
 
 <script setup lang="ts">
@@ -276,10 +306,12 @@ import Advantage from "./components/advantage/index.vue";
 import HopeJob from "./components/hopeJob/index.vue";
 import WorkExp from "./components/workExp/index.vue";
 import EducationExp from "./components/educationExp/index.vue";
+import OnlineResume from "@/components/common/onlineResume/index.vue";
 import { IUserInfo } from "@/types/userInfo";
 import { useUserInfo } from "@/store/user";
 import { getAge } from "@/utils/getAge";
 import { uploadUserAvatarUrl } from "@/api/upload";
+import { useValidateResume } from "@/hooks/useValidateResume";
 const userStore = useUserInfo();
 const userInfo: IUserInfo = computed(
   () => userStore.userInfoList[0]
@@ -288,6 +320,15 @@ const resumeList: IResumeData[] = computed(
   () => userStore.resumeList
 ) as unknown as IResumeData[];
 const activeMenu = ref(0);
+
+const previewResumeVisible = ref(true);
+const previewResume = () => {
+  if (!useValidateResume(false)) {
+    message.warning("请先编辑简历信息");
+    return;
+  }
+  previewResumeVisible.value = true;
+};
 
 interface IResumeData {
   id: number;
@@ -463,11 +504,14 @@ const beforeUpload = (file: any) => {
         width: 100%;
         height: 50px;
         display: flex;
-        justify-content: flex-start;
+        justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid #f3f3f3;
         span {
           font-weight: 600;
+        }
+        .previewResume {
+          cursor: pointer;
         }
       }
       .showInfo {
@@ -980,7 +1024,7 @@ const beforeUpload = (file: any) => {
       width: 260px;
       height: 100%;
       border-radius: var(--radiusSize);
-   
+
       .resume {
         width: 100%;
         margin-bottom: 20px;

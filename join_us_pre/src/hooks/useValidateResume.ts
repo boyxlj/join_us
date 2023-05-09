@@ -3,7 +3,7 @@ import {message,Modal } from "ant-design-vue"
 import {createVNode} from  "vue"
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import router from "../router"
-export const useValidateResume = ()=>{
+export const useValidateResume = (showMsg:boolean=true)=>{
   const user = useUserInfo()
   const arr = [
     'born',
@@ -35,19 +35,21 @@ export const useValidateResume = ()=>{
   }
   const rs = resArr.every(item=>item)
   if(!rs){
+    if(showMsg){
+      Modal.confirm({
+        centered:true,
+        okText:'去完善个人信息',
+        cancelText:'取消',
+        title: '温馨提示',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '请先完善个人信息以及简历的填写',
+        onOk() {
+          router.push('/home/user/resume')
+        },
+        onCancel() {},
+      });
+    }
     // message.error("请先完善个人信息以及简历的填写")
-    Modal.confirm({
-      centered:true,
-      okText:'去完善个人信息',
-      cancelText:'取消',
-      title: '温馨提示',
-      icon: createVNode(ExclamationCircleOutlined),
-      content: '请先完善个人信息以及简历的填写',
-      onOk() {
-        router.push('/home/user/resume')
-      },
-      onCancel() {},
-    });
   }
   return rs
 }
