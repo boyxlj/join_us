@@ -5,11 +5,11 @@
         <img :src="userInfo.avatar" alt="" />
       </div>
       <div class="right">
-        <div class="top">{{ userInfo.name }}</div>
+        <div class="top">{{ userInfo.name || '应聘者' }}</div>
         <div class="bottom">
-          <span>{{ getAge(userInfo.born) }}岁</span>
-          <span v-show="show">{{ userInfo.leave_schoolTime?.split("-")[0] }}年应届生</span>
-          <span>{{ userInfo.degree }}</span>
+          <span>{{ userInfo.born?getAge(userInfo.born)+'岁': '-'}}</span>
+          <span v-show="show">{{ userInfo.leave_schoolTime?userInfo.leave_schoolTime?.split("-")[0]+'年应届生' :'-'}}</span>
+          <span>{{ userInfo.degree || '-' }}</span>
         </div>
       </div>
     </div>

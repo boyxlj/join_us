@@ -124,6 +124,7 @@ import {
 } from "@/api";
 import { useUserInfo } from "@/store/user";
 import { useUserLoginState } from "@/hooks/useUserLoginState";
+import { useValidateResume } from "@/hooks/useValidateResume";
 import { message } from "ant-design-vue";
 const router = useRouter();
 const route = useRoute();
@@ -137,6 +138,7 @@ const desc = ref<HTMLDivElement>();
 const { userId } = useUserInfo();
 const clickSendBtn = async () => {
   if (!useUserLoginState()) return;
+  if (!useValidateResume()) return;
   const { position_id, company_id, hr_id } = jobDetailData.value;
   const res: any = await addSend({ position_id, company_id, hr_id, userId });
   if (res.code !== 200) return message.error(res.msg);
@@ -156,7 +158,7 @@ const clickCollectBtn = async () => {
 const collectState = ref(false);
 const sendState = ref(false);
 const getState = async () => {
-  if (!useUserLoginState()) return;
+  if (!useUserLoginState(true)) return;
   const res: any = await collectOrSendState({ userId, position_id: jobId });
   collectState.value = res.collectState;
   sendState.value = res.sendState;

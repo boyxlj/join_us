@@ -32,11 +32,13 @@ import {ICompanyPositionsData} from "@/types/company"
 import {useUserInfo} from "@/store/user"
 import {message} from 'ant-design-vue'
 import {useUserLoginState} from "@/hooks/useUserLoginState"
+import { useValidateResume } from "@/hooks/useValidateResume";
 const {userId} = useUserInfo()
 const props = defineProps<{positionData?:ICompanyPositionsData[]}>()
 
 const sendPos = async(position_id:string,company_id:string)=>{
-  if(!useUserLoginState()) return
+  if(!useUserLoginState()) return 
+   if (!useValidateResume()) return
   const res:any = await addSend({userId,position_id,company_id})
   if(res.code!==200) return message.error(res.msg)
   message.success("投递成功")

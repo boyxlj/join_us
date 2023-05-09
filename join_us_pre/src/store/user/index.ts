@@ -31,6 +31,7 @@ export const useUserInfo = defineStore('userInfo',{
       this.userInfoList=res.data.userInfo
       this.resumeList=res.data.resumeData
       this.getAllSendNum()
+      
     },
 
     //修改用户信息

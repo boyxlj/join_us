@@ -21,29 +21,29 @@
         />
         <div v-else id="showInfo" class="showInfo" @click="changeInfoForm">
           <div class="name">
-            <span>{{ userInfo.name }}</span>
+            <span>{{ userInfo.name || '点击编辑昵称' }}</span>
           </div>
           <div class="degree">
             <li>
               <img src="../../assets/images/icon/degree.png" alt="" /><span
-                >{{ userInfo.leave_schoolTime?.split("-")[0] }}年应届生</span
+                >{{ userInfo.leave_schoolTime?userInfo.leave_schoolTime?.split("-")[0]+'年应届生':'毕业时间' }}</span
               >
             </li>
             <li>
               <img src="../../assets/images/icon/degree1.png" alt="" /><span>{{
-                userInfo.degree
+                userInfo.degree || '编辑学历'
               }}</span>
             </li>
             <li>
               <img src="../../assets/images/icon/hope_job.png" alt="" /><span>{{
-                userInfo.apply_state
+                userInfo.apply_state || '编辑求职状态'
               }}</span>
             </li>
           </div>
           <div class="connect">
             <li>
               <img src="../../assets/images/icon/tel.png" alt="" /><span>{{
-                userInfo.phone
+                userInfo.phone ||  '点击填写电话'
               }}</span>
             </li>
             <li>
@@ -81,7 +81,7 @@
             <div class="editor">
               <p><edit-outlined class="icon" /><span>编辑</span></p>
             </div>
-            <pre>{{ userInfo.advantage }}</pre>
+            <pre>{{ userInfo.advantage ||'点击填写您的个人优势' }}</pre>
           </div>
         </div>
         <HopeJob
@@ -102,16 +102,16 @@
               <p><edit-outlined class="icon" /><span>编辑</span></p>
             </div>
             <li>
-              <sliders-outlined /><span>{{ userInfo.hope_job }}</span>
+              <sliders-outlined /><span>{{ userInfo.hope_job ||'编辑期望职位' }}</span>
             </li>
             <li>
-              <transaction-outlined /><span>{{ userInfo.hope_salary }}</span>
+              <transaction-outlined /><span>{{ userInfo.hope_salary ||'编辑期望薪资' }}</span>
             </li>
             <li>
-              <fund-outlined /><span>{{ userInfo.hope_industry }}</span>
+              <fund-outlined /><span>{{ userInfo.hope_industry ||'编辑期望行业' }}</span>
             </li>
             <li>
-              <aim-outlined /><span>{{ userInfo.hope_city }}</span>
+              <aim-outlined /><span>{{ userInfo.hope_city  ||'编辑期望城市'}}</span>
             </li>
           </div>
         </div>
@@ -128,7 +128,7 @@
               ><plus-square-outlined class="icons" />添加</span
             >
           </div>
-          <div class="empty" v-show="false">数据为空</div>
+          <div class="empty" v-show="!resumeList.length"> 请添加您的工作经历</div>
           <div
             class="workExpContent"
             @click="changeWorkExpForm(item.resume_id)"
@@ -175,15 +175,15 @@
         ></EducationExp>
         <div v-else id="showEducationExp" class="showEducationExp">
           <div class="title"><span class="tips">教育经历</span></div>
-          <div class="empty" v-show="false">数据为空</div>
+          <div class="empty" v-show="!states.education_exp">请编辑您的教育经历</div>
           <div class="workExpContent" @click="changeEducationExpForm">
             <div class="editor">
               <p><edit-outlined class="icon" /><span>编辑</span></p>
             </div>
             <li class="name">
               <span class="weight">{{ userInfo.school }}</span
-              ><span class="time">
-                {{ userInfo.enter_schoolTime }}-{{ userInfo.leave_schoolTime }}
+              ><span class="time" v-if="userInfo.enter_schoolTime">
+                {{ userInfo.enter_schoolTime }} - {{ userInfo.leave_schoolTime }}
               </span>
             </li>
             <li class="role">
@@ -192,7 +192,7 @@
             </li>
             <li class="desc">
               <span class="descTitle">在校经历: </span><br />
-              <pre style="white-space: pre-wrap">{{ userInfo.school_exp }}</pre>
+              <pre style="white-space: pre-wrap">{{ userInfo.school_exp || '点击编辑在校经历' }}</pre>
             </li>
           </div>
         </div>
@@ -415,8 +415,8 @@ const beforeUpload = (file: any) => {
   width: 100%;
   .container {
     width: 1200px;
-    min-height: 1000px;
-    margin: 0 auto;
+    min-height: 400px;
+    margin: 0 auto 60px;
     display: flex;
     justify-content: space-between;
     margin-top: 20px;

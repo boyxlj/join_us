@@ -47,12 +47,9 @@ import positionList from "../positionList/index.vue";
 import DropDownlist from "@/components/common/dropDownlist/index.vue";
 import Empty from "@/components/common/empty/index.vue";
 import { message } from "ant-design-vue";
-import { useCity } from "@/store/city";
-import { useUserLoginState } from "@/hooks/useUserLoginState";
 import { useGetConditionData } from "@/store/condition";
 import { selectCompanysPositions } from "@/api";
 const route = useRoute();
-const { hotCityList, allCityList, preventCity } = useCity();
 const keyName = ["cityName", "experiences", "degrees", "salary"];
 const keyword = ref(route.query.keyword as string);
 const position_type1 = ref(route.query.position_type1 as string);
@@ -146,16 +143,16 @@ const formData = reactive<any>({
   value0: "不限",
   value1: "不限",
   value2: "不限",
-  value3: "不限",
+  // value3: "不限",
 });
-const showValues = ref(["工作城市", "经验要求", "学历要求", "薪资待遇"]);
+const showValues = ref(["工作城市", "经验要求", "学历要求"]);
 
 
  const conditions = ref([
   [{code:0,name:"不限"}],
   condition.conditionData[1],
   condition.conditionData[3],
-  condition.conditionData[2],
+  // condition.conditionData[2],
 ]);
 const conditionData = ref(conditions.value);
 </script>

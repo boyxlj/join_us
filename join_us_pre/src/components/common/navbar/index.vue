@@ -19,8 +19,8 @@
         <router-link to="/home/consult" active-class="homeLinkActive">资讯百科</router-link>
       </ul>
       <ul class="profile" v-if="!loginState">
-        <li @click="navigateLinks('/login')">上传简历</li>
-        <li @click="navigateLinks('/login')">我要找工作</li>
+        <li @click="navigateLinks('/home/user/resume',true)">上传简历</li>
+        <li @click="navigateLinks('/home/job')">我要找工作</li>
         <li @click="navigateLinks('/login?query=boss')">我要招聘</li>
         <div class="loginBtn" @click="navigateLogin">登录/注册</div>
       </ul>
@@ -30,7 +30,7 @@
         <li>上传</li>
         <div class="userProfile">
           <div class="cons" @mouseleave="leaveUserInfo" @mouseenter="enterUserInfo"  @click="navigateLinks('/home/user/job')">
-            <span>{{ userInfo.name }}</span>
+            <span>{{ userInfo.name || '应聘者' }}</span>
             <div class="avatar">
               <img :src="userInfo.avatar" alt="" />
             </div>
@@ -39,8 +39,8 @@
                 <span class="center_title" style="text-align: left;">个人中心</span>
                 <span class="center_others">推荐职位、编辑在线简历</span>
               </a>
-              <a  @click.stop="navigateLinks('/')">账号与安全中心</a>
-              <a  @click.stop="navigateLinks('/')">隐私保护</a>
+              <!-- <a  @click.stop="navigateLinks('/')">账号与安全中心</a>
+              <a  @click.stop="navigateLinks('/')">隐私保护</a> -->
               <a  @click.stop="navigateLinks('/home/user/jobs/fromChat')">投递记录</a>
               <a @click.stop.prevent="navigateLinks('/login?query=boss')" class="line">切换为招聘者</a>
               <a class="line" @click.prevent="cancelLogin">退出登录</a>
@@ -114,11 +114,16 @@ const cancelLogin = (e: Event) => {
   location.href = '/'
 };
 
-const navigateLinks = (path:string)=>{
-  hoverBox.value.style.display = 'none'
-  if(path){
-    router.push(path)
+const navigateLinks = (path:string,validateLogin:boolean=false)=>{
+ if(validateLogin){
+  if(!useUserLoginState(true)){
+   return router.push('/login')
   }
+ }else{
+   if(path){
+     router.push(path)
+   }
+ }
 }
 const enterUserInfo = ()=>{
   hoverBox.value.style.display = 'block'
@@ -264,7 +269,7 @@ const leaveUserInfo = ()=>{
           .hovers {
             position: absolute;
             width: 130%;
-            height: 293px;
+            min-height: 193px;
             top: 44px;
             border: 1px solid #ddd;
             background: #fff;
@@ -332,7 +337,7 @@ const leaveUserInfo = ()=>{
                 content: "";
                 position: absolute;
                 height: 1px;
-                background-color: #ebedef;
+                // background-color: #ebedef;
               }
               &:hover {
                 color: var(--themeColor);

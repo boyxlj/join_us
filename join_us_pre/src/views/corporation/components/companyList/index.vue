@@ -1,10 +1,10 @@
 <template>
   <div class="listBox">
-    <div class="item" v-for="item in companyData" :key="item.id">
+    <div class="item" @click="navigateCompanyDetail(item.company_id)" v-for="item in companyData" :key="item.id">
       <div class="itemTops">
         <div class="itemTopsLeft"><img v-lazy="item.logo" alt="" /></div>
         <div class="itemTopsRight">
-          <p class="comName" @click="navigateCompanyDetail(item.company_id)">{{ item.company_name }}</p>
+          <p class="comName" >{{ item.company_name }}</p>
           <p class="info">
             <span>{{ item.financing ? item.financing : "不需要融资" }}</span>
             <span v-if="item.industry">{{ item.industry }}</span>
@@ -13,7 +13,7 @@
       </div>
       <div class="itemBottoms">
         <span class="hots">热招</span>
-        <span class="posName" @click="navigateJobDetails(item.position_id)">{{ item.position_name }}</span>
+        <span class="posName" @click.stop="navigateJobDetails(item.position_id)">{{ item.position_name }}</span>
         <span class="salary">{{ item.salary }}</span>
       </div>
     </div>
@@ -50,6 +50,7 @@ const navigateCompanyDetail = (company_id:string)=>{
     justify-content: space-between;
     transition: all 0.2s linear;
     overflow: hidden;
+    cursor: pointer;
     &:hover {
       box-shadow: 0 16px 40px 0 hsla(0, 0%, 60%, 0.3);
     }

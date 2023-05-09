@@ -142,7 +142,7 @@ onMounted(() => {
 
 const formRef = ref<FormInstance>();
 const formState = reactive<FormState>({
-  code: "",
+  code: "111111",
   email: "x709500@126.com",
   username: "13870000000",
   psd: "zzq123456",

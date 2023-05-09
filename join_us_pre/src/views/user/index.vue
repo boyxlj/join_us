@@ -19,10 +19,10 @@
               </div>
             </template>
           </Search>
-          <div class="exp">
+          <div class="exp" v-if="userInfo.hope_job || userInfo.hope_city">
             <span class="hope">期望</span>
-            <span class="hope_job">前端开发工程师(北京)</span>
-            <span class="hope_job_others">前端开发工程师(北京)</span>
+            <span class="hope_job">{{ userInfo.hope_job }}({{ userInfo.hope_city}})</span>
+            <!-- <span class="hope_job_others">前端开发工程师(北京)</span> -->
           </div>
           <div class="tags">
             <span>城市和区域</span>
@@ -351,7 +351,7 @@ onMounted(() => {
               height: 12px;
               top: 50%;
               transform: translateY(-50%);
-              background: #b8bbcc;
+              // background: #b8bbcc;
             }
           }
           .hope_job_others {

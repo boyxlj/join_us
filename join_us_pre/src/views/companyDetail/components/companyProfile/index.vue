@@ -90,7 +90,7 @@
             </li>
             <li class="infoItem">
               <span class="tit">成立时间：</span>
-              <span class="contents">{{ item.create_time?item.create_time:'-' }}</span>
+              <span class="contents">{{ item.create_time?getTime(item.create_time):'-' }}</span>
             </li>
             <li class="infoItem">
               <span class="tit">所属行业：</span>
@@ -119,10 +119,10 @@
       <div class="infoRight">
         <div class="workTimeBox">
           <div class="workTitle">工作时间及福利</div>
-          <div class="workBox" v-if="item.company_welfare">
-            <p class="time">{{ item.work_time?item.work_time:'-' }}</p>
-            <p class="xx">{{ item.rest?item.rest:'-' }}</p>
-            <div class="welfare">
+          <div class="workBox" >
+            <p class="time" v-if="item.work_time">{{ item.work_time?item.work_time:'-' }}</p>
+            <p class="xx" v-if="item.rest">{{ item.rest?item.rest:'-' }}</p>
+            <div class="welfare" v-if="item.company_welfare">
               <span v-for="welfare in JSON.parse(item.company_welfare)" :key="welfare">{{ welfare }}</span>
             </div>
           </div>
@@ -150,6 +150,8 @@ import {addSend} from "@/api"
 import {useUserInfo} from "@/store/user"
 import {message} from 'ant-design-vue'
 import {useUserLoginState} from "@/hooks/useUserLoginState"
+import { useValidateResume } from "@/hooks/useValidateResume";
+import {getTime} from "@/utils/formatTime"
 const {userId} = useUserInfo()
 defineProps<{companyDetailData:ICompanyDetailData}>()
 const router = useRouter();
@@ -163,6 +165,7 @@ const navigatePosDetails = (position_id:string)=>{
 }
 const sendPos = async(position_id:string,company_id:string)=>{
   if(!useUserLoginState()) return
+  if (!useValidateResume()) return;
   const res:any = await addSend({userId,position_id,company_id})
   if(res.code!==200) return message.error(res.msg)
   message.success("投递成功")
