@@ -9,8 +9,8 @@
                     <span class="flex-span"><expIcon/>{{ data.leave_schoolTime }}</span>
                     <span class="flex-span"><degreeIcon/>{{ data.degree }}</span>
                     <span class="flex-span"><stateIcon/>{{ data.apply_state }}</span>
-                    <span class="flex-span">{{ data.phone }}</span>
-                    <span class="flex-span">{{ data.email }}</span>
+                    <span class="flex-span"><PhoneOutlined/>{{ data.phone }}</span>
+                    <span class="flex-span"><MailOutlined/>{{ data.email }}</span>
                 </p>
                 <div class="user-skill">
                     <pre>
@@ -76,6 +76,7 @@ import birthcakeIcon from './components/BirthCake/index.vue'
 import degreeIcon from './components/degreeIcon/index.vue'
 import stateIcon from './components/stateIcon/index.vue'
 import expIcon from './components/expIcon/index.vue'
+import { PhoneOutlined, MailOutlined } from '@ant-design/icons-vue'
 const props = defineProps({
     userId: {
         type: String
@@ -155,7 +156,7 @@ watch(userId, (newVal, oldVal) => {
     border-radius: 10px;
     padding: 15px;
     .userinfo-container{
-        width: 95%;
+        width: 100%;
         min-height: 150px;
         display: flex;
         .user-avatar{
@@ -165,7 +166,7 @@ watch(userId, (newVal, oldVal) => {
         }
         .userinfo{
             width: calc(100% - 100px);
-            margin-left: 20px;
+            margin-left: 35px;
             min-height: 150px;
             .username{
                 font-size: 26px;
@@ -182,6 +183,10 @@ watch(userId, (newVal, oldVal) => {
                 min-height: 150px;
             }
         }
+        ::v-deep(.anticon){
+            display: inline-flex;
+            align-items: center;
+        }
     }
     .hope-job{
         .title{
@@ -192,7 +197,7 @@ watch(userId, (newVal, oldVal) => {
             font-weight: bold;
         }
         .hope-detail{
-            margin: 0 20px;
+            margin: 0 32px;
         }
     }
     .job-exp{

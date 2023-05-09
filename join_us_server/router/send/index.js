@@ -154,7 +154,6 @@ sendRouter.get("/send/deliveryRecord", (req, res) => {
 // 修改投递状态
 sendRouter.get('/send/updateDeliveryState', (req, res) => {
   const { sendId, type } = req.query;
-  console.log(sendId, type);
   let sql = ''
   if (type === 'interview') {
     sql = `update send set types='${1}' where sendId = '${sendId}'`
@@ -176,7 +175,6 @@ sendRouter.get('/send/updateDeliveryState', (req, res) => {
 // 查看在线简历
 sendRouter.get('/send/onlineResume', (req, res) => {
   const { userId } = req.query
-  console.log(userId);
   const resume_sql = `select * from resume where userId = '${userId}'`
   const userInfo_sql = `select * from userinfo where userId = '${userId}'`
   query(resume_sql, (result1) => {
