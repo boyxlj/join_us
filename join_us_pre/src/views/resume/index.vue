@@ -321,7 +321,7 @@ const resumeList: IResumeData[] = computed(
 ) as unknown as IResumeData[];
 const activeMenu = ref(0);
 
-const previewResumeVisible = ref(true);
+const previewResumeVisible = ref(false);
 const previewResume = () => {
   if (!useValidateResume(false)) {
     message.warning("请先编辑简历信息");
