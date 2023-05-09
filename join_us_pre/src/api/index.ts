@@ -1,6 +1,6 @@
 import request from '@/api/request'
 // 用户登陆
-export const userLogin = (data:{email:string,validateCode:string}) => {
+export const userLogin = (data: { email: string, validateCode: string }) => {
   return request({
     url: '/user/login',
     method: 'post',
@@ -9,7 +9,7 @@ export const userLogin = (data:{email:string,validateCode:string}) => {
 }
 
 //用户发送验证码
-export const userSendCode = (email:string) => {
+export const userSendCode = (email: string) => {
   return request({
     url: '/user/email/coder',
     method: 'post',
@@ -20,7 +20,7 @@ export const userSendCode = (email:string) => {
 }
 
 //获取用户信息
-export const getUser = (userId:string) => {
+export const getUser = (userId: string) => {
   return request({
     url: '/user',
     method: 'post',
@@ -31,7 +31,7 @@ export const getUser = (userId:string) => {
 }
 
 //修改用户信息
-export const updateUser = (data:any) => {
+export const updateUser = (data: any) => {
   return request({
     url: '/user',
     method: 'patch',
@@ -40,7 +40,7 @@ export const updateUser = (data:any) => {
 }
 
 //添加用户简历
-export const addUserResume = (data:any) => {
+export const addUserResume = (data: any) => {
   return request({
     url: '/user/add/resume',
     method: 'post',
@@ -48,7 +48,7 @@ export const addUserResume = (data:any) => {
   })
 }
 //修改用户简历
-export const updateUserResume = (data:any) => {
+export const updateUserResume = (data: any) => {
   return request({
     url: '/user/resume',
     method: 'patch',
@@ -75,7 +75,7 @@ export const getPositionType = () => {
 }
 
 //查询职位列表
-export const getPositionList = (data:any) => {
+export const getPositionList = (data: any) => {
   return request({
     url: '/positions',
     method: 'post',
@@ -83,7 +83,7 @@ export const getPositionList = (data:any) => {
   })
 }
 //查询首页搜索框热搜职位列表
-export const getPositionHotSearchList = (cityName:string) => {
+export const getPositionHotSearchList = (cityName: string) => {
   return request({
     url: `/position/hot?cityName=${cityName}`,
     method: 'get'
@@ -99,21 +99,21 @@ export const getPositionByHot = (position_type1: string) => {
 }
 // 获取职位详情
 export const getJobDetail = (position_id: string) => {
-    return request({
-        url: `/positionDetail`,
-        method: 'get',
-        params: {
-            position_id: position_id
-        }
-    })
+  return request({
+    url: `/positionDetail`,
+    method: 'get',
+    params: {
+      position_id: position_id
+    }
+  })
 }
 
 //随机排序查询职位列表  /position/by/rand?cityName=天津&num=6&isRandom=true
-export const getSortOrRandomPosition = (data:{cityName:string,num?:number,isRandom?:boolean}) => {
+export const getSortOrRandomPosition = (data: { cityName: string, num?: number, isRandom?: boolean }) => {
   return request({
-      url: `/position/by/rand`,
-      method: 'get',
-      params: data
+    url: `/position/by/rand`,
+    method: 'get',
+    params: data
   })
 }
 
@@ -170,15 +170,15 @@ export const addSend = (data: Record<string, any>) => {
   })
 }
 //查询用户投递记录
-export const selectSend = (data:any) => {
+export const selectSend = (data: any) => {
   return request({
     url: 'sends',
     method: 'get',
-    params:data
+    params: data
   })
 }
 //取消/删除用户投递
-export const cancelOrDelSend = (data:any) => {
+export const cancelOrDelSend = (data: any) => {
   return request({
     url: 'send',
     method: 'delete',
@@ -196,15 +196,15 @@ export const addCollect = (data: Record<string, any>) => {
   })
 }
 //查询用户收藏
-export const selectCollect= (data:any) => {
+export const selectCollect = (data: any) => {
   return request({
     url: 'collects',
     method: 'get',
-    params:data
+    params: data
   })
 }
 //删除用户收藏
-export const deleteCollect = (data:any) => {
+export const deleteCollect = (data: any) => {
   return request({
     url: 'collect',
     method: 'delete',
@@ -214,19 +214,19 @@ export const deleteCollect = (data:any) => {
 
 
 //获取用户的收藏和投递状态
-export const collectOrSendState = (data:any) => {
+export const collectOrSendState = (data: any) => {
   return request({
     url: 'state',
     method: 'get',
-    params:data
+    params: data
   })
 }
 //查询用户所有投递状态(数量)
-export const allSendNum = (userId:string) => {
+export const allSendNum = (userId: string) => {
   return request({
     url: '/send/num',
     method: 'get',
-    params:{userId}
+    params: { userId }
   })
 }
 // hr删除职位
@@ -279,10 +279,46 @@ export const selectCompanysPositions = (data: Record<string, any>) => {
   })
 }
 //查询公司所有职位以及公司信息及公司详情
-export const selectCompanysDetail = (company_id:string) => {
+export const selectCompanysDetail = (company_id: string) => {
   return request({
     url: '/companyInfo',
     method: 'post',
-    data:{company_id}
+    data: { company_id }
+  })
+}
+// 获取投递继立列表
+export const deliveryRecord = (company_id: string, telephone: string, pageIndex: number, pageSize: number) => {
+  return request({
+    url: '/send/deliveryRecord',
+    method: 'get',
+    params: {
+      company_id: company_id,
+      telephone: telephone,
+      pageIndex: pageIndex,
+      pageSize: pageSize
+    }
+  })
+}
+
+// 更改投递状态
+export const updateDeliveryState = (sendId: string, type: string) => {
+  return request({
+    url: '/send/updateDeliveryState',
+    method: 'get',
+    params: {
+      sendId,
+      type
+    }
+  })
+}
+
+// hr查看在线简历
+export const onlineResume = (userId: string) => {
+  return request({
+    url: '/send/onlineResume',
+    method: 'get',
+    params: {
+      userId
+    }
   })
 }

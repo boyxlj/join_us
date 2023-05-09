@@ -92,4 +92,106 @@ sendRouter.get('/send/num',(req,res)=>{
     })
   })
 })
+
+// 指定公司和hr查询投递记录
+sendRouter.get("/send/deliveryRecord", (req, res) => {
+  const { company_id, telephone, pageIndex, pageSize } = req.query
+  const hr_sql = `select hr_id from hr where telephone = '${telephone}'`
+  query(hr_sql, (result) => {
+    const hr_id = result[0].hr_id
+    const sql = `select userId, position_name from send inner join pos on pos.position_id = send.position_id where send.company_id = '${company_id}' and send.hr_id = '${hr_id}'`;
+    query(sql, (result2) => {
+      const user_sql = `
+        SELECT
+          sendId,
+          send.userId,
+          position_name,
+          name,
+          age,
+          gender,
+          degree,
+          hope_salary,
+          born,
+          apply_state,
+          phone,
+          email,
+          hope_job,
+          major,
+          avatar,
+          school,
+          enter_schoolTime,
+          leave_schoolTime,
+          advantage,
+          school_type,
+          school_exp,
+          hope_city,
+          hope_job_type,
+          sendTime,
+          types
+        FROM
+          send
+          INNER JOIN pos ON pos.position_id = send.position_id
+          INNER JOIN userinfo ON userinfo.userId = send.userId
+        WHERE
+          send.company_id = '${company_id}' 
+          AND send.hr_id = '${hr_id}' limit ${(pageIndex - 1) * pageSize}, ${pageSize}`
+      query(user_sql, (result3) => {
+        if (result3.length) {
+          res.status(200).send({
+            code: 200,
+            data: result3,
+            msg: '查询成功',
+            total: result2.length
+          })
+        } else {
+          return returnErr(res, '查询失败')
+        }
+      })
+    })
+  })
+});
+
+// 修改投递状态
+sendRouter.get('/send/updateDeliveryState', (req, res) => {
+  const { sendId, type } = req.query;
+  let sql = ''
+  if (type === 'interview') {
+    sql = `update send set types='${1}' where sendId = '${sendId}'`
+  } else {
+    sql = `update send set types='${2}' where sendId = '${sendId}'`;
+  }
+  query(sql, (result) => {
+    if (result.affectedRows === 1) {
+      res.send({
+        code: 200,
+        msg: '更新状态成功'
+      })
+    } else {
+      return returnErr(res, "更新状态失败");
+    }
+  })
+})
+
+// 查看在线简历
+sendRouter.get('/send/onlineResume', (req, res) => {
+  const { userId } = req.query
+  const resume_sql = `select * from resume where userId = '${userId}'`
+  const userInfo_sql = `select * from userinfo where userId = '${userId}'`
+  query(resume_sql, (result1) => {
+      query(userInfo_sql, (result2) => {
+        if (result2.length) {
+          const data = result2[0]
+          data.resume = result1
+          // data.advantage.replaceAll(/\\n/, '<br/>')
+          res.send({
+            code: 200,
+            data: data,
+            msg: '查询成功'
+          })
+        } else {
+          return returnErr(res, '查询失败!')
+        }
+      })
+  })
+})
 module.exports = sendRouter

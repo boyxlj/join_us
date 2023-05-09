@@ -24,14 +24,16 @@
                         查看
                     </a-button>
                     <br>
-                    <a-button @click="editOrAddPosition(record.position_id)" style="font-size: 14px; margin-bottom: 5px;" type="primary" size="small">
+                    <a-button @click="editOrAddPosition(record.position_id)" style="font-size: 14px; margin-bottom: 5px;"
+                        type="primary" size="small">
                         <template #icon>
                             <EditOutlined />
                         </template>
                         编辑
                     </a-button>
                     <br>
-                    <a-button @click="delPosition(record.position_id)" style="font-size: 14px; margin-bottom: 5px;" type="primary" size="small">
+                    <a-button @click="delPosition(record.position_id)" style="font-size: 14px; margin-bottom: 5px;"
+                        type="primary" size="small">
                         <template #icon>
                             <DeleteOutlined />
                         </template>
@@ -67,25 +69,28 @@
     </a-modal>
     <a-modal style="width: 900px;" ok-text="确认" cancel-text="关闭" v-model:visible="addVisible" title="职位信息填写"
         @ok="addPositionHandle" @cancel="cancel">
-        <a-form :rules="rulesRef" :model="formState" :label-col="{ span: 5 }" :wrapper-col="{ span: 16 }">
+        <a-form ref="formRef" :rules="rulesRef" :model="formState" :label-col="{ span: 5 }" :wrapper-col="{ span: 16 }">
             <a-form-item label="职位名称" name="position_name">
                 <a-input v-model:value="formState.position_name" />
             </a-form-item>
             <a-form-item label="职位薪资" name="salary">
                 <a-input v-model:value="formState.salary" />
             </a-form-item>
-            <a-form-item label="发布城市" name="city">
+            <a-form-item label="工作地点" name="city">
                 <a-cascader v-model:value="formState.cityArr" :options="cityList"
                     :field-names="{ label: 'name', value: 'name', children: 'subLevelModelList' }"
                     placeholder="请选择职位发布城市" />
             </a-form-item>
             <a-form-item label="职位分类" name="position_type">
-                    <a-cascader v-model:value="formState.position_type" :options="positionTypeListCom"
-                        :field-names="{ label: 'position_type_name', value: 'position_type_id', children: 'children' }"
-                        placeholder="请选择职位分类" />
-                </a-form-item>
+                <a-cascader v-model:value="formState.position_type" :options="positionTypeListCom"
+                    :field-names="{ label: 'position_type_name', value: 'position_type_id', children: 'children' }"
+                    placeholder="请选择职位分类" />
+            </a-form-item>
             <a-form-item label="工作经验" name="experiences">
-                <a-input v-model:value="formState.experiences" />
+                <a-select v-model:value="formState.experiences" placeholder="请选择经验要求">
+                    <a-select-option v-for="(item, index) in experiencesArr" :key="index" :value="item.value">{{ item.name
+                    }}</a-select-option>
+                </a-select>
             </a-form-item>
             <a-form-item label="学历要求" name="position_name">
                 <a-select v-model:value="formState.degrees">
@@ -94,7 +99,8 @@
                 </a-select>
             </a-form-item>
             <a-form-item label="福利待遇" name="welfare_tag">
-                <a-input v-model:value="formState.welfare_tag" placeholder="请填写福利待遇，每项福利待遇间以英文逗号分隔" />
+                <a-select v-model:value="formState.welfare_tag" mode="tags" style="width: 100%"
+                    placeholder="请填写福利待遇"></a-select>
             </a-form-item>
             <a-form-item label="岗位描述" name="position_desc">
                 <a-textarea v-model:value="formState.position_desc" showCount :rows="4" placeholder="请填写岗位描述" />
@@ -113,6 +119,7 @@
 import { hrPositionManage, hrPositionDetail, hrAddPosition, hrDelPosition, hrEditPosition, hrEditPosition2 } from '@/api'
 import { EyeOutlined, EditOutlined, DeleteOutlined, PlusSquareOutlined } from '@ant-design/icons-vue'
 import { Form, message } from 'ant-design-vue'
+import type { FormInstance } from 'ant-design-vue'
 interface position {
     id: number;
     position_id: string;
@@ -140,11 +147,12 @@ interface formType {
     cityArr: string[],
     experiences: string,
     degrees: string,
-    welfare_tag: string,
+    welfare_tag: [],
     position_desc: string,
     job_type: string,
     position_type: [],
 }
+const formRef = ref<FormInstance>()
 const propertyMap: Record<string, string> = {
     position_name: '职位名称',
     salary: '薪资',
@@ -241,13 +249,51 @@ const positionTypeListCom = computed<[]>(() => {
     return resultArr
 })
 const useForm = Form.useForm
+const experiencesArr = ref([
+    {
+        name: '不限',
+        value: '不限'
+    },
+    {
+        name: '在校生',
+        value: '在校生'
+    },
+    {
+        name: '应届生',
+        value: '应届生'
+    },
+    {
+        name: '经验不限',
+        value: '经验不限'
+    },
+    {
+        name: '1年以内',
+        value: '1年以内'
+    },
+    {
+        name: '1-3年',
+        value: '1-3年'
+    },
+    {
+        name: '3-5年',
+        value: '3-5年'
+    },
+    {
+        name: '5-10年',
+        value: '5-10年'
+    },
+    {
+        name: '10年以上',
+        value: '10年以上'
+    },
+])
 const formState = reactive<formType>({
     position_name: '',
     salary: '',
     cityArr: [],
     experiences: '',
     degrees: '',
-    welfare_tag: '',
+    welfare_tag: [],
     position_desc: '',
     job_type: '',
     position_type: []
@@ -264,6 +310,7 @@ const rulesRef = reactive({
     position_type1: [{ required: true, message: '该字段不能为空!', trigger: 'blur' }],
     position_type2: [{ required: true, message: '该字段不能为空!', trigger: 'blur' }]
 })
+const router = useRouter()
 const { validate } = useForm(formState, rulesRef)
 const getDetail = () => {
     hrPositionManage(localStorage.getItem('company_id') as string, pageIndex.value, pageSize.value).then((res: any) => {
@@ -301,7 +348,6 @@ const btnText = ref('')
 const position_id_variable = ref('')
 // 切换页数
 const changePage = (page: number) => {
-    console.log(page)
     pageIndex.value = page
     getDetail()
 }
@@ -318,6 +364,9 @@ const lookDetail = (position_id: string) => {
 const addPositionHandle = async () => {
     if (btnText.value === 'edit') {
         await validate()
+        if (!formState.salary.includes('k') && !formState.salary.includes('K')) {
+            formState.salary = formState.salary + 'k'
+        }
         hrEditPosition2({ position_id: position_id_variable.value, formData: formState }).then((res: any) => {
             if (res.code === 200) {
                 message.success(res.msg)
@@ -339,6 +388,9 @@ const addPositionHandle = async () => {
         await validate()
         const company_id = localStorage.getItem('company_id') as string
         const telephone = JSON.parse(localStorage.getItem('loginInfo') as string).telephone
+        if (!formState.salary.includes('k')) {
+            formState.salary = formState.salary + 'k'
+        }
         hrAddPosition({ company_id: company_id, telephone: telephone, formData: formState }).then((res: any) => {
             if (res.code === 200) {
                 message.success(res.msg)
@@ -372,7 +424,7 @@ const editOrAddPosition = (position_id?: string) => {
             formState.salary = data.salary
             formState.experiences = data.experiences
             formState.degrees = data.degrees
-            formState.welfare_tag = JSON.parse(data.welfare_tag).toString()
+            formState.welfare_tag = JSON.parse(data.welfare_tag)
             formState.job_type = job_typeArr.value.filter(item => item.value === data.job_type)[0].value
             formState.position_type.push(data.position_type1 as never)
             formState.position_type.push(data.position_type2 as never)
@@ -397,6 +449,7 @@ const delPosition = (position_id: string) => {
     })
 }
 const cancel = () => {
+    formRef.value?.resetFields()
     let i: keyof formType
     for (i in formState) {
         if (Array.isArray(formState[i])) {
