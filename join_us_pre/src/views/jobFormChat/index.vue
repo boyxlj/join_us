@@ -18,12 +18,12 @@
         <a-spin size="large" class="loading" v-if="loading" />
         <template v-else>
           <sendListComponent
-          @refreshData="refreshData"
-          :activeIdx="activeIdx"
-          :sendList="sendList"
-          v-if="sendList.length"
-        />
-        <Empty v-else msg="没有查询到相对应的数据" />
+            @refreshData="refreshData"
+            :activeIdx="activeIdx"
+            :sendList="sendList"
+            v-if="sendList.length"
+          />
+            <Empty v-else msg="没有查询到相对应的数据" />
         </template>
       </div>
       <a-pagination
@@ -37,13 +37,13 @@
       />
     </div>
     <div class="right">
-      <UserInfoBox/>
+      <UserInfoBox />
       <PositionCard origin="sort" title="最新职位"></PositionCard>
       <PositionCard></PositionCard>
     </div>
     <div class="navbar">
-    <Navbar />
-  </div>
+      <Navbar />
+    </div>
   </div>
 </template>
 
@@ -51,26 +51,25 @@
 import sendListComponent from "./components/sendList/index.vue";
 import UserInfoBox from "@/components/common/userInfoBox/index.vue";
 import PositionCard from "@/components/common/positionCard/index.vue";
-import { selectSend,selectCollect } from "@/api";
+import { selectSend, selectCollect } from "@/api";
 import { ISendData } from "@/types/send";
 import { useUserInfo } from "@/store/user";
-import Empty from "@/components/common/empty/index.vue"
-const router = useRouter()
-const route = useRoute()
+import Empty from "@/components/common/empty/index.vue";
+const router = useRouter();
+const route = useRoute();
 const { userId } = useUserInfo();
 const formPageNation = reactive({
   pageOn: 1,
   pageSize: 15,
 });
 
-
-onMounted(()=>{
-  if(!route.query.tag){
-    router.push(`/home/user/jobs/fromChat?tag=${0}`)
-  }else{
-    activeIdx.value =(route.query.tag as any) *1
+onMounted(() => {
+  if (!route.query.tag) {
+    router.push(`/home/user/jobs/fromChat?tag=${0}`);
+  } else {
+    activeIdx.value = (route.query.tag as any) * 1;
   }
-})
+});
 const total = ref(0);
 const sendList = ref<ISendData[]>([]);
 onMounted(() => {
@@ -80,63 +79,67 @@ onMounted(() => {
 //取消或删除投递记录成功后更新数据
 const refreshData = () => {
   getUserSends();
-  useUserInfo().getAllSendNum()
+  useUserInfo().getAllSendNum();
 };
 
-watch(()=>route.fullPath,()=>{
-    activeIdx.value =(route.query.tag as any) *1
-})
+watch(
+  () => route.fullPath,
+  () => {
+    activeIdx.value = (route.query.tag as any) * 1;
+  }
+);
 
-const loading=ref(false)
+const loading = ref(false);
 const changePageNation = (page: number, pageSize: number) => {
   formPageNation.pageOn = page;
   document.documentElement.scrollTo({ top: 0, behavior: "smooth" });
   getUserSends();
 };
 
-const noLoading = ref(true)
+const noLoading = ref(true);
 //获取投递数据
 const getUserSends = async () => {
- 
-  if(noLoading.value){
-    loading.value = true
+  if (noLoading.value) {
+    loading.value = true;
   }
-  let res:any= null
-  if(activeIdx.value===3){
-     res= await selectCollect({userId, ...formPageNation });
-  }else{
-    res=  await selectSend({types:activeIdx.value, userId, ...formPageNation });
+  let res: any = null;
+  if (activeIdx.value === 3) {
+    res = await selectCollect({ userId, ...formPageNation });
+  } else {
+    res = await selectSend({
+      types: activeIdx.value,
+      userId,
+      ...formPageNation,
+    });
   }
 
   if (res.code !== 200) {
     return (sendList.value = []);
   }
-  if(noLoading.value){
-    setTimeout(()=>{
+  if (noLoading.value) {
+    setTimeout(() => {
       total.value = res.total;
       sendList.value = res.data;
-      loading.value = false
-    },1000)
-  }else{
+      loading.value = false;
+    }, 1000);
+  } else {
     total.value = res.total;
     sendList.value = res.data;
-    loading.value = false
+    loading.value = false;
   }
-  noLoading.value = false
+  noLoading.value = false;
 };
 
 const selectList = ["已投递", "约面试", "不合适", "感兴趣"];
 const activeIdx = ref(0);
 const changeActiveIndx = (idx: number) => {
-  if(loading.value) return
+  if (loading.value) return;
   activeIdx.value = idx;
-  noLoading.value = true
-  formPageNation.pageOn=1
-  router.push(`/home/user/jobs/fromChat?tag=${idx}`)
-  getUserSends()
+  noLoading.value = true;
+  formPageNation.pageOn = 1;
+  router.push(`/home/user/jobs/fromChat?tag=${idx}`);
+  getUserSends();
 };
-
-
 </script>
 
 <style lang="less" scoped>
@@ -222,9 +225,16 @@ const changeActiveIndx = (idx: number) => {
     }
     .list {
       margin-top: 20px;
-      .loading{
-        width: 100%;height: 300px; display: flex;justify-content: center;align-items: center;
+      .loading {
+        width: 100%;
+        height: 360px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        // background: #fff !important;
+        border-radius: 10px;
       }
+     
     }
   }
   .right {
@@ -233,7 +243,7 @@ const changeActiveIndx = (idx: number) => {
   }
 }
 
-.pageNation{
+.pageNation {
   display: flex;
   justify-content: center;
   align-items: center;
