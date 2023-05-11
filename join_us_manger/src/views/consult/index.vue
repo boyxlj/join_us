@@ -1,14 +1,194 @@
 <template>
   <div class="consult">
-    <a-button type="primary" @click="navigatePublicConsult">发布资讯</a-button>
+    <a-button type="primary" @click="openModelVisible()">发布资讯</a-button>
+    <a-table
+      class="table"
+      @page-change="changePageNation"
+      :pagination="pageNationParams"
+      :data="consultData"
+    >
+      <template #columns>
+        <a-table-column title="发布者" data-index="manger_id"></a-table-column>
+        <a-table-column title="头像" data-index="manger_id"></a-table-column>
+        <a-table-column title="标题" data-index="title"></a-table-column>
+        <a-table-column title="分类" data-index="category">
+          <template #cell="{ record }">
+            <a-tag color="arcoblue">{{ record.category }}</a-tag>
+          </template>
+        </a-table-column>
+        <a-table-column title="状态">
+          <template #cell="{ record }">
+            <a-switch
+              @change="changeSwitch($event, record.consult_id)"
+              v-model="record.state"
+              checked-value="1"
+              uncheckedValue="0"
+            >
+              <template #checked> 正常 </template>
+              <template #unchecked> 隐藏 </template>
+            </a-switch>
+          </template>
+        </a-table-column>
+        <a-table-column title="发布时间" data-index="publish_time">
+          <template #cell="{ record }">
+            <a-tooltip :content="getTime(record.publish_time, 'time')">
+              <span>{{ getTimeBefore(record.publish_time) }}</span>
+            </a-tooltip>
+          </template>
+        </a-table-column>
+        <a-table-column title="操作" data-index="category">
+          <template #cell="{ record }">
+            <a-button type="primary" @click="seeConsult(record.consult_id)"
+              >查看</a-button
+            >
+            <a-button
+              type="primary"
+              style="margin: 0 10px"
+              status="warning"
+              @click="openModelVisible(record.consult_id)"
+              >编辑</a-button
+            >
+            <a-button
+              type="primary"
+              status="danger"
+              @click="deleteConsult(record.consult_id)"
+              >删除</a-button
+            >
+          </template>
+        </a-table-column>
+      </template>
+    </a-table>
+    <!-- 发布、修改资讯对话框 -->
+    <a-modal
+      :footer="false"
+      :width="1200"
+      v-model:visible="consultModelVisible"
+      @ok="consultModelOk"
+      @cancel="consultModelCancel"
+    >
+      <template #title>{{
+        itemConsult.length ? "编辑资讯" : "发布资讯"
+      }}</template>
+      <ConsultForm
+        :consultModelVisible="consultModelVisible"
+        :validateForm="validateForm"
+        :itemConsult="itemConsult"
+      />
+    </a-modal>
   </div>
 </template>
 
 <script setup lang="ts">
-const router = useRouter()
-const navigatePublicConsult = ()=>{
-  router.push('/public/consult')
-}
+import ConsultForm from "./components/consultForm/index.vue";
+import {
+  publishConsult,
+  updateConsult,
+  selectConsult,
+  updateConsultState,
+  delConsult
+} from "@/api";
+import { Message, Modal } from "@arco-design/web-vue";
+import { getTime, getTimeBefore } from "@/utils/formatTime";
+import { IConsultData } from "@/types/consult";
+const consultModelVisible = ref(false);
+const consultData = ref<IConsultData[]>([]);
+
+const pageNationParams = reactive({
+  pageOn: 1,
+  pageSize: 2,
+  total: 2,
+});
+const changePageNation = (pageOn: number) => {
+  pageNationParams.pageOn = pageOn;
+  getConsult();
+};
+
+const changeSwitch = async (state, consult_id) => {
+  const res: any = await updateConsultState({ state, consult_id });
+  if (res.code !== 200) {
+    Message.error(res.msg);
+    getConsult();
+    return;
+  }
+  Message.success("状态修改成功");
+  getConsult();
+};
+
+//提交修改或发布
+const validateForm = async (isShow: boolean = true, value) => {
+  if (!isShow) return (consultModelVisible.value = false);
+  console.log(value);
+  if (value?.consult_id) {
+    const res: any = await updateConsult(value);
+    if (res.code !== 200) {
+      return Message.error(res.msg);
+    }
+    Message.success(res.msg);
+    consultModelVisible.value = false;
+  } else {
+    const res: any = await publishConsult(value);
+    if (res.code !== 200) {
+      return Message.error(res.msg);
+    }
+    Message.success(res.msg);
+    consultModelVisible.value = false;
+  }
+  getConsult();
+};
+onMounted(() => {
+  getConsult();
+});
+
+const itemConsult = ref<IConsultData[]>([]);
+
+//获取资讯数据
+const getConsult = async () => {
+  const res: any = await selectConsult(pageNationParams);
+  console.log(res);
+  if (res.code !== 200) return (consultData.value = []);
+  consultData.value = res.data;
+  pageNationParams.total = res.total;
+};
+const consultModelOk = () => {
+  consultModelVisible.value = false;
+  itemConsult.value = [];
+};
+const consultModelCancel = () => {
+  consultModelVisible.value = false;
+  itemConsult.value = [];
+};
+const openModelVisible = (consult_id?: string) => {
+  if (consult_id) {
+    itemConsult.value = consultData.value?.filter(
+      (item) => item.consult_id === consult_id
+    );
+  }
+  consultModelVisible.value = true;
+};
+
+//点击查看
+const seeConsult = (consult_id: string) => {};
+//点击删除
+const deleteConsult = (consult_id: string) => {
+  Modal.confirm({
+    title: "温馨提示",
+    content: "您确认要永久删除当前资讯信息么？",
+    onOk : async()=>{
+        const res: any = await delConsult(consult_id);
+        if (res.code !== 200) {
+          return Message.error(res.msg);
+        }
+        Message.success(res.msg);
+        getConsult()
+    }
+  });
+};
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.consult {
+  .table {
+    margin-top: 20px;
+  }
+}
+</style>
