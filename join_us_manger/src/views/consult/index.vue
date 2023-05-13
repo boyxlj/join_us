@@ -10,7 +10,13 @@
       <template #columns>
         <a-table-column title="发布者" data-index="manger_id"></a-table-column>
         <a-table-column title="头像" data-index="manger_id"></a-table-column>
-        <a-table-column title="标题" data-index="title"></a-table-column>
+        <a-table-column title="标题" data-index="title">
+          <template #cell="{ record }">
+            <a-tooltip :content="record.title">
+              <span  class="tableTitle">{{record.title}}</span>
+            </a-tooltip>
+          </template>
+        </a-table-column>
         <a-table-column title="分类" data-index="category">
           <template #cell="{ record }">
             <a-tag color="arcoblue">{{ record.category }}</a-tag>
@@ -62,6 +68,7 @@
     <a-modal
       :footer="false"
       :width="1200"
+      :mask-closable="false"
       v-model:visible="consultModelVisible"
       @ok="consultModelOk"
       @cancel="consultModelCancel"
@@ -74,12 +81,26 @@
         :validateForm="validateForm"
         :itemConsult="itemConsult"
       />
+
+
     </a-modal>
+      <!-- 查看模态框 -->
+      <a-modal
+      v-model:visible="selectModel"
+      :width="1200"
+      :footer="null"
+      :mask-closable="false"
+    >
+      <template #title> 查看资讯 </template>
+      <SelectConsult :selectConsultData="selectConsultData" />
+    </a-modal>
+
   </div>
 </template>
 
 <script setup lang="ts">
 import ConsultForm from "./components/consultForm/index.vue";
+import SelectConsult from "./components/selectConsult/index.vue";
 import {
   publishConsult,
   updateConsult,
@@ -90,12 +111,13 @@ import {
 import { Message, Modal } from "@arco-design/web-vue";
 import { getTime, getTimeBefore } from "@/utils/formatTime";
 import { IConsultData } from "@/types/consult";
+import {useAuth} from "@/hooks/useAuth"
+const isAuth = useAuth()
 const consultModelVisible = ref(false);
 const consultData = ref<IConsultData[]>([]);
-
 const pageNationParams = reactive({
   pageOn: 1,
-  pageSize: 2,
+  pageSize: 15,
   total: 2,
 });
 const changePageNation = (pageOn: number) => {
@@ -116,8 +138,8 @@ const changeSwitch = async (state, consult_id) => {
 
 //提交修改或发布
 const validateForm = async (isShow: boolean = true, value) => {
+  if(!isAuth) return
   if (!isShow) return (consultModelVisible.value = false);
-  console.log(value);
   if (value?.consult_id) {
     const res: any = await updateConsult(value);
     if (res.code !== 200) {
@@ -144,19 +166,21 @@ const itemConsult = ref<IConsultData[]>([]);
 //获取资讯数据
 const getConsult = async () => {
   const res: any = await selectConsult(pageNationParams);
-  console.log(res);
   if (res.code !== 200) return (consultData.value = []);
   consultData.value = res.data;
   pageNationParams.total = res.total;
 };
+
 const consultModelOk = () => {
   consultModelVisible.value = false;
   itemConsult.value = [];
 };
+
 const consultModelCancel = () => {
   consultModelVisible.value = false;
   itemConsult.value = [];
 };
+
 const openModelVisible = (consult_id?: string) => {
   if (consult_id) {
     itemConsult.value = consultData.value?.filter(
@@ -167,13 +191,23 @@ const openModelVisible = (consult_id?: string) => {
 };
 
 //点击查看
-const seeConsult = (consult_id: string) => {};
+const selectModel = ref(false)
+const selectConsultData = ref<IConsultData[]>([])
+const seeConsult = (consult_id: string) => {
+  if (consult_id) {
+    selectConsultData.value = consultData.value?.filter(
+      (item) => item.consult_id === consult_id
+    );
+  }
+  selectModel.value = true
+};
 //点击删除
 const deleteConsult = (consult_id: string) => {
   Modal.confirm({
     title: "温馨提示",
     content: "您确认要永久删除当前资讯信息么？",
     onOk : async()=>{
+        if(!isAuth) return
         const res: any = await delConsult(consult_id);
         if (res.code !== 200) {
           return Message.error(res.msg);
@@ -190,5 +224,12 @@ const deleteConsult = (consult_id: string) => {
   .table {
     margin-top: 20px;
   }
+}
+.tableTitle{
+  display: inline-block;
+  max-width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>

@@ -59,6 +59,11 @@ export const routes: RouteRecordRaw[] = [
         component: lazyLoad('companyDetail'),
         meta:{title:'公司详情'}
       },
+      {
+        path: "consultDetail",
+        component: lazyLoad('consultDetail'),
+        meta:{title:'资讯详情'}
+      },
     ]
   },
   {

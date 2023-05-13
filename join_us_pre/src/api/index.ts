@@ -322,3 +322,28 @@ export const onlineResume = (userId: string) => {
     }
   })
 }
+
+//-----------资讯相关
+//查询资讯
+export const selectConsult = (data:any) => {
+  return request({
+    url: '/consults',
+    method: 'get',
+    params:data
+  })
+}
+//查询资讯分类
+export const selectConsultCategory = () => {
+  return request({
+    url: '/category',
+    method: 'get',
+  })
+}
+//查询指定资讯
+export const selectConsultOne = (consult_id:string) => {
+  return request({
+    url: '/consult',
+    method: 'get',
+    params:{consult_id}
+  })
+}

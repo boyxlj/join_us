@@ -4,7 +4,7 @@
       ref="formRef"
       size="large"
       :model="form"
-      :style="{ width: '1200px', textAlign: 'center' }"
+      :style="{ width: '1250px', textAlign: 'center' }"
       @submit="handleSubmit"
     >
       <a-form-item
@@ -48,7 +48,8 @@
           }}</a-option>
         </a-select>
       </a-form-item>
-      <a-form-item field="cover_img" label="配图">
+      <a-form-item field="cover_img" label="配图"
+      >
         <a-upload
           list-type="picture-card"
           :default-file-list="form.cover_img"
@@ -79,11 +80,24 @@
       </a-form-item>
       <a-form-item>
         <a-space>
-          <a-button html-type="submit" type="primary">发布资讯</a-button>
+          <a-button html-type="submit" type="primary">{{
+            itemConsult.length ? "提交修改" : "发布资讯"
+          }}</a-button>
+          <a-button @click="seeConsult" type="primary">预览</a-button>
           <a-button @click="cancelPublish">取消</a-button>
         </a-space>
       </a-form-item>
     </a-form>
+    <!-- 查看模态框 -->
+    <a-modal
+      v-model:visible="selectModel"
+      :width="1200"
+      :footer="null"
+      :mask-closable="false"
+    >
+      <template #title> 预览资讯 </template>
+      <SelectConsult :selectConsultData="selectConsultData" />
+    </a-modal>
   </div>
 </template>
 
@@ -91,14 +105,16 @@
 import MdEditor from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 import Axios from "axios";
+import SelectConsult from "../selectConsult/index.vue";
 import { uploadPhotoUrl } from "@/api/upload";
 import { toolbars } from "./toolbars";
 import { Message } from "@arco-design/web-vue";
 import { useConsultStore } from "@/store/consult";
 import { IConsultData } from "@/types/consult";
+import { useAuth } from "@/hooks/useAuth";
+const isAuth = useAuth();
 const { consultCategoryData } = useConsultStore();
 const formRef = ref();
-const fileList  = ref<any>([])
 const form = reactive({
   manger_id: `${new Date().getTime()}`,
   title: "",
@@ -114,26 +130,29 @@ const props = defineProps<{
   itemConsult: IConsultData[];
 }>();
 
-
 watch(
   () => props.itemConsult,
   () => {
     if (props.itemConsult.length) {
-      console.log(props.itemConsult)
-      form.manger_id = props.itemConsult[0].manger_id
-      form.consult_id = props.itemConsult[0].consult_id
-      form.title = props.itemConsult[0].title
-      form.descs = props.itemConsult[0].descs
-      form.cover_img.push({url:props.itemConsult[0].cover_img,name:"",uid:"",})
-      // fileList.value = [{url:props.itemConsult[0].cover_img,name:"",uid:"",}]
-      form.category = props.itemConsult[0].category
-      form.content = props.itemConsult[0].content
-      
-      console.log('%%%%',form)
-    }else{
-      form.manger_id=''
-      form.consult_id=''
-      form.cover_img=[]
+      form.manger_id = props.itemConsult[0].manger_id;
+      form.consult_id = props.itemConsult[0].consult_id;
+      form.title = props.itemConsult[0].title;
+      form.descs = props.itemConsult[0].descs;
+      form.category = props.itemConsult[0].category;
+      form.content = props.itemConsult[0].content;
+      if (props.itemConsult[0].cover_img) {
+        form.cover_img.push({
+          url: props.itemConsult[0].cover_img,
+          name: "",
+          uid: "",
+        });
+      } else {
+        form.cover_img = [];
+      }
+    } else {
+      form.manger_id = "";
+      form.consult_id = "";
+      form.cover_img = [];
     }
   }
 );
@@ -144,7 +163,13 @@ const uploadChange = (_, currentFile) => {
       return Message.error(currentFile.response.msg);
     } else {
       Message.success("配图上传成功");
-      form.cover_img = [currentFile.response.url];
+      form.cover_img = [
+        {
+          url: currentFile.response.url,
+          name: "",
+          uid: "",
+        },
+      ];
     }
   }
 };
@@ -163,13 +188,14 @@ const handleSubmit = ({ values, errors }) => {
     resArr.push(i);
   }
   if (!resArr.length) {
-    props.validateForm(true,{
+    props.validateForm(true, {
       ...values,
-      cover_img: form.cover_img.length ? form.cover_img[0] : "",
+      cover_img: form.cover_img.length ? form.cover_img[0]?.url : "",
     });
   }
 };
 const onUploadImg = async (files, callback) => {
+  if (!isAuth) return;
   const res = await Promise.all(
     files.map((file) => {
       return new Promise((rev, rej) => {
@@ -199,12 +225,35 @@ const cancelPublish = () => {
   props.validateForm(false);
   formRef.value.resetFields();
 };
+
+//点击查看
+const selectModel = ref(false);
+const selectConsultData = ref<IConsultData[]>([]);
+const seeConsult = async () => {
+  const res = await formRef.value.validate();
+  const resArr = [];
+  for (let i in res) {
+    resArr.push(i);
+  }
+  if (!resArr.length) {
+    selectModel.value = true;
+    selectConsultData.value = [
+      {
+        ...form,
+        consult_id: "",
+        id: -1,
+        manger_id: "",
+        cover_img: form.cover_img.length ? form.cover_img[0]?.url : "",
+      },
+    ];
+  }
+};
 </script>
 
 <style lang="less" scoped>
 .publicConsult {
   position: relative;
-  left: -150px;
+  left: -166px;
   .editor {
     width: 1600px;
   }

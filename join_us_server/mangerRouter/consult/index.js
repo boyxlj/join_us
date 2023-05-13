@@ -17,7 +17,8 @@ consultRouter.get('/category', (req, res) => {
 //发布资讯
 consultRouter.post('/consult', (req, res) => {
   let { manger_id, category, content, cover_img, title, descs } = req.body
-  if (!manger_id || !category || !content || !title || !descs) return returnErr(res, '参数错误')
+  // if (!manger_id || !category || !content || !title || !descs) return returnErr(res, '参数错误')
+  if ( !category || !content || !title || !descs) return returnErr(res, '参数错误')
   content = content?.replaceAll("'", '"')
   const sql = `insert into consult(manger_id,category,content,cover_img,title,descs,consult_id) 
   values('${manger_id}','${category}','${content}','${cover_img}','${title}','${descs}','${uuidv4()}') `
@@ -82,9 +83,9 @@ consultRouter.patch('/consult', (req, res) => {
   where consult_id = '${consult_id}'`
   query(sql, result => {
     if (result.affectedRows >= 1) {
-      res.send({ code: 200, msg: '资讯状态成功', data: null })
+      res.send({ code: 200, msg: '资讯修改成功', data: null })
     } else {
-      return returnErr(res, '资讯状态失败')
+      return returnErr(res, '资讯修改失败')
     }
   })
 })
