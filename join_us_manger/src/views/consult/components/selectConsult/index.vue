@@ -15,7 +15,7 @@
     <div class="descs">{{ item.descs }}</div>
     <div class="content"  >
       <div class="editor">
-      <MdEditor  previewOnly codeTheme="github" v-model="item.content" />
+      <MdEditor previewTheme="github"  previewOnly  v-model="item.content" />
       </div>
     </div>
 
@@ -54,7 +54,7 @@ defineProps<{selectConsultData:IConsultData[]}>()
     margin: 15px 0;
     justify-content: space-between;
     padding-bottom: 10px;
-        border-bottom: 1px solid #ededed;
+    border-bottom: 1px solid #ededed;
     .left{
       display: flex;
       align-items: center;

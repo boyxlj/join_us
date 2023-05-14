@@ -10,10 +10,12 @@
         <div class="desc">{{ item.descs }}</div>
         <div class="other">
           <li>
-            <span class="category">{{ item.category }}</span>
+            <span class="category">
+              <a-tag color="processing" style="border-radius: 4px;">{{ item.category }}</a-tag>
+              </span>
           </li>
           <li>
-            <span class="auth">{{ item.manger_id }}</span>
+            <span class="auth">{{ item.name }}</span>
             <span class="time">{{ getTime(item.publish_time) }}</span>
           </li>
         </div>

@@ -42,9 +42,10 @@ const router = useRouter()
 const route = useRoute()
 const {consultCategoryData} = useConsult()
 const categoryList = [
-  {id: 4, categoryName: '全部资讯'},
+  {id: 0, categoryName: '全部资讯'},
   ...consultCategoryData,
 ]
+
 const formPageNation = reactive({
   pageOn: 1,
   pageSize: 15,
@@ -53,10 +54,14 @@ const total = ref(0)
 const consultData = ref<IConsultData[]>([])
 
 onMounted(() => {
-  if (!route.query.tag) {
-    router.push(`/home/consult?tag=${4}`);
-  } else {
-    activeIdx.value = (route.query.tag as any) * 1;
+  const tags = route.query.tag as any *1
+  if (!tags) {
+    router.push(`/home/consult?tag=${0}`);
+  } else if(tags>categoryList.length-1|| tags<0){
+    activeIdx.value = 0
+    router.push(`/home/consult?tag=${0}`);
+  }else {
+    activeIdx.value = tags
   }
   getData()
 });
@@ -64,10 +69,10 @@ onMounted(() => {
 watch(
   () => route.fullPath,
   () => {
-    activeIdx.value = (route.query.tag as any) * 1;
+      activeIdx.value = (route.query.tag as any) * 1;
   }
 );
-const activeIdx = ref(4)
+const activeIdx = ref(0)
 
 const changeNav = (id:number)=>{
   formPageNation.pageOn = 1
@@ -84,7 +89,7 @@ const loading=ref(false)
 const getData = async ()=>{
   let params:any = { ...formPageNation}
   loading.value = true
-  if(activeIdx.value===4){
+  if(activeIdx.value===0){
     params = {...params,category:''}
   }else{
     params = {...params,category:categoryList[activeIdx.value].categoryName}

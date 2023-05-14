@@ -13,7 +13,7 @@
         :rules="[
           { required: true, message: '标题必须填写' },
           { minLength: 6, message: '标题不能少于6个字符' },
-          { maxLength: 20, message: '标题不能超过20个字符' },
+          { maxLength: 30, message: '标题不能超过30个字符' },
         ]"
         :validate-trigger="['change', 'input']"
       >
@@ -25,7 +25,7 @@
         :rules="[
           { required: true, message: '描述必须填写' },
           { minLength: 8, message: '描述不能少于8字符' },
-          { maxLength: 200, message: '标题不能超过200个字符' },
+          { maxLength: 200, message: '描述不能超过200个字符' },
         ]"
         :validate-trigger="['change', 'input']"
       >
@@ -75,6 +75,7 @@
             @onUploadImg="onUploadImg"
             :toolbars="toolbars"
             :preview="false"
+            previewTheme="github"
           />
         </div>
       </a-form-item>
@@ -92,7 +93,7 @@
     <a-modal
       v-model:visible="selectModel"
       :width="1200"
-      :footer="null"
+      :footer="false"
       :mask-closable="false"
     >
       <template #title> 预览资讯 </template>
@@ -102,6 +103,7 @@
 </template>
 
 <script setup lang="ts">
+
 import MdEditor from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 import Axios from "axios";
@@ -112,14 +114,15 @@ import { Message } from "@arco-design/web-vue";
 import { useConsultStore } from "@/store/consult";
 import { IConsultData } from "@/types/consult";
 import { useAuth } from "@/hooks/useAuth";
+import type {FileItem} from "@arco-design/web-vue"
 const isAuth = useAuth();
 const { consultCategoryData } = useConsultStore();
 const formRef = ref();
 const form = reactive({
-  manger_id: `${new Date().getTime()}`,
+  manger_id: '',
   title: "",
   descs: "",
-  cover_img: [],
+  cover_img: [] as FileItem[],
   category: "",
   content: "",
   consult_id: "",
@@ -134,7 +137,7 @@ watch(
   () => props.itemConsult,
   () => {
     if (props.itemConsult.length) {
-      form.manger_id = props.itemConsult[0].manger_id;
+      form.manger_id = props.itemConsult[0].manger_id as string;
       form.consult_id = props.itemConsult[0].consult_id;
       form.title = props.itemConsult[0].title;
       form.descs = props.itemConsult[0].descs;
@@ -157,7 +160,7 @@ watch(
   }
 );
 
-const uploadChange = (_, currentFile) => {
+const uploadChange = (_:any, currentFile:any) => {
   if (currentFile.status === "done") {
     if (currentFile.response.code !== 200) {
       return Message.error(currentFile.response.msg);
@@ -182,7 +185,7 @@ watch(
     }
   }
 );
-const handleSubmit = ({ values, errors }) => {
+const handleSubmit = ({ values, errors }:any) => {
   const resArr = [];
   for (let i in errors) {
     resArr.push(i);
@@ -194,7 +197,7 @@ const handleSubmit = ({ values, errors }) => {
     });
   }
 };
-const onUploadImg = async (files, callback) => {
+const onUploadImg = async (files:any, callback:any) => {
   if (!isAuth) return;
   const res = await Promise.all(
     files.map((file) => {
@@ -228,7 +231,7 @@ const cancelPublish = () => {
 
 //点击查看
 const selectModel = ref(false);
-const selectConsultData = ref<IConsultData[]>([]);
+const selectConsultData = ref<any[]>([]);
 const seeConsult = async () => {
   const res = await formRef.value.validate();
   const resArr = [];

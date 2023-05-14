@@ -23,7 +23,7 @@ uploadRouter.post('/user/avatar',upload.single('avatar'), (req, res) => {
   const {size,filename,originalname} = req.file    
   const allowImgType = ['png','jpg','jpeg']
   const preventImgType = originalname.split('.')[1]
-  if(!allowImgType.includes(preventImgType)) return returnErr(res,`图片类型只能为：${allowImgType.join('、')}`)
+  if(!allowImgType.includes(preventImgType.toLowerCase())) return returnErr(res,`图片类型只能为：${allowImgType.join('、')}`)
   if(size/1024/1024>2) return returnErr(res,'图像大小不能超过2M')
   res.send({code:200,msg:'图片上传成功',url:`${BaseUrl}/${filename}`})
 })

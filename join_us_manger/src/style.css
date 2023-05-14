@@ -13,3 +13,8 @@ a{
   text-decoration: none;
 }
 
+:root{
+  --themeColor:#62D8F5;
+  --radiusSize: 10px;
+}
+

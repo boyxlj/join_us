@@ -17,8 +17,7 @@ consultRouter.get('/category', (req, res) => {
 //发布资讯
 consultRouter.post('/consult', (req, res) => {
   let { manger_id, category, content, cover_img, title, descs } = req.body
-  // if (!manger_id || !category || !content || !title || !descs) return returnErr(res, '参数错误')
-  if ( !category || !content || !title || !descs) return returnErr(res, '参数错误')
+  if (!manger_id || !category || !content || !title || !descs) return returnErr(res, '参数错误')
   content = content?.replaceAll("'", '"')
   const sql = `insert into consult(manger_id,category,content,cover_img,title,descs,consult_id) 
   values('${manger_id}','${category}','${content}','${cover_img}','${title}','${descs}','${uuidv4()}') `
@@ -43,15 +42,21 @@ consultRouter.get('/consults', (req, res) => {
   let sql = ''
   let sqlCount = ''
   if (category) {
-    sqlCount = `select count(*) from consult where category = '${category}' `
-    sql = `select * from consult where category = '${category}'  order by id desc limit ${(pageOn - 1) * pageSize} ,${pageSize}`
+    sqlCount = `select count(*) from consult  inner join manger on consult.manger_id = manger.manger_id where category = '${category}' `
+    sql = `select * from consult inner join manger on consult.manger_id = manger.manger_id  where category = '${category}'  order by consult.id desc limit ${(pageOn - 1) * pageSize} ,${pageSize}`
   } else {
-    sqlCount = `select count(*) from consult `
-    sql = `select * from consult order by id desc  limit ${(pageOn - 1) * pageSize} ,${pageSize} `
+    sqlCount = `select count(*) from consult inner join manger on consult.manger_id = manger.manger_id`
+    sql = `select * from consult inner join manger on consult.manger_id = manger.manger_id order by consult.id desc  limit ${(pageOn - 1) * pageSize} ,${pageSize} `
   }
   query(sqlCount, countResult => {
     query(sql, result => {
-      res.send({ code: 200, msg: '查询资讯成功', total: countResult[0]['count(*)'], data: result })
+      const RES = result.map(item => {
+        if (item.password) {
+          delete item.password
+        }
+        return item
+      })
+      res.send({ code: 200, msg: '查询资讯成功', total: countResult[0]['count(*)'], data: RES })
     })
   })
 })
@@ -60,7 +65,7 @@ consultRouter.get('/consults', (req, res) => {
 consultRouter.post('/consult/state', (req, res) => {
   let { state, consult_id} = req.body
   if (!state || !consult_id) return returnErr(res, '参数错误')
-  const sql = `update consult set state = '${state}' where consult_id = '${consult_id}'`
+  const sql = `select * from consult inner join manger on consult.manger_id = manger.manger_id where consult.consult_id='${consult_id}' `
   query(sql, result => {
     if (result.affectedRows >= 1) {
       res.send({ code: 200, msg: '资讯状态修改成功', data: null })

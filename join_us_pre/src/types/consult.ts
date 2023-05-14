@@ -12,4 +12,8 @@ export interface IConsultData {
   cover_img: string;
   publish_time: string;
   updateTime: string;
+  name: string;
+  username: string;
+  regTime: string;
+  manger_state: string;
 }

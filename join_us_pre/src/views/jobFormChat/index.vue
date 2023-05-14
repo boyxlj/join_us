@@ -64,11 +64,16 @@ const formPageNation = reactive({
 });
 
 onMounted(() => {
-  if (!route.query.tag) {
+  const tags = (route.query.tag as any) * 1;
+  if (!tags) {
     router.push(`/home/user/jobs/fromChat?tag=${0}`);
-  } else {
-    activeIdx.value = (route.query.tag as any) * 1;
+  } else if(tags>selectList.length-1 || tags<0){
+    activeIdx.value = 0
+    router.push(`/home/user/jobs/fromChat?tag=${0}`);
+  }else {
+    activeIdx.value = tags
   }
+  
 });
 const total = ref(0);
 const sendList = ref<ISendData[]>([]);

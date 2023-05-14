@@ -8,14 +8,14 @@
         <a-tag color="processing" style="border-radius: 4px;">{{ item.category }}</a-tag>
       </li>
       <li class="right">
-        <span class="name" v-if="item.manger_id">{{ item.manger_id }}</span>
+        <span class="name" v-if="item.manger_id">{{ item.name }}</span>
         <span class="time" v-if="item.publish_time">{{ getTime(item.publish_time,'time') }}</span>
       </li>
     </div>
     <div class="descs">{{ item.descs }}</div>
     <div class="content"  >
       <div class="editor">
-      <MdPreview   previewOnly codeTheme="github" v-model="item.content" />
+      <MdPreview  previewTheme="github" v-model="item.content" />
       </div>
     </div>
     <div class="update" v-if="item.updateTime">最近一次修改时间：{{ item.updateTime }}</div>
@@ -27,7 +27,6 @@ import { IConsultData } from "@/types/consult";
 import {getTime} from "@/utils/formatTime"
 import { MdPreview  } from 'md-editor-v3';
 import 'md-editor-v3/lib/style.css';
-
 defineProps<{consultData:IConsultData[]}>()
 
 </script>

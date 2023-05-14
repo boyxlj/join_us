@@ -2,10 +2,10 @@ const consultRouter = require("express").Router()
 const query = require('../../utils/mysql')
 const { returnErr } = require('../../utils/returnErr')
 const categoryData = [
-  { id: 0, categoryName: "求职必读" },
-  { id: 1, categoryName: "数据报告" },
-  { id: 2, categoryName: "干货文章" },
-  { id: 3, categoryName: "公司动态" },
+  { id: 1, categoryName: "求职必读" },
+  { id: 2, categoryName: "数据报告" },
+  { id: 3, categoryName: "干货文章" },
+  { id: 4, categoryName: "公司动态" },
 ]
 //获取资讯分类
 consultRouter.get('/category', (req, res) => {
@@ -23,11 +23,11 @@ consultRouter.get('/consults', (req, res) => {
   let sql = ''
   let sqlCount = ''
   if (category) {
-    sqlCount = `select count(*) from consult where category = '${category}' and state='1' `
-    sql = `select * from consult where category = '${category}' and state='1' order by id desc limit ${(pageOn - 1) * pageSize} ,${pageSize}`
+    sqlCount = `select count(*) from consult inner join manger on consult.manger_id = manger.manger_id where consult.category = '${category}' and consult.state='1' `
+    sql = `select * from consult inner join manger on consult.manger_id = manger.manger_id where consult.category = '${category}' and consult.state='1' order by consult.id desc limit ${(pageOn - 1) * pageSize} ,${pageSize}`
   } else {
-    sqlCount = `select count(*) from consult where  state='1' `
-    sql = `select * from consult where  state='1' order by id desc  limit ${(pageOn - 1) * pageSize} ,${pageSize} `
+    sqlCount = `select count(*) from consult inner join manger on consult.manger_id = manger.manger_id where  consult.state='1' `
+    sql = `select * from consult inner join manger on consult.manger_id = manger.manger_id where  consult.state='1' order by consult.id desc  limit ${(pageOn - 1) * pageSize} ,${pageSize} `
   }
   query(sqlCount, countResult => {
     query(sql, result => {
@@ -42,7 +42,7 @@ consultRouter.get('/consults', (req, res) => {
 consultRouter.get('/consult', (req, res) => {
   let { consult_id } = req.query
   if (!consult_id) return returnErr(res, '参数错误')
-  const sql = `select * from consult where state = '1' and consult_id='${consult_id}' `
+  const sql = `select * from consult inner join manger on consult.manger_id = manger.manger_id where consult.state = '1' and consult.consult_id='${consult_id}' `
   query(sql, (result) => {
     if (result.length ) {
       res.send({

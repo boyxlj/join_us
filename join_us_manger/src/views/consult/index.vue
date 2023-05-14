@@ -6,14 +6,26 @@
       @page-change="changePageNation"
       :pagination="pageNationParams"
       :data="consultData"
+      :loading="loading"
     >
       <template #columns>
-        <a-table-column title="发布者" data-index="manger_id"></a-table-column>
-        <a-table-column title="头像" data-index="manger_id"></a-table-column>
+        <a-table-column title="头像" data-index="manger_id">
+          <template #cell="{ record }">
+            <a-avatar
+              :size="50"
+              v-if="record.avatar"
+              :imageUrl="record.avatar"
+            ></a-avatar>
+            <a-avatar v-else>
+              <IconUser />
+            </a-avatar>
+          </template>
+        </a-table-column>
+        <a-table-column title="发布者" data-index="name"></a-table-column>
         <a-table-column title="标题" data-index="title">
           <template #cell="{ record }">
             <a-tooltip :content="record.title">
-              <span  class="tableTitle">{{record.title}}</span>
+              <span class="tableTitle">{{ record.title }}</span>
             </a-tooltip>
           </template>
         </a-table-column>
@@ -25,6 +37,7 @@
         <a-table-column title="状态">
           <template #cell="{ record }">
             <a-switch
+              :disabled="!isAuth"
               @change="changeSwitch($event, record.consult_id)"
               v-model="record.state"
               checked-value="1"
@@ -81,20 +94,17 @@
         :validateForm="validateForm"
         :itemConsult="itemConsult"
       />
-
-
     </a-modal>
-      <!-- 查看模态框 -->
-      <a-modal
+    <!-- 查看模态框 -->
+    <a-modal
       v-model:visible="selectModel"
       :width="1200"
-      :footer="null"
+      :footer="false"
       :mask-closable="false"
     >
       <template #title> 查看资讯 </template>
       <SelectConsult :selectConsultData="selectConsultData" />
     </a-modal>
-
   </div>
 </template>
 
@@ -106,13 +116,16 @@ import {
   updateConsult,
   selectConsult,
   updateConsultState,
-  delConsult
+  delConsult,
 } from "@/api";
 import { Message, Modal } from "@arco-design/web-vue";
 import { getTime, getTimeBefore } from "@/utils/formatTime";
 import { IConsultData } from "@/types/consult";
-import {useAuth} from "@/hooks/useAuth"
-const isAuth = useAuth()
+import { IMangerData } from "@/types/manger";
+import { useAuth } from "@/hooks/useAuth";
+import {useMangerStore} from "@/store/manger"
+import {  IconUser } from "@arco-design/web-vue/es/icon";
+const isAuth = useAuth();
 const consultModelVisible = ref(false);
 const consultData = ref<IConsultData[]>([]);
 const pageNationParams = reactive({
@@ -125,11 +138,12 @@ const changePageNation = (pageOn: number) => {
   getConsult();
 };
 
-const changeSwitch = async (state, consult_id) => {
+const changeSwitch = async (state: any, consult_id: string) => {
   const res: any = await updateConsultState({ state, consult_id });
+  console.log(res)
   if (res.code !== 200) {
     Message.error(res.msg);
-    getConsult();
+    // getConsult();
     return;
   }
   Message.success("状态修改成功");
@@ -137,8 +151,8 @@ const changeSwitch = async (state, consult_id) => {
 };
 
 //提交修改或发布
-const validateForm = async (isShow: boolean = true, value) => {
-  if(!isAuth) return
+const validateForm = async (isShow: boolean = true, value: any) => {
+  if (!isAuth) return;
   if (!isShow) return (consultModelVisible.value = false);
   if (value?.consult_id) {
     const res: any = await updateConsult(value);
@@ -148,7 +162,9 @@ const validateForm = async (isShow: boolean = true, value) => {
     Message.success(res.msg);
     consultModelVisible.value = false;
   } else {
-    const res: any = await publishConsult(value);
+    const res: any = await publishConsult(
+      {...value,manger_id:(useMangerStore().mangerInfo[0] as IMangerData)?.manger_id}
+      );
     if (res.code !== 200) {
       return Message.error(res.msg);
     }
@@ -163,12 +179,18 @@ onMounted(() => {
 
 const itemConsult = ref<IConsultData[]>([]);
 
+const loading = ref(false);
 //获取资讯数据
 const getConsult = async () => {
+  loading.value = true;
   const res: any = await selectConsult(pageNationParams);
-  if (res.code !== 200) return (consultData.value = []);
-  consultData.value = res.data;
-  pageNationParams.total = res.total;
+  setTimeout(() => {
+    if (res.code !== 200)
+      return (consultData.value = []), (loading.value = false);
+    loading.value = false;
+    consultData.value = res.data;
+    pageNationParams.total = res.total;
+  }, 400);
 };
 
 const consultModelOk = () => {
@@ -186,35 +208,39 @@ const openModelVisible = (consult_id?: string) => {
     itemConsult.value = consultData.value?.filter(
       (item) => item.consult_id === consult_id
     );
+  } else {
+    itemConsult.value = [];
   }
   consultModelVisible.value = true;
 };
 
 //点击查看
-const selectModel = ref(false)
-const selectConsultData = ref<IConsultData[]>([])
+const selectModel = ref(false);
+const selectConsultData = ref<IConsultData[]>([]);
 const seeConsult = (consult_id: string) => {
   if (consult_id) {
     selectConsultData.value = consultData.value?.filter(
       (item) => item.consult_id === consult_id
     );
   }
-  selectModel.value = true
+  selectModel.value = true;
+  document.documentElement.scrollTop=0
 };
 //点击删除
 const deleteConsult = (consult_id: string) => {
-  Modal.confirm({
+  Modal.warning({
+    hideCancel: false,
     title: "温馨提示",
     content: "您确认要永久删除当前资讯信息么？",
-    onOk : async()=>{
-        if(!isAuth) return
-        const res: any = await delConsult(consult_id);
-        if (res.code !== 200) {
-          return Message.error(res.msg);
-        }
-        Message.success(res.msg);
-        getConsult()
-    }
+    onOk: async () => {
+      if (!isAuth) return;
+      const res: any = await delConsult(consult_id);
+      if (res.code !== 200) {
+        return Message.error(res.msg);
+      }
+      Message.success(res.msg);
+      getConsult();
+    },
   });
 };
 </script>
@@ -225,7 +251,7 @@ const deleteConsult = (consult_id: string) => {
     margin-top: 20px;
   }
 }
-.tableTitle{
+.tableTitle {
   display: inline-block;
   max-width: 200px;
   overflow: hidden;

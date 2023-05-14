@@ -3,7 +3,7 @@ import {selectConsultCategory} from '@/api'
 export const useConsultStore = defineStore('consultCategoryData',{
   state:()=>{
     return {
-      consultCategoryData:[]
+      consultCategoryData:[] as {id:number,categoryName:string}[]
     }
   },
   actions:{

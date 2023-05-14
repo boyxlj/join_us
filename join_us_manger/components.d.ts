@@ -9,10 +9,12 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AAvatar: typeof import('@arco-design/web-vue')['Avatar']
     ABreadcrumb: typeof import('@arco-design/web-vue')['Breadcrumb']
     ABreadcrumbItem: typeof import('@arco-design/web-vue')['BreadcrumbItem']
     AButton: typeof import('@arco-design/web-vue')['Button']
-    ACascader: typeof import('@arco-design/web-vue')['Cascader']
+    ADoption: typeof import('@arco-design/web-vue')['Doption']
+    ADropdown: typeof import('@arco-design/web-vue')['Dropdown']
     AForm: typeof import('@arco-design/web-vue')['Form']
     AFormItem: typeof import('@arco-design/web-vue')['FormItem']
     AInput: typeof import('@arco-design/web-vue')['Input']
@@ -25,6 +27,9 @@ declare module '@vue/runtime-core' {
     AMenuItem: typeof import('@arco-design/web-vue')['MenuItem']
     AModal: typeof import('@arco-design/web-vue')['Modal']
     AOption: typeof import('@arco-design/web-vue')['Option']
+    AProgress: typeof import('@arco-design/web-vue')['Progress']
+    ARadio: typeof import('@arco-design/web-vue')['Radio']
+    ARadioGroup: typeof import('@arco-design/web-vue')['RadioGroup']
     ASelect: typeof import('@arco-design/web-vue')['Select']
     ASpace: typeof import('@arco-design/web-vue')['Space']
     ASubMenu: typeof import('@arco-design/web-vue')['SubMenu']
@@ -35,8 +40,7 @@ declare module '@vue/runtime-core' {
     ATextarea: typeof import('@arco-design/web-vue')['Textarea']
     ATooltip: typeof import('@arco-design/web-vue')['Tooltip']
     AUpload: typeof import('@arco-design/web-vue')['Upload']
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
-    Layout: typeof import('./src/components/Layout/index.vue')['default']
+    Footer: typeof import('./src/components/common/footer/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

@@ -4,84 +4,137 @@
       <div class="logo" v-if="!collapsed">招聘后台管理</div>
       <div class="logo" v-else>聘</div>
       <a-menu
-        :defaultOpenKeys="['consult']"
-        :defaultSelectedKeys="['consult']"
+        :defaultOpenKeys="defaultOpenKeys"
+        :defaultSelectedKeys="defaultSelectedKeys"
         :style="{ width: '100%' }"
         @menuItemClick="onClickMenuItem"
       >
-        <template v-for="(item,index) in asideList" :key="index">
+        <template v-for="(item, index) in asideList" :key="index">
           <a-menu-item v-if="!item.children" :key="item.path">
             <component :is="item.icon"></component>
             {{ item.name }}
           </a-menu-item>
-          <a-sub-menu v-else >
+          <a-sub-menu v-else :key="item.path + ''">
             <template #icon><component :is="item.icon"></component></template>
             <template #title>{{ item.name }}</template>
-            <a-menu-item v-for="sub in  item.children" :key="sub.path">
+            <a-menu-item v-for="sub in item.children" :key="sub.path">
               <component :is="item.icon"></component>
-              {{ sub.name}}</a-menu-item>
+              {{ sub.name }}</a-menu-item
+            >
           </a-sub-menu>
         </template>
       </a-menu>
     </a-layout-sider>
     <a-layout>
-      <a-layout-header style="padding-left: 20px">
+      <a-layout-header class="header" style="padding-left: 20px">
         <a-button shape="round" @click="onCollapse">
           <IconCaretRight v-if="collapsed" />
           <IconCaretLeft v-else />
         </a-button>
+        <a-dropdown trigger="hover">
+          <div class="mangerInfo">
+            <a-avatar v-if="mangerInfo.avatar" :imageUrl="mangerInfo.avatar"></a-avatar>
+            <a-avatar v-else >
+              <IconUser />
+            </a-avatar>
+            <span>{{ mangerInfo.name }}</span>
+          </div>
+          <template #content>
+            <a-doption @click="$router.push('/profile')">
+              <template #icon>
+                <IconSettings />
+              </template>
+              <template #default>个人中心</template>
+            </a-doption>
+            <a-doption @click="cancelLogin">
+              <template #icon>
+                <IconPoweroff />
+              </template>
+              <template #default>退出登录</template>
+            </a-doption>
+          </template>
+        </a-dropdown>
       </a-layout-header>
       <a-layout style="padding: 0 24px">
         <a-breadcrumb :style="{ margin: '16px 0' }">
-          <a-breadcrumb-item>Home</a-breadcrumb-item>
-          <a-breadcrumb-item>List</a-breadcrumb-item>
-          <a-breadcrumb-item>App</a-breadcrumb-item>
+          <a-breadcrumb-item>招聘后台管理</a-breadcrumb-item>
+          <a-breadcrumb-item
+            v-for="(item, index) in breadcrumbList"
+            :key="index"
+          >
+            {{ item.name }}
+          </a-breadcrumb-item>
         </a-breadcrumb>
         <a-layout-content>
           <router-view></router-view>
         </a-layout-content>
-        <a-layout-footer>Copyright © 2022-{{ new Date().getFullYear() }}  join-us  All Rights Reserved</a-layout-footer>
+        <a-layout-footer><Footer /> </a-layout-footer>
       </a-layout>
     </a-layout>
   </a-layout>
 </template>
 
 <script setup lang="ts">
-import { Message } from "@arco-design/web-vue";
+import { asideList } from "./asides";
+import Footer from "@/components/common/footer/index.vue";
 import {
   IconCaretRight,
   IconCaretLeft,
-  IconHome,
-  IconCalendar,
+  IconUser,
+  IconPoweroff,
+  IconSettings,
 } from "@arco-design/web-vue/es/icon";
-const router = useRouter()
-type TAside = {
-  path: string;
-  icon: any;
-  name: string;
-  children?: TAside[];
-};
-const asideList: TAside[] = [
-  { path: "consult", name: "咨讯百科", icon: IconHome },
-  {
-    path: "666",
-    name: "职位管理",
-    icon: IconCalendar,
-    children: [
-      { path: "jobList", name: "职位列表", icon: "" },
-      { path: "123", name: "职位列表11", icon: "" },
-      { path: "456", name: "职位列表22", icon: "" },
-    ],
-  },
-];
+import { Modal } from "@arco-design/web-vue";
+import {useMangerStore} from "@/store/manger"
+const mangerInfo:any = computed(()=>useMangerStore().mangerInfo[0]) 
+const router = useRouter();
+const route = useRoute();
 
+const defaultOpenKeys = ref(["/" + route.path.split("/")[1]]);
+const defaultSelectedKeys = ref([route.path]);
+const breadcrumbList = ref<any[]>([]);
+watch(
+  () => route.path,
+  () => {
+    breadcrumbList.value = asideList
+      .map((item) => {
+        if ("/" + route.path.split("/")[1] === item.path) {
+          if (item.children?.length) {
+            const subItem = item.children?.filter((sub) => {
+              return sub.path === route.path;
+            });
+            return [item, ...subItem];
+          } else {
+            return item;
+          }
+        }
+      })
+      ?.filter((item) => item)
+      ?.flat();
+  },
+  { immediate: true, deep: true }
+);
+
+//退出登录
+const cancelLogin = () => {
+  Modal.warning({
+    hideCancel: false,
+    cancelText: "取消",
+      okText:"确认",
+    title: "温馨提示",
+    content: "您确定要退出登录吗？",
+    onOk:()=>{
+      localStorage.clear()
+      location.reload()
+    }
+  });
+};
 const collapsed = ref(false);
 const onCollapse = () => {
   collapsed.value = !collapsed.value;
 };
-const onClickMenuItem = (key,all) => {
-  router.push("/"+key)
-  Message.info({ content: `You select ${key}`, showIcon: true });
+const onClickMenuItem = (key: string) => {
+  router.push(key);
 };
 </script>
 
@@ -129,9 +182,8 @@ const onClickMenuItem = (key,all) => {
 
   color: var(--color-white);
   font-size: 16px;
-  
 }
-.layout-demo :deep(.arco-layout-footer){
+.layout-demo :deep(.arco-layout-footer) {
   color: #666;
   font-size: 14px;
   display: flex;
@@ -140,5 +192,19 @@ const onClickMenuItem = (key,all) => {
   font-stretch: condensed;
   text-align: center;
 }
-
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .mangerInfo {
+    min-width: 100px;
+    height: 50px;
+    margin-right: 90px;
+    display: flex;
+    align-items: center;
+    span {
+      margin-left: 8px;
+    }
+  }
+}
 </style>

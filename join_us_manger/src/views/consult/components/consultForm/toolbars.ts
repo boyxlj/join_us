@@ -1,4 +1,4 @@
-export const toolbars  =[
+export const toolbars:any  =[
   'bold',
   'underline',
   'italic',
