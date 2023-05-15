@@ -19,13 +19,13 @@
         </a-table-column>
         <a-table-column title="昵称" data-index="name"></a-table-column>
         <a-table-column title="账号" data-index="username"></a-table-column>
-        <a-table-column title="角色" data-index="state">
+        <a-table-column title="角色" data-index="manger_state">
           <template #cell="{ record }">
             <a-tooltip content="超级管理员可拥有操作的所有权限">
-              <a-tag color="green" v-if="record.state == '1'">超级管理员</a-tag>
+              <a-tag color="green" v-if="record.manger_state == '1'">超级管理员</a-tag>
             </a-tooltip>
             <a-tooltip content="普通管理员目前仅可以查看部分功能">
-              <a-tag color="orange" v-if="record.state == '0'"
+              <a-tag color="orange" v-if="record.manger_state == '0'"
                 >普通管理员</a-tag
               >
             </a-tooltip>
@@ -35,10 +35,10 @@
           <template #cell="{ record }">
             <a-switch
               @change="changeSwitch($event, record.manger_id)"
-              v-model="record.state"
+              v-model="record.manger_state"
               checked-value="1"
               uncheckedValue="0"
-              :disabled="!isAuth"
+              :disabled="!useAuth(false)"
             >
               <template #checked> 开 </template>
               <template #unchecked> 关 </template>
@@ -56,15 +56,15 @@
           <template #cell="{ record }">
            
             <a-button
-              type="primary"
               style="margin: 0 10px"
-              status="warning"
+              :type="btnStyle.editor.type"
+              :status="btnStyle.editor.status"
               @click="openModelVisible(record.manger_id)"
               >编辑</a-button
             >
             <a-button
-              type="primary"
-              status="danger"
+            :type="btnStyle.delete.type"
+              :status="btnStyle.delete.status"
               @click="deleteManger(record.manger_id)"
               >删除</a-button
             >
@@ -109,7 +109,8 @@ import { getTime, getTimeBefore } from "@/utils/formatTime";
 import { IMangerData } from "@/types/manger";
 import { useAuth } from "@/hooks/useAuth";
 import {useMangerStore} from "@/store/manger"
-const isAuth = useAuth();
+import {btnStyle} from "@/config/btnStyle"
+
 const mangerModelVisible = ref(false);
 const mangerData = ref<IMangerData[]>([]);
 const pageNationParams = reactive({
@@ -121,9 +122,11 @@ const changePageNation = (pageOn: number) => {
   pageNationParams.pageOn = pageOn;
   getManger();
 };
+onMounted(() => {
+  getManger();
+});
 
 const changeSwitch = async (state: any, manger_id: string) => {
-  console.log({ state, manger_id });
   const res: any = await updateMangerState({ state, manger_id });
   if (res.code !== 200) {
     Message.error(res.msg);
@@ -139,8 +142,8 @@ const changeSwitch = async (state: any, manger_id: string) => {
 
 //提交添加或修改
 const validateForm = async (isShow: boolean = true, value: any) => {
-  if (!isAuth) return;
   if (!isShow) return (mangerModelVisible.value = false);
+  if (!useAuth()) return;
   if (value?.manger_id) {
     const res: any = await updateManger(value);
     if (res.code !== 200) {
@@ -162,9 +165,6 @@ const validateForm = async (isShow: boolean = true, value: any) => {
   
   getManger();
 };
-onMounted(() => {
-  getManger();
-});
 
 const itemManger = ref<IMangerData[]>([]);
 
@@ -211,7 +211,7 @@ const deleteManger = (manger_id: string) => {
     title: "温馨提示",
     content: "您确认要永久删除该管理员吗？",
     onOk: async () => {
-      if (!isAuth) return;
+      if (!useAuth()) return;
       const res: any = await delManger(manger_id);
       if (res.code !== 200) {
         return Message.error(res.msg);

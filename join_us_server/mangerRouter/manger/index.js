@@ -109,7 +109,7 @@ mangerRouter.delete('/manger', (req, res) => {
 mangerRouter.post('/state', (req, res) => {
   let { state, manger_id } = req.body
   if (!state || !manger_id) return returnErr(res, '参数错误')
-  const sql = `update manger set state = '${state}' where manger_id = '${manger_id}'`
+  const sql = `update manger set manger_state = '${state}' where manger_id = '${manger_id}'`
   query(sql, result => {
     if (result.affectedRows >= 1) {
       res.send({ code: 200, msg: '修改管理员权限成功', data: null })

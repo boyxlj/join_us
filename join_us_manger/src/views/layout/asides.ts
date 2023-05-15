@@ -30,6 +30,16 @@ export const asideList: TAside[] = [
       { path: "/position/audit", name: "职位审核", icon: "" },
     ],
   },
+  {
+    path: "/company",
+    name: "公司管理",
+    icon: IconCalendar,
+    children: [
+      { path: "/company/manger", name: "公司列表", icon: "" },
+      { path: "/company/audit", name: "公司审核", icon: "" },
+    ],
+  },
+  { path: "/user", name: "用户管理", icon: IconHome },
   { path: "/manger", name: "管理员", icon: IconHome },
   { path: "/profile", name: "个人中心", icon: IconHome },
 ];

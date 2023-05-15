@@ -4,6 +4,8 @@ const mangerRouter = require("express").Router()
 mangerRouter.use(require("./consult"))
 mangerRouter.use(require("./upload"))
 mangerRouter.use(require("./manger"))
+mangerRouter.use(require("./industry"))
+mangerRouter.use(require("./company"))
 
 module.exports = mangerRouter
 

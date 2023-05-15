@@ -81,7 +81,7 @@
       </a-form-item>
       <a-form-item>
         <a-space>
-          <a-button html-type="submit" type="primary">{{
+          <a-button html-type="submit" :disabled="!useAuth(false)" type="primary" >{{
             itemConsult.length ? "提交修改" : "发布资讯"
           }}</a-button>
           <a-button @click="seeConsult" type="primary">预览</a-button>
@@ -115,7 +115,6 @@ import { useConsultStore } from "@/store/consult";
 import { IConsultData } from "@/types/consult";
 import { useAuth } from "@/hooks/useAuth";
 import type {FileItem} from "@arco-design/web-vue"
-const isAuth = useAuth();
 const { consultCategoryData } = useConsultStore();
 const formRef = ref();
 const form = reactive({
@@ -198,9 +197,9 @@ const handleSubmit = ({ values, errors }:any) => {
   }
 };
 const onUploadImg = async (files:any, callback:any) => {
-  if (!isAuth) return;
+  if (!useAuth()) return;
   const res = await Promise.all(
-    files.map((file) => {
+    files.map((file:any) => {
       return new Promise((rev, rej) => {
         const form = new FormData();
         form.append("photo", file);

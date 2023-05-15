@@ -3,7 +3,6 @@ const companyRouter = express.Router()
 const query = require('../../utils/mysql')
 const { returnErr } = require('../../utils/returnErr')
 const { v4: uuidv4 } = require('uuid');
-//公司表
 
 
 
@@ -11,7 +10,7 @@ const { v4: uuidv4 } = require('uuid');
 companyRouter.post('/companys', (req, res) => {
   let { pageOn, pageSize } = req.body
   const arr = ['pageOn', 'pageSize', 'industry', 'company_name', 'people_num',
-    'reg_city', 'financing', 'financing', 'region',
+    'reg_city', 'financing', 'financing', 'region','state'
   ]
   delete req.body.pageOn
   delete req.body.pageSize
@@ -51,9 +50,9 @@ companyRouter.post('/companys', (req, res) => {
       ResStr = ''
     }
     if (ResStr.includes('where')) {
-      ResStr += ` and company.state = '1'`
+      ResStr += ` `
     } else {
-      ResStr += ` where company.state = '1'`
+      ResStr += ` `
     }
     if (pageSize >= 30) {
       pageSize = 30
@@ -103,9 +102,9 @@ companyRouter.post('/companys', (req, res) => {
     }
 
     if (ResStr.includes('where')) {
-      ResStr += ` and company.state = '1'`
+      ResStr += ` `
     } else {
-      ResStr += ` where company.state = '1'`
+      ResStr += ` `
     }
     if (pageSize >= 30) {
       pageSize = 30
@@ -115,7 +114,6 @@ companyRouter.post('/companys', (req, res) => {
     const sql = `select * from company inner join pos on pos.company_id = company.company_id ${ResStr} order by company.id desc
     limit ${(pageOn - 1) * pageSize},${pageSize}
   `
-
     query(sqlCount, count => {
       query(sql, result => {
         res.status(200).send({ code: 200, msg: 'ok', data: result, total: count[0]['count(*)'] })
@@ -230,9 +228,9 @@ companyRouter.post('/companyInfo', (req, res) => {
             })?.slice(0, 8)
             // res.status(200).send({ code: 200, msg: 'ok', data})
             res.status(200).send({
-              code: 200, msg: '查询成功',
+              code: 200, msg: '查询成功', 
               bossCount: BossRes[0]['count(*)'],
-              positionCount: count[0]['count(*)'],
+               positionCount: count[0]['count(*)'],
               companyInfo: companyRes,
               companyPhotos: selectCompany_photoRes,
               posData: data
@@ -241,6 +239,33 @@ companyRouter.post('/companyInfo', (req, res) => {
         })
       })
     })
+  })
+})
+
+
+//查询公司的相册
+companyRouter.get('/company/photos', (req, res) => {
+  let { company_id } = req.query
+  if (!company_id) return returnErr(res, '参数错误')
+  const sql = `select * from company_photo  where company_id='${company_id}' `
+  query(sql, result => {
+    res.status(200).send({ code: 200, msg: 'ok', data:result})
+  })
+})
+
+
+//修改公司状态
+companyRouter.post('/company/state', (req, res) => {
+  let { company_id ,state} = req.body
+  if (!company_id ||  !state) return returnErr(res, '参数错误')
+  if((state*1)<0 || (state*1)>2) return returnErr(res, '参数错误')
+  const sql = `update company set state = '${state}' where company_id='${company_id}' `
+  query(sql, result => {
+    if (result.affectedRows >= 1) {
+      res.send({ code: 200, msg: '修改公司状态成功', data: null })
+    } else {
+      return returnErr(res, '修改公司状态失败')
+    }
   })
 })
 

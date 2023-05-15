@@ -40,6 +40,13 @@
             <span>{{ mangerInfo.name }}</span>
           </div>
           <template #content>
+            
+            <a-doption @click="Message.success(`欢迎回来--${mangerInfo.name}(${mangerInfo.manger_state=='1'?'超级管理员':'普通访客👉'})`)">
+              <template #icon>
+                <IconSettings />
+              </template>
+              <template #default>{{ mangerInfo.manger_state=='1'?'超级管理员':'普通访客👉' }}</template>
+            </a-doption>
             <a-doption @click="$router.push('/profile')">
               <template #icon>
                 <IconSettings />
@@ -84,9 +91,10 @@ import {
   IconPoweroff,
   IconSettings,
 } from "@arco-design/web-vue/es/icon";
-import { Modal } from "@arco-design/web-vue";
+import { Modal,Message } from "@arco-design/web-vue";
 import {useMangerStore} from "@/store/manger"
-const mangerInfo:any = computed(()=>useMangerStore().mangerInfo[0]) 
+import {IMangerData} from "@/types/manger"
+const mangerInfo = computed(()=>useMangerStore().mangerInfo[0] as IMangerData) 
 const router = useRouter();
 const route = useRoute();
 

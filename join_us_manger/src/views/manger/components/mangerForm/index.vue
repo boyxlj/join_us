@@ -12,7 +12,7 @@
         field="name"
         label="昵称"
         :rules="[
-          { required: true, message: '昵称须填写' },
+          { required: true, message: '昵称必须填写' },
           { minLength: 2, message: '标题不能少于2个字符' },
           { maxLength: 16, message: '标题不能超过16个字符' },
         ]"
@@ -60,7 +60,7 @@
    
       <a-form-item>
         <a-space>
-          <a-button html-type="submit" type="primary">{{
+          <a-button html-type="submit" :disabled="!useAuth(false)"  type="primary">{{
             itemManger.length ? "提交修改" : "确认添加"
           }}</a-button>
           <a-button @click="cancelPublish">取消</a-button>

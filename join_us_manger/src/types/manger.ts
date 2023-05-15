@@ -5,6 +5,6 @@ export interface IMangerData {
   username: string;
   avatar: string;
   regTime: string;
-  state: string;
+  manger_state: string;
   password?:string
 }

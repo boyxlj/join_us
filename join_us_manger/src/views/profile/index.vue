@@ -1,6 +1,6 @@
 <template>
   <div class="profile">
-    <div class="box editor" v-if="isEditor">
+    <div class="box editor animate__animated animate__fadeInLeftBig" v-if="isEditor">
       <a-form
         ref="formRef"
         size="large"
@@ -83,15 +83,15 @@
         </a-form-item>
       </a-form>
     </div>
-    <div v-else class="box show">
+    <div v-else class="box show animate__animated animate__fadeInRightBig">
       <div class="name"><span>昵称:</span>{{ mangerInfo.name }}</div>
       <div class="role">
         <span>角色:</span>
         <a-tooltip content="超级管理员可拥有操作的所有权限">
-          <a-tag color="green" v-if="mangerInfo.state == '1'">超级管理员</a-tag>
+          <a-tag color="green" v-if="mangerInfo.manger_state == '1'">超级管理员</a-tag>
         </a-tooltip>
         <a-tooltip content="普通管理员目前仅可以查看部分功能">
-        <a-tag color="orange" v-if="mangerInfo.state == '0'">普通管理员</a-tag>
+        <a-tag color="orange" v-if="mangerInfo.manger_state== '0'">普通管理员</a-tag>
         </a-tooltip>
       </div>
       <div class="regTime">
@@ -124,6 +124,7 @@ import { useMangerStore } from "@/store/manger";
 import { IMangerData } from "@/types/manger";
 import { getTime } from "@/utils/formatTime";
 import { updateManger } from "@/api";
+
 const mangerInfo = computed(
   () => useMangerStore().mangerInfo[0] as IMangerData
 );

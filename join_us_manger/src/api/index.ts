@@ -59,6 +59,79 @@ export const delManger = (manger_id:string) => {
   })
 }
 
+//---------行业接口
+//添加行业
+export const addIndustry = (data:any) => {
+  return request({
+    url: '/industry',
+    method: 'post',
+    data
+  })
+}
+//查询所有行业
+export const selIndustryAll = (data:any) => {
+  return request({
+    url: '/industrys',
+    method: 'get',
+    params:data
+  })
+}
+
+//删除行业
+export const delIndustry = (industry_id:string) => {
+  return request({
+    url: '/industry',
+    method: 'delete',
+    data:{industry_id},
+  })
+}
+//修改行业状态
+export const updateIndustryState = (data:any) => {
+  return request({
+    url: '/industry/state',
+    method: 'post',
+    data,
+  })
+}
+//修改行业
+export const updateIndustry = (data:any) => {
+  return request({
+    url: '/industry',
+    method: 'patch',
+    data,
+  })
+}
+
+
+//----------公司接口
+//查询所有公司
+export const selCompanyAll = (data:any) => {
+  return request({
+    url: '/companys',
+    method: 'post',
+    data
+  })
+}
+//查询所有公司的相册
+export const selCompanyPhoto = (company_id:string) => {
+  return request({
+    url: '/company/photos',
+    method: 'get',
+    params:{company_id}
+  })
+}
+//修改公司状态
+export const updateCompanyState = (data:any) => {
+  return request({
+    url: '/company/state',
+    method: 'post',
+    data
+  })
+}
+
+
+
+
 // ----------资讯接口
 export const selectConsultCategory = () => {
   return request({
