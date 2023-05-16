@@ -1,12 +1,6 @@
 const mysql2 = require('mysql2')
-const client = mysql2.createPool({
-  host:'localhost',
-  user: 'root',
-  password: '111111',
-  database: 'join_us',
-  port: '3306',
-  connectionLimit: 10,
-}).promise()
+const sqlConfig = require('../config/sqlConfig')
+const client = mysql2.createPool(sqlConfig).promise()
 
 
 const query = async (sql, callback) => {

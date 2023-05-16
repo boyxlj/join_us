@@ -59,12 +59,14 @@
               style="margin: 0 10px"
               :type="btnStyle.editor.type"
               :status="btnStyle.editor.status"
+              :size="btnStyle.select.size"
               @click="openModelVisible(record.manger_id)"
               >编辑</a-button
             >
             <a-button
             :type="btnStyle.delete.type"
               :status="btnStyle.delete.status"
+              :size="btnStyle.select.size"
               @click="deleteManger(record.manger_id)"
               >删除</a-button
             >

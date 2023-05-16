@@ -1,18 +1,42 @@
 <template>
   <div class="manger">
-    <a-button type="primary" @click="openModelVisible()">添加行业</a-button>
+    <div class="select">
+      <a-button type="primary" @click="openModelVisible()">添加职位类型-1</a-button>
+      <div class="search">
+      
+        <a-input-search  
+      @clear="changeSelect" @search="changeSelect"  
+      @press-enter="changeSelect" 
+      allow-clear  
+      allow-search 
+      v-model.trim="keyword" :disabled="loading "  :style="{width:'320px'}" placeholder="请输入职位类型名称等关键字" search-button>
+        <template #button-icon>
+          <icon-search />
+        </template>
+        <template #button-default >
+          查询
+        </template>
+      </a-input-search>
+      <a-button  class="clear" @click="clearSelect">
+      <template #icon>
+        <icon-refresh/>
+      </template>
+      <template #default>重置</template>
+      </a-button>
+      </div>
+    </div>
     <a-table
       class="table"
       @page-change="changePageNation"
       :pagination="pageNationParams"
-      :data="industryData"
+      :data="positionTypeData"
       :loading="loading"
     >
       <template #columns>
-        <a-table-column title="行业名称" data-index="industry_name">
+        <a-table-column title="职位一级分类名称" data-index="type_name">
           <template #cell="{ record }">
-          <a-tooltip :content="record.industry_name">
-            <span class="tableTitle">{{ record.industry_name }}</span>
+          <a-tooltip :content="record.type_name">
+            <span class="tableTitle">{{ record.type_name }}</span>
           </a-tooltip>
         </template>
         </a-table-column>
@@ -35,30 +59,15 @@
           </a-popover>
         </template>
         </a-table-column>
-        <a-table-column title="备注" data-index="industry_other">
+        <a-table-column title="备注" data-index="others">
           <template #cell="{ record }">
-          <a-tooltip v-if="record.industry_other" :content="record.industry_other">
+          <a-tooltip v-if="record.others" :content="record.others">
             <span class="tableTitle" style="max-width: 280px;">
-              {{ record.industry_other }}
+              {{ record.others }}
             </span>
-
           </a-tooltip>
           <span v-else class="tableTitle" style="max-width: 280px;">/</span>
         </template>
-        </a-table-column>
-        <a-table-column title="行业状态">
-          <template #cell="{ record }">
-            <a-switch
-              @change="changeSwitch($event, record.industry_id)"
-              v-model="record.industry_state"
-              checked-value="1"
-              uncheckedValue="0"
-              :disabled="!useAuth(false)"
-            >
-              <template #checked> 开启 </template>
-              <template #unchecked> 关闭 </template>
-            </a-switch>
-          </template>
         </a-table-column>
         <a-table-column title="添加时间" data-index="addTime">
           <template #cell="{ record }">
@@ -71,40 +80,40 @@
           <template #cell="{ record }">
            
             <a-button
-            :size="btnStyle.select.size"
               style="margin: 0 10px"
               :type="btnStyle.editor.type"
               :status="btnStyle.editor.status"
-              @click="openModelVisible(record.industry_id)"
+              :size="btnStyle.select.size"
+              @click="openModelVisible(record.position_type_id)"
               >编辑</a-button
             >
             <a-button
-            :size="btnStyle.select.size"
             :type="btnStyle.delete.type"
               :status="btnStyle.delete.status"
-              @click="deleteIndustry(record.industry_id)"
+              :size="btnStyle.select.size"
+              @click="deleteIndustry(record.position_type_id)"
               >删除</a-button
             >
           </template>
         </a-table-column>
       </template>
     </a-table>
-    <!-- 添加、编辑行业对话框 -->
+    <!-- 添加、编辑职位类型对话框 -->
     <a-modal
       :footer="false"
       :width="580"
       :mask-closable="false"
-      v-model:visible="industryModelVisible"
+      v-model:visible="category1ModelVisible"
       @ok="industryModelOk"
       @cancel="industryModelCancel"
     >
       <template #title>{{
-        itemIndustry.length ? "编辑行业" : "添加行业"
+        itemCategory1.length ? "编辑职位类型-1" : "添加职位类型-1"
       }}</template>
-      <IndustryForm
-        :industryModelVisible="industryModelVisible"
+      <Category1Form
+        :category1ModelVisible="category1ModelVisible"
         :validateForm="validateForm"
-        :itemIndustry="itemIndustry"
+        :itemCategory1="itemCategory1"
       />
     </a-modal>
    
@@ -112,124 +121,122 @@
 </template>
 
 <script setup lang="ts">
-import { IconUser } from "@arco-design/web-vue/es/icon";
-import IndustryForm from "./components/industryForm/index.vue";
+import {  IconUser,IconSearch,IconRefresh } from "@arco-design/web-vue/es/icon";
+import Category1Form from "./components/category1Form/index.vue";
 import {
-  addIndustry,
-  selIndustryAll,
-  updateIndustry,
-  delIndustry,
-  updateIndustryState,
+  addPositionType,
+  selPositionTypeAll,
+  updatePositionType,
+  delPositionType,
 } from "@/api";
 import { Message, Modal } from "@arco-design/web-vue";
 import { getTime, getTimeBefore } from "@/utils/formatTime";
-import { IIndustryData } from "@/types/industry";
+import { IPositionTypeData } from "@/types/positionType";
 import { useAuth } from "@/hooks/useAuth";
 import {btnStyle} from "@/config/btnStyle"
 import {useMangerStore} from "@/store/manger"
 const manger_id = useMangerStore().manger_id
-const industryModelVisible = ref(false);
-const industryData = ref<IIndustryData[]>([]);
+const category1ModelVisible = ref(false);
+const positionTypeData = ref<IPositionTypeData[]>([]);
 const pageNationParams = reactive({
   pageOn: 1,
   pageSize: 15,
   total: 2,
 });
+const keyword = ref('')
+const changeSelect = ()=>{
+  pageNationParams.pageOn =1
+  getCategory1();
+}
+const clearSelect = ()=>{
+  keyword.value= ''
+  pageNationParams.pageOn =1
+  getCategory1();
+}
 const changePageNation = (pageOn: number) => {
   pageNationParams.pageOn = pageOn;
-  getIndustry();
+  getCategory1();
 };
 onMounted(() => {
-  getIndustry();
+  getCategory1();
 });
 
-const changeSwitch = async (state: any, industry_id: string) => {
-  const res: any = await updateIndustryState({ state, industry_id });
-  if (res.code !== 200) {
-    Message.error(res.msg);
-    getIndustry();
-    return;
-  }
-  Message.success("行业状态修改成功");
-  getIndustry();
-};
 
 //提交添加或修改
 const validateForm = async (isShow: boolean = true, value: any) => {
-  if (!isShow) return (industryModelVisible.value = false);
+  if (!isShow) return (category1ModelVisible.value = false);
   if (!useAuth()) return;
-
-  if (value?.industry_id) {
-    const res: any = await updateIndustry(value);
+  if (value?.position_type_id) {
+    const res: any = await updatePositionType({...value,manger_id});
     if (res.code !== 200) {
       return Message.error(res.msg);
     }
     Message.success(res.msg);
-    industryModelVisible.value = false;
+    category1ModelVisible.value = false;
   } else {
-    const res: any = await addIndustry({...value,manger_id});
+    const res: any = await addPositionType({...value,manger_id});
     if (res.code !== 200) {
       return Message.error(res.msg);
     }
     Message.success(res.msg);
-    industryModelVisible.value = false;
+    category1ModelVisible.value = false;
   }
   
-  getIndustry();
+  getCategory1();
 };
 
-const itemIndustry = ref<IIndustryData[]>([]);
+const itemCategory1 = ref<IPositionTypeData[]>([]);
 
 const loading = ref(false);
-//获取资讯数据
-const getIndustry = async () => {
+//获取一级职位类型数据
+const getCategory1 = async () => {
   loading.value = true;
-  const res: any = await selIndustryAll(pageNationParams);
+  const res: any = await selPositionTypeAll({...pageNationParams,keyword:keyword.value});
   setTimeout(() => {
     if (res.code !== 200)
-      return (industryData.value = []), (loading.value = false);
+      return (positionTypeData.value = []), (loading.value = false);
     loading.value = false;
-    industryData.value = res.data;
+    positionTypeData.value = res.data;
     pageNationParams.total = res.total;
   }, 400);
 };
 
 const industryModelOk = () => {
-  industryModelVisible.value = false;
-  itemIndustry.value = [];
+  category1ModelVisible.value = false;
+  itemCategory1.value = [];
 };
 
 const industryModelCancel = () => {
-  industryModelVisible.value = false;
-  itemIndustry.value = [];
+  category1ModelVisible.value = false;
+  itemCategory1.value = [];
 };
 
-const openModelVisible = (industry_id?: string) => {
-  industryModelVisible.value = true;
-  if (industry_id) {
-    itemIndustry.value = industryData.value?.filter(
-      (item) => item.industry_id === industry_id
+const openModelVisible = (position_type_id?: string) => {
+  category1ModelVisible.value = true;
+  if (position_type_id) {
+    itemCategory1.value = positionTypeData.value?.filter(
+      (item) => item.position_type_id === position_type_id
     );
   }else{
-    itemIndustry.value =[]
+    itemCategory1.value =[]
   }
 };
 
 
 //点击删除
-const deleteIndustry = (industry_id: string) => {
+const deleteIndustry = (position_type_id: string) => {
   Modal.warning({
     hideCancel: false,
     title: "温馨提示",
-    content: "您确认要永久删除该管理员吗？",
+    content: "此操作将同步删除对应的子职位数据，您确认要永久删除该职位吗？",
     onOk: async () => {
       if (!useAuth()) return;
-      const res: any = await delIndustry(industry_id);
+      const res: any = await delPositionType({position_type_id});
       if (res.code !== 200) {
         return Message.error(res.msg);
       }
       Message.success(res.msg);
-      getIndustry();
+      getCategory1();
     },
   });
 };
@@ -239,6 +246,15 @@ const deleteIndustry = (industry_id: string) => {
 .manger {
   .table {
     margin-top: 20px;
+  }
+  .select{
+    display: flex;
+    .search{
+      margin-left: 28px;
+    }
+    .clear{
+      margin-left: 10px;
+    }
   }
 }
 .tableTitle {

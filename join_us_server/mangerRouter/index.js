@@ -6,6 +6,8 @@ mangerRouter.use(require("./upload"))
 mangerRouter.use(require("./manger"))
 mangerRouter.use(require("./industry"))
 mangerRouter.use(require("./company"))
+mangerRouter.use(require("./positionType"))
+mangerRouter.use(require("./user"))
 
 module.exports = mangerRouter
 

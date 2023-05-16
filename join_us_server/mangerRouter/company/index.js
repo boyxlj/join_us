@@ -14,19 +14,24 @@ companyRouter.post('/companys', (req, res) => {
   ]
   delete req.body.pageOn
   delete req.body.pageSize
-  if (req.body.reg_city == '全国') {
+  for (let i in req.body) {
+    if (!req.body[i]) {
+      delete req.body[i]
+    }
+  }
+  if (!req.body.reg_city) {
     delete req.body.reg_city
     let str = ''
-    // function getKeySql(val) {
-    //   return `(position_name like '%${val}%' or position_type1 like '%${val}%'  or company_name like '%${val}%')`
-    // }
-    // let vsKey = 'where '
-    // if (req.body.keyword) {
-    //   vsKey += getKeySql(req.body.keyword)
-    // } else {
-    //   vsKey = ''
-    // }
-    let vsKey = ''
+    function getKeySql(val) {
+      return `(company_name like '%${val}%' or industry like '%${val}%')`
+    }
+    let vsKey = 'where '
+    if (req.body.keyword) {
+      vsKey += getKeySql(req.body.keyword)
+    } else {
+      vsKey = ''
+    }
+    // let vsKey = ''
     for (let i in req.body) {
       if (!arr.includes(i)) {
         delete req.body[i]
@@ -57,8 +62,8 @@ companyRouter.post('/companys', (req, res) => {
     if (pageSize >= 30) {
       pageSize = 30
     }
-    const sqlCount = `select count(*) from  company inner join pos on pos.company_id = company.company_id ${ResStr}`
-    const sql = `select * from company inner join pos on pos.company_id = company.company_id ${ResStr}  order by company.id desc 
+    const sqlCount = `select count(*) from  company ${ResStr}`
+    const sql = `select * from company  ${ResStr}  order by id desc 
     limit ${(pageOn - 1) * pageSize},${pageSize}
     `
     query(sqlCount, count => {
@@ -68,16 +73,17 @@ companyRouter.post('/companys', (req, res) => {
     })
   } else {
     let str = ''
-    // function getKeySql(val) {
-    //   return `(position_name like '%${val}%' or position_type1 like '%${val}%'  or company_name like '%${val}%')`
-    // }
-    // let vsKey = 'where '
-    // if (req.body.keyword) {
-    //   vsKey += getKeySql(req.body.keyword)
-    // } else {
-    //   vsKey = ''
-    // }
-    let vsKey = ''
+    function getKeySql(val) {
+      return `(company_name like '%${val}%' or industry like '%${val}%' )`
+    }
+
+    let vsKey = 'where '
+    if (req.body.keyword) {
+      vsKey += getKeySql(req.body.keyword)
+    } else {
+      vsKey = ''
+    }
+    // let vsKey = ''
     for (let i in req.body) {
       if (!arr.includes(i)) {
         delete req.body[i]
@@ -109,9 +115,9 @@ companyRouter.post('/companys', (req, res) => {
     if (pageSize >= 30) {
       pageSize = 30
     }
-    const sqlCount = `select count(*)  from  company inner join pos on pos.company_id = company.company_id ${ResStr} order by company.id desc
+    const sqlCount = `select  count(*)  from  company  ${ResStr} 
   `
-    const sql = `select * from company inner join pos on pos.company_id = company.company_id ${ResStr} order by company.id desc
+    const sql = `select * from company  ${ResStr} order by id desc
     limit ${(pageOn - 1) * pageSize},${pageSize}
   `
     query(sqlCount, count => {
@@ -275,3 +281,10 @@ companyRouter.post('/company/state', (req, res) => {
 
 
 module.exports = companyRouter
+
+
+
+// 1、在mysql/bin/my.ini 文件 加一个：
+//   [mysqld]
+//  innodb_force_recovery = 4
+// 解决办法：删除xammp 安装路径D:\xampp\mysql\data\ 下的 aria_log.00000001

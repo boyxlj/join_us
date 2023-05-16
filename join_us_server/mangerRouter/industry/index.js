@@ -4,24 +4,6 @@ const { returnErr } = require('../../utils/returnErr')
 const { v4: uuidv4 } = require('uuid');
 const jwt = require('../../utils/jsonwebtoken')
 
-//登录
-industryRouter.post('/login', (req, res) => {
-  const { username, password } = req.body
-  if (!username || !password) return returnErr(res, '参数错误')
-  const selSql = `select * from manger where username = '${username}' `
-  const loginSql = `select * from manger where username = '${username}' and password = '${password}'`
-  query(selSql, (selRes) => {
-    if (!selRes.length) {
-      return returnErr(res, '账号不存在')
-    }
-    query(loginSql, (loginRes) => {
-      if (!loginRes.length) {
-        return returnErr(res, '密码不正确')
-      }
-      res.send({ code: 200, msg: '登录成功', data: 'null', manger_id: loginRes[0].manger_id, mangerToken: jwt.sendToken({ username }, '1day') })
-    })
-  })
-})
 
 
 //添加行业
@@ -63,7 +45,7 @@ industryRouter.post('/industry_id', (req, res) => {
   })
 })
 
-//查询所有行业
+//查询所有行业(有分页)
 industryRouter.get('/industrys', (req, res) => {
   let { pageOn, pageSize } = req.query
   if (!pageSize || !pageOn) return returnErr(res, '参数错误')
@@ -88,6 +70,18 @@ industryRouter.get('/industrys', (req, res) => {
       })
     })
   })
+})
+//查询所有行业(无分页)
+industryRouter.get('/industrys/show', (req, res) => {
+  const sql = `select  * from industry  order by  id desc `
+  query(sql, (result) => {
+      res.send({
+        code: 200,
+        msg: '查询成功',
+        data: result,
+       
+      })
+      })
 })
 
 //删除行业

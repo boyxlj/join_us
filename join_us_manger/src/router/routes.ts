@@ -23,6 +23,16 @@ export const routes: RouteRecordRaw[] = [
         meta: { title: "资讯百科" }
       },
       {
+        path: "positionType/category1",
+        component: () => import("@/views/positionType/category1/index.vue"),
+        meta: { title: "职位类型-1" },
+      },
+      {
+        path: "positionType/category2",
+        component: () => import("@/views/positionType/category2/index.vue"),
+        meta: { title: "职位类型-2" },
+      },
+      {
         path: "position/manger",
         component: () => import("@/views/position/manger/index.vue"),
         meta: { title: "职位管理" },

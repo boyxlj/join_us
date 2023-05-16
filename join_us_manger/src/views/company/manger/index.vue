@@ -1,6 +1,46 @@
 <template>
   <div class="consult">
     <!-- <a-button type="primary" @click="openModelVisible()">发布资讯</a-button> -->
+    <div  class="select">
+    <li class="item">
+    <a-cascader path-mode allow-clear  allow-search v-model="form.city"  :disabled="loading" :options="allCityList" 
+    :field-names="{value: 'name', label: 'name',children:'subLevelModelList'}" 
+    expand-trigger="hover"
+     :style="{width:'320px'}" 
+     @change="changeSelect" placeholder="请选择城市和区域" /></li>
+    <li class="item">
+     <a-select  v-model="form.people_num" allow-clear  allow-search @change="changeSelect" :disabled="loading" :style="{width:'320px'}" placeholder="请选择公司规模">
+      <a-option v-for="(item,index) in people_numList" :key="index">{{ item.name }}</a-option>
+    </a-select></li>
+     <li class="item">
+     <a-select v-model="form.financing" allow-clear  allow-search @change="changeSelect"  :disabled="loading" :style="{width:'320px'}" placeholder="请选择融资情况">
+      <a-option   v-for="(item,index) in financingList" :key="index">{{ item.name }}</a-option>
+    </a-select></li>
+    <li class="item">
+     <a-select  v-model="form.industry" allow-clear  allow-search @change="changeSelect" :disabled="loading" :style="{width:'320px'}" placeholder="请选择行业类型">
+      <a-option  v-for="(item,index) in industryData" :key="index">{{ item.industry_name }}</a-option>
+    </a-select></li>
+    <li class="item">
+     <a-select  v-model="form.state" allow-clear  allow-search @change="changeSelect" :disabled="loading" :style="{width:'320px'}" placeholder="请选择公司状态">
+      <a-option :value="item.state" v-for="(item,index) in stateList" :key="index">{{ item.name }}</a-option>
+    </a-select></li>
+    <li class="item">
+      <a-input-search  @clear="changeSelect" @search="changeSelect"  @press-enter="changeSelect" allow-clear  allow-search v-model.trim="form.keyword" :disabled="loading "  :style="{width:'320px'}" placeholder="请输入公司名称等关键字" search-button>
+        <template #button-icon>
+          <icon-search />
+        </template>
+        <template #button-default >
+          查询
+        </template>
+      </a-input-search>
+      <a-button  class="clear" @click="clearSelect">
+      <template #icon>
+        <icon-refresh/>
+      </template>
+      <template #default>重置</template>
+      </a-button>
+    </li>
+    </div>
     <a-table
       class="table"
       @page-change="changePageNation"
@@ -29,12 +69,14 @@
             </a-tooltip>
           </template>
         </a-table-column>
-        <a-table-column title="注册城市" data-index="reg_city"></a-table-column>
-      
-        
+        <a-table-column title="注册城市" data-index="reg_city">
+          <template #cell="{ record }">
+            <span>{{ record.reg_city }} <span v-if="record.region"> · </span> {{ record.region }}</span>
+          </template>
+        </a-table-column>
         <a-table-column title="行业" data-index="industry"></a-table-column>
         <a-table-column title="规模" data-index="people_num"></a-table-column>
-     
+        <a-table-column title="融资" data-index="financing"></a-table-column>
         <a-table-column title="成立时间" data-index="create_time">
           <template #cell="{ record }">
             <a-tooltip :content="getTime(record.create_time)">
@@ -52,7 +94,7 @@
         <a-table-column title="切换状态">
           <template #cell="{ record }">
             <a-switch
-              :disabled="!useAuth(false)"
+              :disabled="!useAuth(false) || record.state=='0'"
               @change="changeSwitch($event, record.company_id)"
               v-model="record.state"
               checked-value="1"
@@ -65,7 +107,7 @@
         </a-table-column>
         <a-table-column title="操作" data-index="category">
           <template #cell="{ record }">
-            <a-button  :status="btnStyle.select.status" :type="btnStyle.select.type" @click="seeCompany(record.company_id)"
+            <a-button  :size="btnStyle.select.size" :status="btnStyle.select.status" :type="btnStyle.select.type" @click="seeCompany(record.company_id)"
               >查看</a-button
             >
             <!-- <a-button
@@ -79,6 +121,7 @@
             style="margin: 0 10px"
             :type="btnStyle.delete.type"
               :status="btnStyle.delete.status"
+              :size="btnStyle.select.size"
               @click="deleteConsult(record.company_id)"
               >删除</a-button
             >
@@ -130,9 +173,17 @@ import {
 import { Message, Modal } from "@arco-design/web-vue";
 import { getTime, getTimeBefore } from "@/utils/formatTime";
 import { useAuth } from "@/hooks/useAuth";
-import {  IconUser } from "@arco-design/web-vue/es/icon";
+import {  IconUser,IconSearch,IconRefresh } from "@arco-design/web-vue/es/icon";
 import {btnStyle} from "@/config/btnStyle"
 import { ICompanyData } from "@/types/company";
+import {useIndustryStore} from "@/store/industry"
+import {useCity} from "@/store/city"
+import {useGetConditionData} from "@/store/condition"
+const {industryData}  =  useIndustryStore() as any
+const {allCityList} = useCity()
+const conditions =  useGetConditionData().conditionData
+const financingList = conditions[conditions.length-1]
+const people_numList = conditions[conditions.length-2]
 const companyModelVisible = ref(false);
 const companyData = ref<ICompanyData[]>([]);
 const pageNationParams = reactive({
@@ -140,6 +191,63 @@ const pageNationParams = reactive({
   pageSize: 15,
   total: 2,
 });
+
+const stateList = [
+  {state:"0",name:"待审核"},
+  {state:"1",name:"正常"},
+  {state:"2",name:"已驳回/关闭"},
+]	
+
+const form = reactive({
+  financing:'',
+  people_num:'',
+  city:'',
+  keyword:'',
+  state:'',
+  industry:'',
+
+})
+
+const loading = ref(false);
+
+//切换公司规模/以及搜索、
+const changeSelect = ()=>{
+  pageNationParams.pageOn = 1
+  getCompany()
+}
+//重置
+const clearSelect = ()=>{
+  form.financing = ''
+  form.people_num = ''
+  form.city = ''
+  form.keyword = ''
+  form.state = ''
+  form.industry = ''
+  pageNationParams.pageOn = 1
+  getCompany()
+}
+//获取公司数据
+const getCompany = async () => {
+  const params = {
+    keyword:form.keyword,
+    reg_city: form.city.length?form.city[1]:'',
+		region: form.city.length?form.city[2]:'',
+    state:form.state?form.state:'',
+    industry:form.industry?form.industry:'',
+    financing:form.financing=='不限'?'':form.financing,
+    people_num:form.people_num=='不限'?'':form.people_num,
+    ...pageNationParams
+  }
+  loading.value = true;
+  const res: any = await selCompanyAll(params);
+  setTimeout(() => {
+    if (res.code !== 200)
+      return (companyData.value = []), (loading.value = false);
+    loading.value = false;
+    companyData.value = res.data;
+    pageNationParams.total = res.total;
+  }, 400);
+};
 const changePageNation = (pageOn: number) => {
   document.documentElement.scrollTo({
     top:0,
@@ -189,19 +297,7 @@ onMounted(() => {
 
 const itemCompany = ref<ICompanyData[]>([]);
 
-const loading = ref(false);
-//获取公司数据
-const getCompany = async () => {
-  loading.value = true;
-  const res: any = await selCompanyAll(pageNationParams);
-  setTimeout(() => {
-    if (res.code !== 200)
-      return (companyData.value = []), (loading.value = false);
-    loading.value = false;
-    companyData.value = res.data;
-    pageNationParams.total = res.total;
-  }, 400);
-};
+
 
 const companyModelOk = () => {
   companyModelVisible.value = false;
@@ -259,6 +355,17 @@ const deleteConsult = (company_id: string) => {
 .consult {
   .table {
     margin-top: 20px;
+  }
+  .select{
+    display: flex;
+    flex-wrap: wrap;
+    .item{
+      margin-right: 50px;
+      margin-top: 15px;
+      .clear{
+        margin-left: 14px;
+      }
+    }
   }
 }
 .tableTitle {

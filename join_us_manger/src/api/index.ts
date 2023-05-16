@@ -76,6 +76,13 @@ export const selIndustryAll = (data:any) => {
     params:data
   })
 }
+//查询所有行业（无分页）
+export const selIndustryAllShow = () => {
+  return request({
+    url: '/industrys/show',
+    method: 'get',
+  })
+}
 
 //删除行业
 export const delIndustry = (industry_id:string) => {
@@ -101,6 +108,67 @@ export const updateIndustry = (data:any) => {
     data,
   })
 }
+
+
+//----------职位类型
+//查询所有职位类型
+export const selPositionTypeAll = (data:any) => {
+  return request({
+    url: '/positionTypes',
+    method: 'get',
+    params:data
+  })
+}
+//查询所有一级职位类型(无分页)
+export const selPositionTypeShow= () => {
+  return request({
+    url: '/positionTypes/show',
+    method: 'get',
+  })
+}
+//删除职位类型
+export const delPositionType = (data:any) => {
+  return request({
+    url: '/positionType',
+    method: 'delete',
+    data,
+  })
+}
+//添加职位类型
+export const addPositionType = (data:any) => {
+  return request({
+    url: '/positionType',
+    method: 'post',
+    data
+  })
+}
+//修改职位类型
+export const updatePositionType = (data:any) => {
+  return request({
+    url: '/positionType',
+    method: 'patch',
+    data,
+  })
+}
+
+//----------用户接口
+//查询所有用户
+export const selUserInfo = (data:any) => {
+  return request({
+    url: '/users',
+    method: 'post',
+    data
+  })
+}
+//查询用户在线简历
+export const selUserOnlineResume= (userId:string) => {
+  return request({
+    url: '/send/onlineResume',
+    method: 'get',
+    params:{userId}
+  })
+}
+
 
 
 //----------公司接口

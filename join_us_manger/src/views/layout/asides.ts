@@ -22,6 +22,15 @@ export const asideList: TAside[] = [
     ],
   },
   {
+    path: "/positionType",
+    name: "职位类型",
+    icon: IconCalendar,
+    children: [
+      { path: "/positionType/category1", name: "一级分类", icon: "" },
+      { path: "/positionType/category2", name: "二级分类", icon: "" },
+    ],
+  },
+  {
     path: "/position",
     name: "职位管理",
     icon: IconCalendar,

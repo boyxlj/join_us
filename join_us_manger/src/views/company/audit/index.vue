@@ -36,12 +36,14 @@
             </a-tooltip>
           </template>
         </a-table-column>
-        <a-table-column title="注册城市" data-index="reg_city"></a-table-column>
-      
-        
+        <a-table-column title="注册城市" data-index="reg_city">
+          <template #cell="{ record }">
+            <span>{{ record.reg_city }} <span v-if="record.region"> · </span> {{ record.region }}</span>
+          </template>
+        </a-table-column>
         <a-table-column title="行业" data-index="industry"></a-table-column>
         <a-table-column title="规模" data-index="people_num"></a-table-column>
-     
+        <a-table-column title="融资" data-index="financing"></a-table-column>
         <a-table-column title="成立时间" data-index="create_time">
           <template #cell="{ record }">
             <a-tooltip :content="getTime(record.create_time)">
@@ -60,38 +62,41 @@
         <a-table-column title="状态" data-index="state">
           <template #cell="{ record }">
             <a-tag color="orange" v-if="record.state=='0'">待审核</a-tag>
-            <a-tag color="green" v-if="record.state=='1'">当前正常</a-tag>
+            <a-tag color="green" v-if="record.state=='1'">审核通过</a-tag>
             <a-tag color="red" v-if="record.state=='2'">已驳回/关闭</a-tag>
           </template>
         </a-table-column>
         <a-table-column title="操作" data-index="category">
           <template #cell="{ record }">
-            <a-button  style="margin: 0 10px" :status="btnStyle.select.status"  type="outline" @click="seeCompany(record.company_id)"
+            <a-button  style="margin: 0 4px"  :size="btnStyle.select.size" :status="btnStyle.select.status"  type="outline" @click="seeCompany(record.company_id)"
               >查看详情</a-button
             >
             <a-button
-            v-if="record.state==2"
-            style="margin: 0 10px"
-            type="outline"
-              status="warning"
-              :disabled="useAuth(false)"
-              @click="changeState(record.company_id,'0')"
-              >重新审核</a-button
-            >
-            <a-button
             v-if="record.state==0 || record.state==2"
-            style="margin: 0 10px"
+            style="margin: 0 4px"
             type="outline"
               status="success"
               :disabled="!useAuth(false)"
+              :size="btnStyle.select.size"
               @click="changeState(record.company_id,'1')"
               >通过</a-button
             >
             <a-button
+            v-if="record.state==2"
+            style="margin: 0 4px"
+            type="outline"
+              status="warning"
+              :size="btnStyle.select.size"
+              :disabled="!useAuth(false)"
+              @click="changeState(record.company_id,'0')"
+              >重新审核</a-button
+            >
+            <a-button
             v-if="record.state==0 || record.state==1"
-            style="margin: 0 10px"
+            style="margin: 0 4px"
             type="outline"
             :disabled="!useAuth(false)"
+            :size="btnStyle.select.size"
               :status="btnStyle.delete.status"
               @click="changeState(record.company_id,'2')"
               >驳回</a-button
@@ -157,8 +162,7 @@ if(state=='0'){
 //获取公司数据
 const getCompany = async () => {
   loading.value = true;
-  const res: any = await selCompanyAll({...pageNationParams,state:activeIdx.value});
-  console.log(res)
+  const res: any = await selCompanyAll({...pageNationParams,state:activeIdx.value+''});
   setTimeout(() => {
     if (res.code !== 200)
       return (companyData.value = []), (loading.value = false);

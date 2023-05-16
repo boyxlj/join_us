@@ -57,19 +57,21 @@
         </a-table-column>
         <a-table-column title="操作" data-index="category">
           <template #cell="{ record }">
-            <a-button  :status="btnStyle.select.status" :type="btnStyle.select.type" @click="seeConsult(record.consult_id)"
+            <a-button  :size="btnStyle.select.size"  :status="btnStyle.select.status" :type="btnStyle.select.type" @click="seeConsult(record.consult_id)"
               >查看</a-button
             >
             <a-button
             :type="btnStyle.editor.type"
               style="margin: 0 10px"
               :status="btnStyle.editor.status"
+              :size="btnStyle.select.size"
               @click="openModelVisible(record.consult_id)"
               >编辑</a-button
             >
             <a-button
             :type="btnStyle.delete.type"
               :status="btnStyle.delete.status"
+              :size="btnStyle.select.size"
               @click="deleteConsult(record.consult_id)"
               >删除</a-button
             >

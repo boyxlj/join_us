@@ -1,20 +1,23 @@
 <template>
     <div class="online-resume-container">
         <div class="userinfo-container">
-            <img class="user-avatar" :src="data.avatar" alt="">
+            <img class="user-avatar" :src="data?.avatar" alt="">
             <div class="userinfo">
                 <p style="display: flex; align-items: center;">
-                    <span class="username">{{ data.name }}</span><component :is="data.gender === '0' ? femaleIcon : maleIcon"></component>
-                    <span class="flex-span" style="margin-left: auto;"><birthcakeIcon/>{{ data.age }}岁</span>
-                    <span class="flex-span"><expIcon/>{{ data.leave_schoolTime }}</span>
-                    <span class="flex-span"><degreeIcon/>{{ data.degree }}</span>
-                    <span class="flex-span"><stateIcon/>{{ data.apply_state }}</span>
-                    <span class="flex-span"><PhoneOutlined/>{{ data.phone }}</span>
-                    <span class="flex-span"><MailOutlined/>{{ data.email }}</span>
+                    <span class="username">{{ data?.name }}</span>
+                    <!-- <component :is="data.gender === '0' ? femaleIcon : maleIcon"></component> -->
+                    <span class="flex-span" style="margin-left: auto;">{{ data?.age }}岁</span>
+                    <span class="flex-span">{{ data?.leave_schoolTime }}</span>
+                    <span class="flex-span">{{ data?.degree }}</span>
+                    <span class="flex-span">{{ data?.apply_state }}</span>
+                    <span class="flex-span">{{ data?.phone }}</span>
+                    <span class="flex-span">{{ data?.email }}</span>
+                    <!-- <span class="flex-span"><PhoneOutlined/>{{ data.phone }}</span>
+                    <span class="flex-span"><MailOutlined/>{{ data.email }}</span> -->
                 </p>
                 <div class="user-skill">
                     <pre>
-{{ data.advantage }}
+{{ data?.advantage }}
                     </pre>
                 </div>
             </div>
@@ -22,15 +25,15 @@
         <div class="hope-job">
             <p>
                 <span class="title">期望职位</span>
-                <span class="hope-detail">{{ data.hope_job }}</span>
-                <span class="hope-detail">{{ data.hope_industry }}</span>
-                <span class="hope-detail">{{ data.hope_salary }}</span>
+                <span class="hope-detail">{{ data?.hope_job }}</span>
+                <span class="hope-detail">{{ data?.hope_industry }}</span>
+                <span class="hope-detail">{{ data?.hope_salary }}</span>
             </p>
         </div>
         <div class="job-exp">
             <span class="title">工作经历</span>
             <div class="job-exp-detail">
-                <template v-for="item in data.resume" :key="item.resume_id">
+                <template v-for="item in data.resume" :key="item?.resume_id">
                     <p style="display: flex;">
                         <span class="job-exp-title">{{ item.company }}</span>
                         <span class="job-exp-title">{{ item.department }}-{{ item.post }}</span>
@@ -39,7 +42,7 @@
                     <div class="job-exp-content">
                         <p>工作内容:</p>
                         <pre>
-{{ item.content }}
+{{ item?.content }}
                         </pre>
                         <a-tag :key="index" :closable="false" v-for="(item2, index) in JSON.parse(item.skill)">{{ item2 }}</a-tag>
                     </div>
@@ -53,14 +56,14 @@
             </span>
             <div class="school-exp-detail">
                 <p style="display: flex;">
-                    <span class="school-exp-tiltle">{{ data.school }}</span>
-                    <span class="school-exp-tiltle">{{ data.major }}</span>
-                    <span class="school-exp-tiltle">{{ data.school_type }}</span>
-                    <span style="margin-left: auto;">{{ data.enter_schoolTime }}至{{ data.leave_schoolTime }}</span>
+                    <span class="school-exp-tiltle">{{ data?.school }}</span>
+                    <span class="school-exp-tiltle">{{ data?.major }}</span>
+                    <span class="school-exp-tiltle">{{ data?.school_type }}</span>
+                    <span style="margin-left: auto;">{{ data?.enter_schoolTime }}至{{ data?.leave_schoolTime }}</span>
                 </p>
                 <div>
                     <pre>
-{{ data.school_exp }}
+{{ data?.school_exp }}
                     </pre>
                 </div>
             </div>
@@ -69,14 +72,14 @@
 </template>
 
 <script setup lang="ts">
-import { onlineResume } from '@/api'
-import maleIcon from '@/components/common/maleIcon/index.vue'
-import femaleIcon from '@/components/common/femaleIcon/index.vue'
-import birthcakeIcon from './components/BirthCake/index.vue'
-import degreeIcon from './components/degreeIcon/index.vue'
-import stateIcon from './components/stateIcon/index.vue'
-import expIcon from './components/expIcon/index.vue'
-import { PhoneOutlined, MailOutlined } from '@ant-design/icons-vue'
+import { selUserOnlineResume } from '@/api'
+// import maleIcon from './components/maleIcon/index.vue'
+// import femaleIcon from './components/femaleIcon/index.vue'
+// import birthcakeIcon from './components/BirthCake/index.vue'
+// import degreeIcon from './components/degreeIcon/index.vue'
+// import stateIcon from './components/stateIcon/index.vue'
+// import expIcon from './components/expIcon/index.vue'
+// import { PhoneOutlined, MailOutlined } from '@ant-design/icons-vue'
 const props = defineProps({
     userId: {
         type: String
@@ -135,25 +138,30 @@ const propertyMap = {
     school_type: '学校类型'
 }
 const userId = computed(() => props.userId)
+
 const data: Record<any, any> = ref({})
 const getUserResume = (userId: string) => {
-    onlineResume(userId).then(res => {
+  if(!userId) return
+  selUserOnlineResume(userId).then((res:any) => {
+        console.log(res)
         data.value = res.data
     })
 }
 watch(userId, (newVal, oldVal) => {
-    getUserResume(newVal as string)
-}, { deep: true, immediate: true })
+  getUserResume(newVal as string)
+  },
+  { deep: true, immediate: true }
+ )
 
 </script>
 
 <style lang="less" scoped>
 .online-resume-container{
-    width: 100%;
+    width: 94%;
     min-height: 250px;
     border: 1px solid #bebebe;
     border-radius: 10px;
-    padding: 15px;
+    padding: 25px;
     .userinfo-container{
         width: 100%;
         min-height: 150px;
@@ -204,7 +212,7 @@ watch(userId, (newVal, oldVal) => {
         width: 95%;
         &>.title{
             display: inline-block;
-            width: 80px;
+            width: 84px;
             text-align: right;
             font-size: 20px;
             font-weight: bold;

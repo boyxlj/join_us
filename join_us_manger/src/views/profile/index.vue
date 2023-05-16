@@ -54,6 +54,7 @@
             :fileList="file"
             :show-file-list="false"
             @change="onChange"
+            @on-before-upload="beforeUpload"
           >
             <template #upload-button>
               <div>
@@ -124,6 +125,7 @@ import { useMangerStore } from "@/store/manger";
 import { IMangerData } from "@/types/manger";
 import { getTime } from "@/utils/formatTime";
 import { updateManger } from "@/api";
+import { useAuth } from "@/hooks/useAuth";
 
 const mangerInfo = computed(
   () => useMangerStore().mangerInfo[0] as IMangerData
@@ -148,6 +150,7 @@ const handleSubmit = async ({
   values: Record<string, any>;
   errors: Record<string, ValidatedError> | undefined;
 }) => {
+  if(!useAuth()) return
   const resArr = [];
   for (let i in errors) {
     resArr.push(i);
@@ -190,8 +193,12 @@ const file = ref<TFileItem[]>([
 ]);
 
 
+const beforeUpload = ()=>{
+  if(!useAuth()) return
 
+}
 const onChange = (_: FileItem[], currentFile: FileItem) => {
+  if(!useAuth(false)) return
   if (currentFile.status === "done") {
     if (currentFile.response.code !== 200) {
       return Message.error(currentFile.response.msg);
