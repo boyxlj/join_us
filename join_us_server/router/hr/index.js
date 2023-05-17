@@ -6,10 +6,6 @@ const jwt = require("../../utils/jsonwebtoken");
 const { returnErr } = require("../../utils/returnErr");
 //人事表
 
-hrRouter.get('/',(req,res)=>{
-  res.send({code:200,msg:'ok'})
-})
-
 // hr登陆或注册
 hrRouter.post('/hr/LoginOrRegister', (req, res) => {
   const { telephone, password } = req.body

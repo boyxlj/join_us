@@ -47,13 +47,17 @@ industryRouter.post('/industry_id', (req, res) => {
 
 //查询所有行业(有分页)
 industryRouter.get('/industrys', (req, res) => {
-  let { pageOn, pageSize } = req.query
+  let { pageOn, pageSize,keyword } = req.query
   if (!pageSize || !pageOn) return returnErr(res, '参数错误')
   if (pageSize > 15) {
     pageSize = 15
   }
-  const selAllSql = `select count(*) from industry  inner join manger on industry.manger_id=manger.manger_id`
-  const selSql = `select  * from industry inner join manger on industry.manger_id=manger.manger_id order by  industry.id desc limit ${(pageOn - 1) * pageSize} ,${pageSize} `
+  let str = ''
+  if(keyword){
+    str = `where industry_name like '%${keyword}%' `
+  }
+  const selAllSql = `select count(*) from industry  inner join manger on industry.manger_id=manger.manger_id ${str}`
+  const selSql = `select  * from industry inner join manger on industry.manger_id=manger.manger_id ${str} order by  industry.id desc limit ${(pageOn - 1) * pageSize} ,${pageSize} `
   query(selAllSql, (selAllRes) => {
     query(selSql, (selRes) => {
       const RES = selRes?.map(item => {

@@ -11,7 +11,11 @@ export const conditionList= [
     {
       "code": 1903,
       "name": "兼职"
-    }
+    },
+    {
+      "code": 1901233,
+      "name": "校招"
+    },
   ],
   [
     {

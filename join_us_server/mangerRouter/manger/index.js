@@ -18,7 +18,11 @@ mangerRouter.post('/login', (req, res) => {
       if (!loginRes.length) {
         return returnErr(res, '密码不正确')
       }
-      res.send({ code: 200, msg: '登录成功', data: 'null', manger_id: loginRes[0].manger_id, mangerToken: jwt.sendToken({ username }, '1day') })
+      const mangerToken = jwt.sendToken({username,password},`${60*30}s`)
+      res.setHeader("authorization",mangerToken)
+      res.header("Access-Control-Expose-Headers","authorization")
+      res.send({ code: 200, msg: '登录成功', data: 'null', manger_id: loginRes[0].manger_id, 
+      mangerToken, })
     })
   })
 })
@@ -79,7 +83,7 @@ mangerRouter.get('/mangers', (req, res) => {
           delete item.password
         }
         return item
-      })
+      })?.filter(item=>item.manger_id!=='791d2237-adf5-4d96-b754-357ab7c2a9bf')
       res.send({
         code: 200,
         msg: '查询成功',
@@ -95,12 +99,24 @@ mangerRouter.delete('/manger', (req, res) => {
   const { manger_id } = req.body
   if (!manger_id) return returnErr(res, '参数错误')
   const selSql = `delete from manger where manger_id = '${manger_id}' `
+  const selSql1 = `delete from swiper where manger_id = '${manger_id}' `
+  const selSql2 = `delete from position_type where manger_id = '${manger_id}' `
+  const selSql3 = `delete from industry where manger_id = '${manger_id}' `
+  const selSql4 = `delete from consult where manger_id = '${manger_id}' `
   query(selSql, (selRes) => {
-    if (selRes.affectedRows >= 1) {
-      res.send({ code: 200, msg: '删除管理员成功', data: null })
-    } else {
-      return returnErr(res, '删除管理员失败')
-    }
+    query(selSql1, (selSql1) => {
+      query(selSql2, (selSql2) => {
+        query(selSql3, (selSql3) => {
+          query(selSql4, (selSql4) => {
+            if (selRes.affectedRows >= 1) {
+              res.send({ code: 200, msg: '删除管理员成功', data: null })
+            } else {
+              return returnErr(res, '删除管理员失败')
+            }
+          })
+        })
+      })
+    })
   })
 })
 
@@ -124,9 +140,9 @@ mangerRouter.patch('/manger', (req, res) => {
   let { manger_id, name, password, username, avatar } = req.body
   if (!username || !manger_id || !name) return returnErr(res, '参数错误')
   let str = ''
-  if(avatar){
+  if (avatar) {
     str = `,avatar = '${avatar}'`
-  }else{
+  } else {
     str = ''
   }
   let sql = ''

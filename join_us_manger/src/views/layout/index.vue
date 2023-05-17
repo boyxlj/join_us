@@ -9,7 +9,7 @@
         :style="{ width: '100%' }"
         @menuItemClick="onClickMenuItem"
       >
-        <template v-for="(item, index) in asideList" :key="index">
+        <template v-for="(item, index) in asideData" :key="index">
           <a-menu-item v-if="!item.children" :key="item.path">
             <component :is="item.icon"></component>
             {{ item.name }}
@@ -97,6 +97,15 @@ import {IMangerData} from "@/types/manger"
 const mangerInfo = computed(()=>useMangerStore().mangerInfo[0] as IMangerData) 
 const router = useRouter();
 const route = useRoute();
+
+let asideData= shallowRef<any[]>([])
+onMounted(()=>{
+  if(mangerInfo.value.manger_state!='1'){
+    asideData.value =asideList.filter(item=>item.path!='/manger')
+  }else{
+    asideData.value= asideList
+  }
+})
 
 const defaultOpenKeys = ref(["/" + route.path.split("/")[1]]);
 const defaultSelectedKeys = ref([route.path]);

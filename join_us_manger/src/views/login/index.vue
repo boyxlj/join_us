@@ -73,8 +73,6 @@ import Footer from "@/components/common/footer/index.vue"
 import {loginManger} from "@/api"
 import {useMangerStore} from "@/store/manger"
 import { Message } from "@arco-design/web-vue";
-
-
 const formRef = ref()
 const router = useRouter()
 const loginBtnDisAbled= ref(false)
@@ -135,7 +133,7 @@ const form = reactive({
   width: 100vw;
   height: 100vh;
   .box {
-    width: 444px;
+    width: 470px;
     height: 437px;
     background-color: #fff;
     border-radius: 24px;
@@ -161,8 +159,8 @@ const form = reactive({
       display: flex;
       justify-content: center;
       text-align: center;
-      width: 110% !important;
-      margin-left: -60px;
+      width: 115% !important;
+      margin-left: -75px;
       margin-top: 30px;
       .arco-form-item{
         text-align: center;
@@ -171,7 +169,8 @@ const form = reactive({
         .coder{
           width: 200px;
           height: 36px;
-          background: #c9e4e8;
+          background: #d7ecef;
+          margin-left: 5px;
         }
       }
     }
@@ -181,6 +180,6 @@ const form = reactive({
   width: 500px;
 }
 .loginBtn{
-  width: 334px;
+  width: 372px;
 }
 </style>

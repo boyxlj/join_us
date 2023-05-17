@@ -277,6 +277,29 @@ companyRouter.post('/company/state', (req, res) => {
 
 
 
+//删除公司
+companyRouter.delete('/company', (req, res) => {
+  const { company_id } = req.body
+  if (!userId) return returnErr(res, '参数错误')
+  const selSql = `delete from company where company_id = '${company_id}' `
+  const sendSql = `delete from hr where company_id = '${company_id}' `
+  const resumeSql = `delete from pos where company_id = '${company_id}' `
+  const collectSql = `delete from company_photo where company_id = '${company_id}' `
+  query(selSql, (selRes) => {
+    query(sendSql, (selRes2) => {
+      query(resumeSql, (selRes3) => {
+        query(collectSql, (selAllRes) => {
+          if (selRes.affectedRows >= 1) {
+            res.send({ code: 200, msg: '删除公司成功', data: null })
+          } else {
+            return returnErr(res, '删除公司失败')
+          }
+        })
+      })
+    })
+  })
+})
+
 
 
 
@@ -284,7 +307,3 @@ module.exports = companyRouter
 
 
 
-// 1、在mysql/bin/my.ini 文件 加一个：
-//   [mysqld]
-//  innodb_force_recovery = 4
-// 解决办法：删除xammp 安装路径D:\xampp\mysql\data\ 下的 aria_log.00000001

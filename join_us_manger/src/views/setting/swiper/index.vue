@@ -1,39 +1,22 @@
 <template>
   <div class="manger">
-    <div class="select">
-    <a-button type="primary" @click="openModelVisible()">添加行业</a-button>
-    <li class="item">
-      <a-input-search  @clear="changeSelect" @search="changeSelect"  @press-enter="changeSelect" allow-clear  allow-search v-model.trim="keyword" :disabled="loading "  :style="{width:'320px'}" placeholder="请输入行业关键字查询" search-button>
-        <template #button-icon>
-          <icon-search />
-        </template>
-        <template #button-default >
-          查询
-        </template>
-      </a-input-search>
-      <a-button  class="clear" @click="clearSelect">
-      <template #icon>
-        <icon-refresh/>
-      </template>
-      <template #default>重置</template>
-      </a-button>
-    </li></div>
+    <a-button type="primary" @click="openModelVisible()">添加轮播</a-button>
     <a-table
       class="table"
       @page-change="changePageNation"
       :pagination="pageNationParams"
-      :data="industryData"
+      :data="swiperData"
       :loading="loading"
     >
-      <template #columns>
-        <a-table-column title="行业名称" data-index="industry_name">
+      <template #columns  >
+        <a-table-column title="轮播图片" :width="300" data-index="img">
           <template #cell="{ record }">
-          <a-tooltip :content="record.industry_name">
-            <span class="tableTitle">{{ record.industry_name }}</span>
-          </a-tooltip>
+            <div class="photos">
+              <img :src="record.img"  alt="">
+            </div>
         </template>
         </a-table-column>
-        <a-table-column title="添加人昵称" data-index="name">
+        <a-table-column title="添加人信息" data-index="name">
           <template #cell="{ record }">
           <a-popover position="top">
             <span>{{ record.name }}</span>
@@ -52,32 +35,23 @@
           </a-popover>
         </template>
         </a-table-column>
-        <a-table-column title="备注" data-index="industry_other">
-          <template #cell="{ record }">
-          <a-tooltip v-if="record.industry_other" :content="record.industry_other">
-            <span class="tableTitle" style="max-width: 280px;">
-              {{ record.industry_other }}
-            </span>
-
-          </a-tooltip>
-          <span v-else class="tableTitle" style="max-width: 280px;">/</span>
-        </template>
-        </a-table-column>
-        <a-table-column title="行业状态">
+        <a-table-column title="链接" ellipsis tooltip :width="200" data-index="links"></a-table-column>
+        <a-table-column title="备注" ellipsis tooltip :width="100" data-index="others"></a-table-column>
+        <a-table-column title="轮播状态">
           <template #cell="{ record }">
             <a-switch
-              @change="changeSwitch($event, record.industry_id)"
-              v-model="record.industry_state"
+              @change="changeSwitch($event, record.swiper_id)"
+              v-model="record.state"
               checked-value="1"
               uncheckedValue="0"
               :disabled="!useAuth(false)"
             >
-              <template #checked> 开启 </template>
-              <template #unchecked> 关闭 </template>
+              <template #checked> 显示 </template>
+              <template #unchecked> 隐藏 </template>
             </a-switch>
           </template>
         </a-table-column>
-        <a-table-column title="添加时间" data-index="addTime">
+        <a-table-column title="上传时间" data-index="addTime">
           <template #cell="{ record }">
             <a-tooltip :content="getTime(record.addTime, 'time')">
               <span>{{ getTimeBefore(record.addTime) }}</span>
@@ -92,14 +66,14 @@
               style="margin: 0 10px"
               :type="btnStyle.editor.type"
               :status="btnStyle.editor.status"
-              @click="openModelVisible(record.industry_id)"
+              @click="openModelVisible(record.swiper_id)"
               >编辑</a-button
             >
             <a-button
             :size="btnStyle.select.size"
             :type="btnStyle.delete.type"
               :status="btnStyle.delete.status"
-              @click="deleteIndustry(record.industry_id)"
+              @click="deleteSwiper(record.swiper_id)"
               >删除</a-button
             >
           </template>
@@ -111,17 +85,17 @@
       :footer="false"
       :width="580"
       :mask-closable="false"
-      v-model:visible="industryModelVisible"
-      @ok="industryModelOk"
-      @cancel="industryModelCancel"
+      v-model:visible="swiperModelVisible"
+      @ok="swiperModelOk"
+      @cancel="swiperModelCancel"
     >
       <template #title>{{
-        itemIndustry.length ? "编辑行业" : "添加行业"
+        itemSwiper.length ? "编辑轮播" : "添加轮播"
       }}</template>
-      <IndustryForm
-        :industryModelVisible="industryModelVisible"
+      <SwiperForm
+        :swiperModelVisible="swiperModelVisible"
         :validateForm="validateForm"
-        :itemIndustry="itemIndustry"
+        :itemSwiper="itemSwiper"
       />
     </a-modal>
    
@@ -130,23 +104,23 @@
 
 <script setup lang="ts">
 import { IconUser,IconSearch,IconRefresh } from "@arco-design/web-vue/es/icon";
-import IndustryForm from "./components/industryForm/index.vue";
+import SwiperForm from "./components/swiperForm/index.vue";
 import {
-  addIndustry,
-  selIndustryAll,
-  updateIndustry,
-  delIndustry,
-  updateIndustryState,
+  addSwiper,
+  selSwiperAll,
+  updateSwiper,
+  delSwiper,
+  updateSwiperState,
 } from "@/api";
 import { Message, Modal } from "@arco-design/web-vue";
 import { getTime, getTimeBefore } from "@/utils/formatTime";
-import { IIndustryData } from "@/types/industry";
+import { ISwiperData } from "@/types/swiper";
 import { useAuth } from "@/hooks/useAuth";
 import {btnStyle} from "@/config/btnStyle"
 import {useMangerStore} from "@/store/manger"
 const manger_id = useMangerStore().manger_id
-const industryModelVisible = ref(false);
-const industryData = ref<IIndustryData[]>([]);
+const swiperModelVisible = ref(false);
+const swiperData = ref<ISwiperData[]>([]);
 const pageNationParams = reactive({
   pageOn: 1,
   pageSize: 15,
@@ -172,88 +146,87 @@ onMounted(() => {
   getIndustry();
 });
 
-const changeSwitch = async (state: any, industry_id: string) => {
-  const res: any = await updateIndustryState({ state, industry_id });
+const changeSwitch = async (state: any, swiper_id: string) => {
+  const res: any = await updateSwiperState({ state, swiper_id });
   if (res.code !== 200) {
     Message.error(res.msg);
     getIndustry();
     return;
   }
-  Message.success("行业状态修改成功");
+  Message.success("状态修改成功");
   getIndustry();
 };
 
 //提交添加或修改
 const validateForm = async (isShow: boolean = true, value: any) => {
-  if (!isShow) return (industryModelVisible.value = false);
+  if (!isShow) return (swiperModelVisible.value = false);
   if (!useAuth()) return;
-
-  if (value?.industry_id) {
-    const res: any = await updateIndustry(value);
+  if (value?.swiper_id) {
+    const res: any = await updateSwiper(value);
     if (res.code !== 200) {
       return Message.error(res.msg);
     }
     Message.success(res.msg);
-    industryModelVisible.value = false;
+    swiperModelVisible.value = false;
   } else {
-    const res: any = await addIndustry({...value,manger_id});
+    const res: any = await addSwiper({...value,manger_id});
     if (res.code !== 200) {
       return Message.error(res.msg);
     }
     Message.success(res.msg);
-    industryModelVisible.value = false;
+    swiperModelVisible.value = false;
   }
   
   getIndustry();
 };
 
-const itemIndustry = ref<IIndustryData[]>([]);
+const itemSwiper = ref<ISwiperData[]>([]);
 
 const loading = ref(false);
 //获取资讯数据
 const getIndustry = async () => {
   loading.value = true;
-  const res: any = await selIndustryAll({...pageNationParams,keyword:keyword.value});
+  const res: any = await selSwiperAll({...pageNationParams,keyword:keyword.value});
   setTimeout(() => {
     if (res.code !== 200)
-      return (industryData.value = []), (loading.value = false);
+      return (swiperData.value = []), (loading.value = false);
     loading.value = false;
-    industryData.value = res.data;
+    swiperData.value = res.data;
     pageNationParams.total = res.total;
   }, 400);
 };
 
-const industryModelOk = () => {
-  industryModelVisible.value = false;
-  itemIndustry.value = [];
+const swiperModelOk = () => {
+  swiperModelVisible.value = false;
+  itemSwiper.value = [];
 };
 
-const industryModelCancel = () => {
-  industryModelVisible.value = false;
-  itemIndustry.value = [];
+const swiperModelCancel = () => {
+  swiperModelVisible.value = false;
+  itemSwiper.value = [];
 };
 
-const openModelVisible = (industry_id?: string) => {
-  industryModelVisible.value = true;
-  if (industry_id) {
-    itemIndustry.value = industryData.value?.filter(
-      (item) => item.industry_id === industry_id
+const openModelVisible = (swiper_id?: string) => {
+  swiperModelVisible.value = true;
+  if (swiper_id) {
+    itemSwiper.value = swiperData.value?.filter(
+      (item) => item.swiper_id === swiper_id
     );
   }else{
-    itemIndustry.value =[]
+    itemSwiper.value =[]
   }
 };
 
 
 //点击删除
-const deleteIndustry = (industry_id: string) => {
+const deleteSwiper = (swiper_id: string) => {
   Modal.warning({
     hideCancel: false,
     title: "温馨提示",
-    content: "您确认要永久删除该管理员吗？",
+    content: "您确认要永久删除该轮播吗？",
     onOk: async () => {
       if (!useAuth()) return;
-      const res: any = await delIndustry(industry_id);
+      const res: any = await delSwiper(swiper_id);
       if (res.code !== 200) {
         return Message.error(res.msg);
       }
@@ -299,5 +272,15 @@ const deleteIndustry = (industry_id: string) => {
     position: absolute;
     bottom: 2px;
   }
+}
+
+.photos{
+  width: 230px;
+  height: 140px;
+  img{
+    width: 100%;
+    height: 100%;
+  }
+  background: #000;
 }
 </style>

@@ -6,32 +6,31 @@
                 <p style="display: flex; align-items: center;">
                     <span class="username">{{ data?.name }}</span>
                     <!-- <component :is="data.gender === '0' ? femaleIcon : maleIcon"></component> -->
-                    <span class="flex-span" style="margin-left: auto;">{{ data?.age }}岁</span>
-                    <span class="flex-span">{{ data?.leave_schoolTime }}</span>
-                    <span class="flex-span">{{ data?.degree }}</span>
-                    <span class="flex-span">{{ data?.apply_state }}</span>
-                    <span class="flex-span">{{ data?.phone }}</span>
-                    <span class="flex-span">{{ data?.email }}</span>
+                    <span class="flex-span" style="margin-left: auto;" >{{ data.gender=='0'?'男':'女' }}</span>
+                    <span class="flex-span" >{{ data.born?getAge(data?.born)+'岁':'/'  }}</span>
+                    <span class="flex-span">{{ data?.leave_schoolTime|| '未完善' }}</span>
+                    <span class="flex-span">{{ data?.degree|| '未完善' }}</span>
+                    <span class="flex-span">{{ data?.apply_state|| '未完善' }}</span>
+                    <span class="flex-span">{{ data?.phone|| '未完善' }}</span>
+                    <span class="flex-span">{{ data?.email|| '未完善' }}</span>
                     <!-- <span class="flex-span"><PhoneOutlined/>{{ data.phone }}</span>
                     <span class="flex-span"><MailOutlined/>{{ data.email }}</span> -->
                 </p>
-                <div class="user-skill">
-                    <pre>
-{{ data?.advantage }}
-                    </pre>
+                <div class="user-skill" v-if="data?.advantage">
+                    <pre>{{ data?.advantage }}</pre>
                 </div>
             </div>
         </div>
         <div class="hope-job">
             <p>
-                <span class="title">期望职位</span>
-                <span class="hope-detail">{{ data?.hope_job }}</span>
-                <span class="hope-detail">{{ data?.hope_industry }}</span>
-                <span class="hope-detail">{{ data?.hope_salary }}</span>
+                <span class="title" >期望职位</span>
+                <span class="hope-detail">{{ data?.hope_job || '未完善'}}</span>
+                <span class="hope-detail">{{ data?.hope_industry|| '未完善' }}</span>
+                <span class="hope-detail">{{ data?.hope_salary || '未完善'}}</span>
             </p>
         </div>
-        <div class="job-exp">
-            <span class="title">工作经历</span>
+        <div class="job-exp" v-if="data?.resume && data?.resume.length">
+            <span class="title"  >工作经历</span>
             <div class="job-exp-detail">
                 <template v-for="item in data.resume" :key="item?.resume_id">
                     <p style="display: flex;">
@@ -41,10 +40,8 @@
                     </p>
                     <div class="job-exp-content">
                         <p>工作内容:</p>
-                        <pre>
-{{ item?.content }}
-                        </pre>
-                        <a-tag :key="index" :closable="false" v-for="(item2, index) in JSON.parse(item.skill)">{{ item2 }}</a-tag>
+                        <pre>{{ item?.content }}</pre>
+                        <a-tag :key="index" style="margin-right: 10px;" :closable="false" v-for="(item2, index) in JSON.parse(item.skill)">{{ item2 }}</a-tag>
                     </div>
                     <hr style="margin: 20px 0;">
                 </template>
@@ -56,15 +53,13 @@
             </span>
             <div class="school-exp-detail">
                 <p style="display: flex;">
-                    <span class="school-exp-tiltle">{{ data?.school }}</span>
-                    <span class="school-exp-tiltle">{{ data?.major }}</span>
-                    <span class="school-exp-tiltle">{{ data?.school_type }}</span>
-                    <span style="margin-left: auto;">{{ data?.enter_schoolTime }}至{{ data?.leave_schoolTime }}</span>
+                    <span class="school-exp-tiltle">{{ data?.school || '未完善'}}</span>
+                    <span class="school-exp-tiltle">{{ data?.major|| '未完善' }}</span>
+                    <span class="school-exp-tiltle">{{ data?.school_type|| '未完善' }}</span>
+                    <span style="margin-left: auto;">{{ data?.enter_schoolTime || '/'}}至{{ data?.leave_schoolTime|| '/' }}</span>
                 </p>
                 <div>
-                    <pre>
-{{ data?.school_exp }}
-                    </pre>
+                    <pre>{{ data?.school_exp }}</pre>
                 </div>
             </div>
         </div>
@@ -73,6 +68,7 @@
 
 <script setup lang="ts">
 import { selUserOnlineResume } from '@/api'
+import {getAge} from "@/utils/getAge"
 // import maleIcon from './components/maleIcon/index.vue'
 // import femaleIcon from './components/femaleIcon/index.vue'
 // import birthcakeIcon from './components/BirthCake/index.vue'
@@ -245,7 +241,7 @@ watch(userId, (newVal, oldVal) => {
         .school-exp-detail{
             margin-left: 20px;
             width: calc(100% - 100px);
-            min-height: 300px;
+            min-height: 100px;
         }
         .school-exp-tiltle{
             padding-right: 20px;

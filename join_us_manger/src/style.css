@@ -2,6 +2,10 @@
 body,html {
   margin: 0;
   padding: 0;
+
+}
+img{
+  -webkit-user-drag: none;
 }
 p{
   margin: 0;

@@ -7,6 +7,7 @@ type TAside = {
   path: string;
   icon: any;
   name: string;
+  right?:boolean,
   children?: TAside[];
 };
 
@@ -46,9 +47,18 @@ export const asideList: TAside[] = [
     children: [
       { path: "/company/manger", name: "公司列表", icon: "" },
       { path: "/company/audit", name: "公司审核", icon: "" },
+      { path: "/company/hr", name: "人事管理", icon: "" },
+    ],
+  },
+  {
+    path: "/setting",
+    name: "动态配置",
+    icon: IconCalendar,
+    children: [
+      { path: "/setting/swiper", name: "轮播管理", icon: "" },
     ],
   },
   { path: "/user", name: "用户管理", icon: IconHome },
-  { path: "/manger", name: "管理员", icon: IconHome },
+  { path: "/manger", name: "管理员", icon: IconHome,right:true },
   { path: "/profile", name: "个人中心", icon: IconHome },
 ];

@@ -58,6 +58,16 @@ export const routes: RouteRecordRaw[] = [
         meta: { title: "公司审核" }
       },
       {
+        path: "company/hr",
+        component: () => import("@/views/company/hrManger/index.vue"),
+        meta: { title: "人事管理" }
+      },
+      {
+        path: "/setting/swiper",
+        component: () => import("@/views/setting/swiper/index.vue"),
+        meta: { title: "轮播管理" }
+      },
+      {
         path: "manger",
         component: lazyLoad('manger'),
         meta: { title: "后台管理员" }

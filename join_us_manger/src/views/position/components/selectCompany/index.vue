@@ -93,9 +93,9 @@ import { ICompanyData } from "@/types/company";
 import { getTime } from "@/utils/formatTime";
 import {selCompanyPhoto} from "@/api"
 import "md-editor-v3/lib/style.css";
-const props = defineProps<{ selectCompanyData: ICompanyData[] }>();
+const props = defineProps<{ selectCompanyData: any[] }>();
 watch(()=>props.selectCompanyData,()=>{
-  getPhotos(props.selectCompanyData[0].company_id as string)
+  getPhotos(props.selectCompanyData[0]?.company_id as string)
 })
 
 const photosList = ref<any[]>([])

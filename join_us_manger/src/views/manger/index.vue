@@ -110,8 +110,11 @@ import { Message, Modal } from "@arco-design/web-vue";
 import { getTime, getTimeBefore } from "@/utils/formatTime";
 import { IMangerData } from "@/types/manger";
 import { useAuth } from "@/hooks/useAuth";
-import {useMangerStore} from "@/store/manger"
 import {btnStyle} from "@/config/btnStyle"
+import {useMangerStore} from "@/store/manger"
+const {manger_state}= useMangerStore().mangerInfo[0]
+const router = useRouter()
+
 
 const mangerModelVisible = ref(false);
 const mangerData = ref<IMangerData[]>([]);
@@ -126,6 +129,9 @@ const changePageNation = (pageOn: number) => {
 };
 onMounted(() => {
   getManger();
+  if(manger_state!='1'){
+    return router.replace("/notfound")
+  }
 });
 
 const changeSwitch = async (state: any, manger_id: string) => {
@@ -211,7 +217,7 @@ const deleteManger = (manger_id: string) => {
   Modal.warning({
     hideCancel: false,
     title: "温馨提示",
-    content: "您确认要永久删除该管理员吗？",
+    content: "您确认要永久删除该管理员吗？此操作将同步删除由当前管理员所发布的一切内容，如：资讯、轮播、行业、职位类型等等",
     onOk: async () => {
       if (!useAuth()) return;
       const res: any = await delManger(manger_id);

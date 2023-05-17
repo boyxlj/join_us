@@ -29,7 +29,7 @@
             </a-avatar>
           </template>
         </a-table-column>
-        <a-table-column title="标题" data-index="title">
+        <a-table-column title="公司名称" data-index="title">
           <template #cell="{ record }">
             <a-tooltip :content="record.company_name">
               <span class="tableTitle">{{ record.company_name }}</span>

@@ -119,6 +119,8 @@
       <template #title>{{
         itemUserInfo.length ? "用户详细信息" : '用户详细信息'
       }}</template>
+      <UserInfoDetail :itemUserInfo="itemUserInfo"/>
+
     </a-modal>
     <!-- 用户简历对话框 -->
     <a-modal
@@ -144,8 +146,8 @@ import {
   addIndustry,
   selUserInfo,
   updateIndustry,
-  delIndustry,
-  updateIndustryState,
+  delUser,
+  updateUserState,
 } from "@/api";
 import { Message, Modal } from "@arco-design/web-vue";
 import { getTime, getTimeBefore } from "@/utils/formatTime";
@@ -154,6 +156,7 @@ import { useAuth } from "@/hooks/useAuth";
 import {btnStyle} from "@/config/btnStyle"
 import {useMangerStore} from "@/store/manger"
 import OnlineResume from "./components/onlineResume/index.vue"
+import UserInfoDetail from "./components/userInfoDetail/index.vue"
 const manger_id = useMangerStore().manger_id
 const userInfoModelVisible = ref(false);
 const userInfoData = ref<IUserInfoData[]>([]);
@@ -187,13 +190,14 @@ const userInfoResumeModelCancel = () => {
 };
 
 const changeSwitch = async (state: any, userId: string) => {
-  const res: any = await updateIndustryState({ state, userId });
+  if (!useAuth()) return;
+  const res: any = await updateUserState({ state, userId });
   if (res.code !== 200) {
     Message.error(res.msg);
     getUserInfo();
     return;
   }
-  Message.success("行业状态修改成功");
+  Message.success("用户账号状态修改成功");
   getUserInfo();
 };
 
@@ -224,11 +228,10 @@ const validateForm = async (isShow: boolean = true, value: any) => {
 const itemUserInfo = ref<IUserInfoData[]>([]);
 
 const loading = ref(false);
-//获取资讯数据
+//获取用户数据
 const getUserInfo = async () => {
   loading.value = true;
   const res: any = await selUserInfo(pageNationParams);
-  console.log(res)
   setTimeout(() => {
     if (res.code !== 200)
       return (userInfoData.value = []), (loading.value = false);
@@ -265,10 +268,10 @@ const deleteIndustry = (userId: string) => {
   Modal.warning({
     hideCancel: false,
     title: "温馨提示",
-    content: "您确认要永久删除该管理员吗？",
+    content: "您确认要永久注销该用户吗？(此操作将同步删除用户的简历、用户所有的投递记录以及收藏记录)",
     onOk: async () => {
       if (!useAuth()) return;
-      const res: any = await delIndustry(userId);
+      const res: any = await delUser(userId);
       if (res.code !== 200) {
         return Message.error(res.msg);
       }

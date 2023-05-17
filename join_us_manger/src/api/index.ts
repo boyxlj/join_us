@@ -168,6 +168,22 @@ export const selUserOnlineResume= (userId:string) => {
     params:{userId}
   })
 }
+//删除用户
+export const delUser = (userId:string) => {
+  return request({
+    url: '/user',
+    method: 'delete',
+    data:{userId},
+  })
+}
+//修改用户状态
+export const updateUserState = (data:any) => {
+  return request({
+    url: '/user/state',
+    method: 'post',
+    data,
+  })
+}
 
 
 
@@ -196,8 +212,110 @@ export const updateCompanyState = (data:any) => {
     data
   })
 }
+//删除公司
+export const delCompany = (company_id:string) => {
+  return request({
+    url: '/company',
+    method: 'delete',
+    data:{company_id},
+  })
+}
+
+//-------------人事接口
+//查询所有人事
+export const selHrAll = (data:any) => {
+  return request({
+    url: '/hrs',
+    method: 'get',
+    params:data
+  })
+}
+//修改人事状态
+export const updateHrState = (data:any) => {
+  return request({
+    url: '/hr/state',
+    method: 'post',
+    data
+  })
+}
+//删除人事
+export const delHr = (hr_id:string) => {
+  return request({
+    url: '/hr',
+    method: 'delete',
+    data:{hr_id},
+  })
+}
+
+//-------------轮播接口
+//添加轮播
+export const addSwiper = (data:any) => {
+  return request({
+    url: '/swiper',
+    method: 'post',
+    data
+  })
+}
+// 查询所有轮播
+export const selSwiperAll = (data:any) => {
+  return request({
+    url: '/swipers',
+    method: 'get',
+    params:data
+  })
+}
+
+// 删除轮播
+export const delSwiper = (swiper_id:string) => {
+  return request({
+    url: '/swiper',
+    method: 'delete',
+    data:{swiper_id},
+  })
+}
+//修改轮播状态
+export const updateSwiperState = (data:any) => {
+  return request({
+    url: '/swiper/state',
+    method: 'post',
+    data,
+  })
+}
+//修改轮播
+export const updateSwiper = (data:any) => {
+  return request({
+    url: '/swiper',
+    method: 'patch',
+    data,
+  })
+}
 
 
+//-------------职位接口
+//查询所有职位
+export const selPositionAll = (data:any) => {
+  return request({
+    url: '/positions',
+    method: 'post',
+    data
+  })
+}
+//修改职位状态
+export const updatePositionState = (data:any) => {
+  return request({
+    url: '/position/state',
+    method: 'post',
+    data
+  })
+}
+//删除职位
+export const delPosition = (position_id:string) => {
+  return request({
+    url: '/position',
+    method: 'delete',
+    data:{position_id},
+  })
+}
 
 
 // ----------资讯接口

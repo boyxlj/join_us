@@ -1,0 +1,32 @@
+export interface IHrData {
+  id: number;
+  hr_id: string;
+  name: string;
+  company_id: string;
+  telephone: string;
+  avatar: string;
+  hr_identity: string;
+  reg_time: string;
+  company_name: string;
+  logo: string;
+  people_num: string;
+  industry: string;
+  financing: string;
+  legal_representative: string;
+  create_time: string;
+  reg_city: string;
+  region: string;
+  detail_position: string;
+  capital: string;
+  state: string;
+  business_scope: string;
+  company_introduction: string;
+  work_time: string;
+  company_welfare: string;
+  development: string;
+  development_history: string;
+  rest: string;
+  others: string;
+  addTime: string;
+  hr_state: string;
+}

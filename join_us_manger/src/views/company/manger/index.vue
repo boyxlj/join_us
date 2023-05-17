@@ -62,7 +62,7 @@
             </a-avatar>
           </template>
         </a-table-column>
-        <a-table-column title="标题" data-index="title">
+        <a-table-column title="公司名称" data-index="title">
           <template #cell="{ record }">
             <a-tooltip :content="record.company_name">
               <span class="tableTitle">{{ record.company_name }}</span>
@@ -110,13 +110,6 @@
             <a-button  :size="btnStyle.select.size" :status="btnStyle.select.status" :type="btnStyle.select.type" @click="seeCompany(record.company_id)"
               >查看</a-button
             >
-            <!-- <a-button
-            :type="btnStyle.editor.type"
-              style="margin: 0 10px"
-              :status="btnStyle.editor.status"
-              @click="openModelVisible(record.company_id)"
-              >编辑</a-button
-            > -->
             <a-button
             style="margin: 0 10px"
             :type="btnStyle.delete.type"
@@ -168,7 +161,7 @@ import {
   updateConsult,
   selCompanyAll,
   updateCompanyState,
-  delConsult,
+  delCompany,
 } from "@/api";
 import { Message, Modal } from "@arco-design/web-vue";
 import { getTime, getTimeBefore } from "@/utils/formatTime";
@@ -337,10 +330,10 @@ const deleteConsult = (company_id: string) => {
   Modal.warning({
     hideCancel: false,
     title: "温馨提示",
-    content: "您确认要永久删除当前资讯信息么？",
+    content: "您确认要永久注销该公司么？(注销后该公司相对应的职位、人事等将会同步删除且此操作不可恢复)",
     onOk: async () => {
       if (!useAuth()) return;
-      const res: any = await delConsult(company_id);
+      const res: any = await delCompany(company_id);
       if (res.code !== 200) {
         return Message.error(res.msg);
       }
