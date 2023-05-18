@@ -1,5 +1,41 @@
 <template>
   <div>
+    <div  class="select">
+    <li class="item">
+    <a-cascader path-mode allow-clear  allow-search v-model="form.city"  :disabled="loading" :options="allCityList" 
+    :field-names="{value: 'name', label: 'name',children:'subLevelModelList'}" 
+    expand-trigger="hover"
+     :style="{width:'320px'}" 
+     @change="changeSelect" placeholder="请选择城市和区域" /></li>
+    <li class="item">
+     <a-select  v-model="form.people_num" allow-clear  allow-search @change="changeSelect" :disabled="loading" :style="{width:'320px'}" placeholder="请选择公司规模">
+      <a-option v-for="(item,index) in people_numList" :key="index">{{ item.name }}</a-option>
+    </a-select></li>
+     <li class="item">
+     <a-select v-model="form.financing" allow-clear  allow-search @change="changeSelect"  :disabled="loading" :style="{width:'320px'}" placeholder="请选择融资情况">
+      <a-option   v-for="(item,index) in financingList" :key="index">{{ item.name }}</a-option>
+    </a-select></li>
+    <li class="item">
+     <a-select  v-model="form.industry" allow-clear  allow-search @change="changeSelect" :disabled="loading" :style="{width:'320px'}" placeholder="请选择行业类型">
+      <a-option  v-for="(item,index) in industryData" :key="index">{{ item.industry_name }}</a-option>
+    </a-select></li>
+    <li class="item">
+      <a-input-search  @clear="changeSelect" @search="changeSelect"  @press-enter="changeSelect" allow-clear  allow-search v-model.trim="form.keyword" :disabled="loading "  :style="{width:'320px'}" placeholder="请输入公司名称等关键字" search-button>
+        <template #button-icon>
+          <icon-search />
+        </template>
+        <template #button-default >
+          查询
+        </template>
+      </a-input-search>
+      <a-button  class="clear" @click="clearSelect">
+      <template #icon>
+        <icon-refresh/>
+      </template>
+      <template #default>重置</template>
+      </a-button>
+    </li>
+    </div>
     <a-tabs :active-key="activeIdx" @change="changeTabs">
     <a-tab-pane key="0" title="待审核">
     </a-tab-pane>
@@ -128,6 +164,14 @@ import { useAuth } from "@/hooks/useAuth";
 import {  IconUser } from "@arco-design/web-vue/es/icon";
 import {btnStyle} from "@/config/btnStyle"
 import SelectCompany from "../components/selectCompany/index.vue";
+import {useIndustryStore} from "@/store/industry"
+import {useCity} from "@/store/city"
+import {useGetConditionData} from "@/store/condition"
+const {industryData}  =  useIndustryStore() as any
+const {allCityList} = useCity()
+const conditions =  useGetConditionData().conditionData
+const financingList = conditions[conditions.length-1]
+const people_numList = conditions[conditions.length-2]
 const route = useRoute()
 const router = useRouter()
 const activeIdx = ref(0)
@@ -138,6 +182,32 @@ const pageNationParams = reactive({
   total: 2,
 });
 const companyData = ref<ICompanyData[]>([]);
+
+//select
+const form = reactive({
+  financing:'',
+  people_num:'',
+  city:'',
+  keyword:'',
+  state:'',
+  industry:'',
+})
+//切换公司规模/以及搜索、
+const changeSelect = ()=>{
+  pageNationParams.pageOn = 1
+  getCompany()
+}
+//重置
+const clearSelect = ()=>{
+  form.financing = ''
+  form.people_num = ''
+  form.city = ''
+  form.keyword = ''
+  form.state = ''
+  form.industry = ''
+  pageNationParams.pageOn = 1
+  getCompany()
+}
 
 //审核公司
 const changeState =async (company_id:string,state:string)=>{
@@ -161,8 +231,18 @@ if(state=='0'){
 }
 //获取公司数据
 const getCompany = async () => {
+  const params = {
+    keyword:form.keyword,
+    reg_city: form.city.length?form.city[1]:'',
+		region: form.city.length?form.city[2]:'',
+    state:activeIdx.value+'',
+    industry:form.industry?form.industry:'',
+    financing:form.financing=='不限'?'':form.financing,
+    people_num:form.people_num=='不限'?'':form.people_num,
+    ...pageNationParams
+  }
   loading.value = true;
-  const res: any = await selCompanyAll({...pageNationParams,state:activeIdx.value+''});
+  const res: any = await selCompanyAll(params);
   setTimeout(() => {
     if (res.code !== 200)
       return (companyData.value = []), (loading.value = false);
@@ -222,5 +302,18 @@ const changeTabs = (key:string|number)=>{
 </script>
 
 <style lang='less' scoped> 
-
+.select{
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+    .item{
+      margin-right: 50px;
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      .clear{
+        margin-left: 14px;
+      }
+    }
+  }
 </style>

@@ -18,7 +18,7 @@
             <template #icon><component :is="item.icon"></component></template>
             <template #title>{{ item.name }}</template>
             <a-menu-item v-for="sub in item.children" :key="sub.path">
-              <component :is="item.icon"></component>
+              <component :is="sub.icon"></component>
               {{ sub.name }}</a-menu-item
             >
           </a-sub-menu>

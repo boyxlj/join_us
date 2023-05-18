@@ -1,6 +1,5 @@
 <template>
   <div class="consult">
-    <!-- <a-button type="primary" @click="openModelVisible()">发布资讯</a-button> -->
     <div  class="select">
     <li class="item">
     <a-cascader path-mode allow-clear  allow-search v-model="form.city"  :disabled="loading" :options="allCityList" 
@@ -198,7 +197,6 @@ const form = reactive({
   keyword:'',
   state:'',
   industry:'',
-
 })
 
 const loading = ref(false);
@@ -219,6 +217,7 @@ const clearSelect = ()=>{
   pageNationParams.pageOn = 1
   getCompany()
 }
+
 //获取公司数据
 const getCompany = async () => {
   const params = {

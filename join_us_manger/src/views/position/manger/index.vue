@@ -229,7 +229,7 @@ const form = reactive({
 
 const loading = ref(false);
 
-//切换公司规模/以及搜索、
+//切换职位和公司规模/以及搜索、
 const changeSelect = ()=>{
   pageNationParams.pageOn = 1
   getPosition()
@@ -286,64 +286,17 @@ const changeSwitch = async (state: any, position_id: string) => {
   const res: any = await updatePositionState({ state, position_id });
   if (res.code !== 200) {
     Message.error(res.msg);
-    // getPosition();
     return;
   }
   Message.success("状态修改成功");
   getPosition();
 };
 
-//提交修改或发布
-const validateForm = async (isShow: boolean = true, value: any) => {
-  if (!isShow) return (positionModelVisible.value = false);
-  if (!useAuth()) return;
-  if (value?.position_id) {
-    const res: any = await updateConsult(value);
-    if (res.code !== 200) {
-      return Message.error(res.msg);
-    }
-    Message.success(res.msg);
-    positionModelVisible.value = false;
-  } else {
-    const res: any = await publishConsult(
-      {...value,}
-      );
-    if (res.code !== 200) {
-      return Message.error(res.msg);
-    }
-    Message.success(res.msg);
-    positionModelVisible.value = false;
-  }
-  getPosition();
-};
+
 onMounted(() => {
   getPosition();
 });
 
-const itemPosition = ref<IPositionData[]>([]);
-
-
-
-const positionModelOk = () => {
-  positionModelVisible.value = false;
-  itemPosition.value = [];
-};
-
-const positionModelCancel = () => {
-  positionModelVisible.value = false;
-  itemPosition.value = [];
-};
-
-const openModelVisible = (position_id?: string) => {
-  if (position_id) {
-    itemPosition.value = positionData.value?.filter(
-      (item) => item.position_id === position_id
-    );
-  } else {
-    itemPosition.value = [];
-  }
-  positionModelVisible.value = true;
-};
 
 //点击职位详情
 const selectModel = ref(false);
@@ -401,6 +354,7 @@ const seeCompany = (position_id: string) => {
     .item{
       margin-right: 50px;
       margin-top: 15px;
+    
       .clear{
         margin-left: 14px;
       }

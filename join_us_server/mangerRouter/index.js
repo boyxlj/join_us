@@ -1,6 +1,6 @@
 const mangerRouter = require("express").Router()
-
-
+//鉴权中间件
+mangerRouter.use(require("./authorization"))
 mangerRouter.use(require("./consult"))
 mangerRouter.use(require("./upload"))
 mangerRouter.use(require("./manger"))
