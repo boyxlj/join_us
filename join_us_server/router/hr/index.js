@@ -19,7 +19,8 @@ hrRouter.post('/hr/LoginOrRegister', (req, res) => {
         msg: '企业登录成功',
         data: null,
         company_id: result[0].company_id,
-        token: jwt.sendToken({telephone}, '1day')
+        hr_id: result[0].hr_id,
+        token: jwt.sendToken({ telephone }, '1day')
       })
     } else {
       const lengthSQl = 'select * from hr'
@@ -32,7 +33,7 @@ hrRouter.post('/hr/LoginOrRegister', (req, res) => {
               msg: '注册成功',
               data: null,
               remark: '该用户为首次注册',
-              token: jwt.sendToken({telephone}, '1day')
+              token: jwt.sendToken({ telephone }, '1day')
             })
           } else {
             return returnErr(res, '注册失败')
@@ -48,7 +49,7 @@ hrRouter.get('/hr/positionManage', (req, res) => {
   const { company_id, pageIndex, pageSize } = req.query
   const sql1 = `select * from pos where company_id = '${company_id}'`
   query(sql1, (result1) => {
-    const sql = `select * from pos where company_id = '${company_id}' limit ${(pageIndex - 1) * pageSize}, ${pageSize}`
+    const sql = `select * from pos where company_id = '${company_id}' order by id desc limit ${(pageIndex - 1) * pageSize}, ${pageSize}`
     query(sql, (result) => {
       if (result.length) {
         res.status(200).send({
@@ -62,7 +63,7 @@ hrRouter.get('/hr/positionManage', (req, res) => {
       }
     })
   })
-  })
+})
 
 // 查看企业职位详情
 hrRouter.get('/hr/positionDetail', (req, res) => {
@@ -93,7 +94,7 @@ hrRouter.post("/hr/addPosition", (req, res) => {
     const orderNumSql = 'select max(id) as num from pos'
     query(orderNumSql, (result2) => {
       const orderNum = result2[0].num
-      const sql = `insert into pos values(${orderNum + 1},'${v4()}', '${formData.position_name}', '${formData.salary}', '${formData.cityArr[1]}', '${formData.cityArr[2]}', '${formData.experiences}', '${formData.degrees}',  '${JSON.stringify([formData.experiences, formData.degrees])}', '${JSON.stringify(formData.welfare_tag)}', '${company_id}', '${hr_id}', '${formData.position_desc}', '${new Date().toLocaleString()}', '${new Date().toLocaleString()}', '0', '${formData.position_type[0]}', '${formData.position_type[1]}', '${formData.job_type}')`
+      const sql = `insert into pos values(${orderNum + 1},'${v4()}', '${formData.position_name}', '${formData.salary}', '${formData.cityArr[1]}', '${formData.cityArr[2]}', '${formData.experiences}', '${formData.degrees}',  '${JSON.stringify([formData.experiences, formData.degrees])}', '${JSON.stringify(formData.welfare_tag)}', '${company_id}', '${hr_id}', '${formData.position_desc}', '${new Date().toLocaleString().replaceAll('/', '-')}', '${new Date().toLocaleString().replaceAll('/', '-')}', '0', '${formData.position_type[0]}', '${formData.position_type[1]}', '${formData.job_type}')`
       query(sql, (result3) => {
         if (result3.affectedRows === 1) {
           res.status(200).send({
@@ -154,8 +155,8 @@ hrRouter.get('/hr/editPosition', (req, res) => {
 // hr编辑职位信息
 hrRouter.post('/hr/editPositionR', (req, res) => {
   const { formData, position_id } = req.body
-  console.log(position_id, formData);
   const sql = `update pos set
+                  updateTime='${new Date().toLocaleString().replaceAll('/', '-')}', 
                     position_name='${formData.position_name}', 
                     salary='${formData.salary}',
                     cityName='${formData.cityArr[1]}',
@@ -167,22 +168,86 @@ hrRouter.post('/hr/editPositionR', (req, res) => {
                     position_type2='${formData.position_type[1]}',
                     job_type='${formData.job_type}',
                     position_tag='${JSON.stringify([
-											formData.experiences,
-											formData.degrees,
-										])}',
+    formData.experiences,
+    formData.degrees,
+  ])}',
                     welfare_tag='${JSON.stringify(
-											formData.welfare_tag
-										)}',
-                    updateTime='${new Date().toLocaleString()}' where position_id='${position_id}'`;
+    formData.welfare_tag
+  )}' where position_id='${position_id}'`;
   query(sql, (result) => {
-    if (result.affectedRows > 0) {
-			res.status(200).send({
+    if (result.affectedRows > 1) {
+      res.status(200).send({
         code: 200,
         data: null,
         msg: '职位信息更新成功'
-			});
+      });
     } else {
       return returnErr(res, "职位信息更新失败");
+    }
+  })
+})
+
+
+
+
+
+//hr绑定公司
+hrRouter.post('/hr/add/company', (req, res) => {
+  const allowArr = [
+    'company_name',
+    'industry',
+    'people_num',
+    'financing',
+    'legal_representative',
+    'create_time',
+    'reg_city',
+    'region',
+    'detail_position',
+    'capital',
+    'business_scope',
+    'company_introduction',
+    'work_time',
+    'company_welfare',
+    'development',
+    'development_history',
+    'rest',
+    'hr_id'
+  ]
+
+  for (let i in req.body) {
+    if (!allowArr.includes(i)) {
+      return returnErr(res, '参数错误')
+    }
+  }
+
+  let saveHr_id = req.body.hr_id
+  delete req.body.hr_id
+
+  let key = ''
+  let value = ''
+  for (let i in req.body) {
+    key += `,${i}`
+    value += `,'${req.body[i]}'`
+  }
+  const company_id = uuidv4()
+  const sql = `insert into company(company_id,${key}) values('${company_id}',${value})`
+  const sql1 = `update hr set company_id = '${company_id}' where hr_id = '${saveHr_id}'`
+  query(sql, (result) => {
+    if (result.affectedRows > 1) {
+      query(sql1, (result1) => {
+        if (result.affectedRows > 1) {
+          res.status(200).send({
+            code: 200,
+            data: null,
+            msg: '绑定公司成功'
+          });
+        } else {
+          return returnErr(res, "绑定公司失败");
+        }
+      })
+
+    } else {
+      return returnErr(res, "绑定公司失败");
     }
   })
 })

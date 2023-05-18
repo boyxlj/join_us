@@ -54,7 +54,7 @@ industryRouter.get('/industrys', (req, res) => {
   }
   let str = ''
   if(keyword){
-    str = `where industry_name like '%${keyword}%' `
+    str = `where where industry_name like '%${keyword}%' `
   }
   const selAllSql = `select count(*) from industry  inner join manger on industry.manger_id=manger.manger_id ${str}`
   const selSql = `select  * from industry inner join manger on industry.manger_id=manger.manger_id ${str} order by  industry.id desc limit ${(pageOn - 1) * pageSize} ,${pageSize} `

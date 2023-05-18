@@ -11,6 +11,10 @@ export const conditionList= [
     {
       "code": 1903,
       "name": "兼职"
+    },
+    {
+      "code": 1901233,
+      "name": "校招"
     }
   ],
   [
@@ -50,7 +54,8 @@ export const conditionList= [
       "code": 107,
       "name": "10年以上"
     }
-  ], [
+  ],
+   [
     {
       "code": 0,
       "name": "不限"

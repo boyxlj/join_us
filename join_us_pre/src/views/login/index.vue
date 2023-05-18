@@ -45,17 +45,11 @@
           <a-form-item :wrapper-col="{ span: 24, offset: 0 }">
             <a-button class="submitBtn" style="width: 100%" type="primary" @click="submit"
               :disabled="disabledSubmit">登录/注册</a-button>
-            <!-- <a-button style="margin-left: 10px" @click="resetForm"
-              >Reset</a-button
-            > -->
           </a-form-item>
         </a-form>
       </div>
     </div>
-    <a-modal v-model:visible="visible" centered title="注册后信息填写" @ok="handleOk">
-      <a-input style="margin: 15px 0;" placeholder="请填写您的真实姓名"></a-input>
-      <a-input style="margin: 15px 0;" placeholder="请填写您所在的公司名称"></a-input>
-    </a-modal>
+    <CompanyApply />
   </div>
 </template>
 
@@ -66,7 +60,8 @@ import type { FormInstance } from "ant-design-vue";
 import { getValidateCoder } from "validate-coder";
 import { userSendCode, userLogin, hrLoginOrRegister } from "@/api";
 import { useUserInfo } from "@/store/user"
-import { fail } from "assert";
+import CompanyApply from "@/components/companyApply/index.vue"
+import {emitter} from "@/utils/emitter"
 const router = useRouter();
 const route = useRoute();
 interface FormState {
@@ -76,14 +71,14 @@ interface FormState {
   psd: string;
   inputCodeValue?: string;
 }
+
 const activeKey = ref(0);
 const validateCoder = ref<string>();
-// 控制填写hr信息的对话框显示隐藏
-let visible = ref(false)
 
 onMounted(() => {
   if (route.query?.query === "boss") {
     activeKey.value = 1;
+    document.title='企业登录'
   } else {
     activeKey.value = 0;
   }
@@ -93,6 +88,8 @@ onMounted(() => {
 const validateContainer = ref<HTMLDivElement>();
 const changeActive = (actIdx: number) => {
   if (activeKey.value === actIdx) return;
+  const token = localStorage.getItem('token')
+  if(token && activeKey.value==1) return
   activeKey.value = actIdx;
   formRef.value?.resetFields();
   refresh();
@@ -144,7 +141,7 @@ const formRef = ref<FormInstance>();
 const formState = reactive<FormState>({
   code: "111111",
   email: "x709500@126.com",
-  username: "13870000000",
+  username: "13870000001",
   psd: "zzq123456",
   inputCodeValue: "",
 });
@@ -222,25 +219,35 @@ const submit = async () => {
   if (activeKey.value == 1) {
     await formRef.value?.validateFields(['username', 'psd'])
     const res: any = await hrLoginOrRegister({ telephone: formState.username, password: formState.psd })
+    console.log(res)
+    refresh();
     if (res.code === 200) {
-      localStorage.setItem("hrToken", res.token);
-      if (res.remark) {
+      localStorage.clear()
+      emitter.emit('getData')
+      if (res.remark || !res.company_id) {
         // 首次注册后续操作，填写表单等
-        visible.value = true
+        // visible.value = true
+        console.log(123)
+        emitter.emit('changeCompanyState',123)
+        emitter.emit('sendHrInfo',{hr_id:res.hr_id,companyToken:res.token})
       } else {
+        localStorage.setItem("companyToken", res.token);
         localStorage.setItem('company_id', res.company_id)
         localStorage.setItem('loginInfo', JSON.stringify({ telephone: formState.username }))
-        router.push('/company')
+        message.success("企业登录成功");
+        // router.push('/company')
       }
+      
+    }else{
+      message.error("登录失败");
     }
-    message.success("企业登录成功");
-    // router.push("/company");
   } else {
     await formRef.value?.validateFields(["email", "code"]);
     const params = { email: formState.email, validateCode: formState.code };
     const res: any = await userLogin(params);
     disabledSubmit.value = true
     console.log("$$$$$$", res);
+    refresh();
     if (res.code != 200) {
       disabledSubmit.value = false
       return message.error(res.msg);
@@ -252,12 +259,10 @@ const submit = async () => {
     router.push("/");
   }
 };
+
 const handleValidate = (...args: any) => {
 };
-const handleOk = () => {
-  visible.value = false
-  console.log('ok');
-}
+
 </script>
 
 <style lang="less" scoped>

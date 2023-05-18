@@ -313,6 +313,7 @@ import { getAge } from "@/utils/getAge";
 import { uploadUserAvatarUrl } from "@/api/upload";
 import { useValidateResume } from "@/hooks/useValidateResume";
 const userStore = useUserInfo();
+
 const userInfo: IUserInfo = computed(
   () => userStore.userInfoList[0]
 ) as unknown as IUserInfo;

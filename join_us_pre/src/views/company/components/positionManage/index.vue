@@ -1,12 +1,12 @@
 <template>
-    <a-button @click="editOrAddPosition()" type="primary" style="margin: 10px 0; width: 250px; font-weight: bold;">
+    <a-button  @click="editOrAddPosition()" type="primary" style="margin: 10px 0; width: 250px; font-weight: bold;">
         <template #icon>
             <PlusSquareOutlined />
         </template>
         发布职位
     </a-button>
     <div class="position-manage-container">
-        <a-table bordered :data-source="positionList" :pagination="false" :columns="columns">
+        <a-table :scroll="{ x: 1700 }"  bordered :data-source="positionList" :pagination="false" :columns="columns">
             <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'position_state'">
                     <span>
@@ -14,6 +14,18 @@
                         <a-tag color="success" v-else-if="record.position_state === '1'">正常</a-tag>
                         <a-tag color="error" v-else>已关闭</a-tag>
                     </span>
+                </template>
+                <template v-if="column.key === 'pos_addTime'">
+                  <a-tooltip>
+                    <template #title>{{ getTime(record.pos_addTime,'time') }}</template>
+                  <span>{{ getTimeBefore(record.pos_addTime) }}</span>
+                  </a-tooltip>
+                </template>
+                <template v-if="column.key === 'updateTime'">
+                  <a-tooltip>
+                    <template #title>{{ getTime(record.updateTime,'time') }}</template>
+                  <span>{{ getTimeBefore(record.updateTime) }}</span>
+                  </a-tooltip>
                 </template>
                 <template v-if="column.key === 'oprate'">
                     <a-button @click="lookDetail(record.position_id)" style="font-size: 14px; margin-bottom: 5px;"
@@ -23,15 +35,15 @@
                         </template>
                         查看
                     </a-button>
-                    <br>
-                    <a-button @click="editOrAddPosition(record.position_id)" style="font-size: 14px; margin-bottom: 5px;"
+                   
+                    <a-button :disabled="record.position_state=='0'" @click="editOrAddPosition(record.position_id,record.position_state)" style="font-size: 14px; margin: 0 10px"
                         type="primary" size="small">
                         <template #icon>
                             <EditOutlined />
                         </template>
                         编辑
                     </a-button>
-                    <br>
+                   
                     <a-button @click="delPosition(record.position_id)" style="font-size: 14px; margin-bottom: 5px;"
                         type="primary" size="small">
                         <template #icon>
@@ -55,34 +67,49 @@
             <a-descriptions-item label="学历要求">{{ positionDetailObj.degrees }}</a-descriptions-item>
             <a-descriptions-item label="招聘类型">{{ positionDetailObj.job_type }}</a-descriptions-item>
             <a-descriptions-item label="所属公司">{{ positionDetailObj.company_name }}</a-descriptions-item>
+            <a-descriptions-item label="所属公司">{{ positionDetailObj.company_name }}</a-descriptions-item>
             <a-descriptions-item label="发布hr">{{ positionDetailObj.name }}</a-descriptions-item>
             <a-descriptions-item label="hr联系方式">{{ positionDetailObj.telephone }}</a-descriptions-item>
             <a-descriptions-item label="职位标签">
                 <a-tag color="#7546C9" v-for="(item, index) in positionDetailObj.position_tag" :key="index">{{ item
                 }}</a-tag>
             </a-descriptions-item>
-            <a-descriptions-item label="福利标签">
+            <a-descriptions-item  label="福利标签">
                 <a-tag color="#7546C9" v-for="(item, index) in positionDetailObj.welfare_tag" :key="index">{{ item
                 }}</a-tag>
             </a-descriptions-item>
+            <a-descriptions-item label="职位状态">
+              <a-tag color="warning" v-if="positionDetailObj.position_state === '0'">待审核</a-tag>
+                        <a-tag color="success" v-else-if="positionDetailObj.position_state === '1'">正常</a-tag>
+                        <a-tag color="error" v-else>已关闭</a-tag>
+              </a-descriptions-item>
         </a-descriptions>
     </a-modal>
     <a-modal style="width: 900px;" ok-text="确认" cancel-text="关闭" v-model:visible="addVisible" title="职位信息填写"
         @ok="addPositionHandle" @cancel="cancel">
         <a-form ref="formRef" :rules="rulesRef" :model="formState" :label-col="{ span: 5 }" :wrapper-col="{ span: 16 }">
             <a-form-item label="职位名称" name="position_name">
-                <a-input v-model:value="formState.position_name" />
+                <a-input placeholder="请填写职位名称" v-model:value="formState.position_name" />
+            </a-form-item>
+            <a-form-item label="招聘类型" name="job_type">
+                <a-select placeholder="请填写招聘类型" v-model:value="formState.job_type">
+                    <a-select-option v-for="(item, index) in job_typeArr" :key="index" :value="item.value">{{ item.name
+                    }}</a-select-option>
+                </a-select>
             </a-form-item>
             <a-form-item label="职位薪资" name="salary">
-                <a-input v-model:value="formState.salary" />
+              <a-select v-model:value="formState.salary" placeholder="请选择职位薪资">
+                    <a-select-option v-for="(item, index) in salaryArr" :key="index" :value="item.value">{{ item.name
+                    }}</a-select-option>
+                </a-select>
             </a-form-item>
             <a-form-item label="工作地点" name="city">
-                <a-cascader v-model:value="formState.cityArr" :options="cityList"
+                <a-cascader expandTrigger="hover"  v-model:value="formState.cityArr" :options="cityList"
                     :field-names="{ label: 'name', value: 'name', children: 'subLevelModelList' }"
                     placeholder="请选择职位发布城市" />
             </a-form-item>
             <a-form-item label="职位分类" name="position_type">
-                <a-cascader v-model:value="formState.position_type" :options="positionTypeListCom"
+                <a-cascader  v-model:value="formState.position_type" :options="positionTypeListCom"
                     :field-names="{ label: 'position_type_name', value: 'position_type_id', children: 'children' }"
                     placeholder="请选择职位分类" />
             </a-form-item>
@@ -93,7 +120,7 @@
                 </a-select>
             </a-form-item>
             <a-form-item label="学历要求" name="position_name">
-                <a-select v-model:value="formState.degrees">
+                <a-select placeholder="请选择学历要求" v-model:value="formState.degrees">
                     <a-select-option v-for="(item, index) in degreesArr" :key="index" :value="item.value">{{ item.name
                     }}</a-select-option>
                 </a-select>
@@ -102,24 +129,37 @@
                 <a-select v-model:value="formState.welfare_tag" mode="tags" style="width: 100%"
                     placeholder="请填写福利待遇"></a-select>
             </a-form-item>
-            <a-form-item label="岗位描述" name="position_desc">
-                <a-textarea v-model:value="formState.position_desc" showCount :rows="4" placeholder="请填写岗位描述" />
+            <a-form-item label="职位描述" name="position_desc">
+                <a-textarea v-model:value="formState.position_desc" showCount :rows="4" placeholder="请填写职位描述" />
             </a-form-item>
-            <a-form-item label="招聘类型" name="job_type">
-                <a-select v-model:value="formState.job_type">
-                    <a-select-option v-for="(item, index) in job_typeArr" :key="index" :value="item.value">{{ item.name
-                    }}</a-select-option>
-                </a-select>
-            </a-form-item>
+           
         </a-form>
     </a-modal>
 </template>
 
 <script setup lang="ts">
-import { hrPositionManage, hrPositionDetail, hrAddPosition, hrDelPosition, hrEditPosition, hrEditPosition2 } from '@/api'
-import { EyeOutlined, EditOutlined, DeleteOutlined, PlusSquareOutlined } from '@ant-design/icons-vue'
-import { Form, message } from 'ant-design-vue'
+import { hrPositionManage, 
+  hrPositionDetail, 
+  hrAddPosition, 
+  hrDelPosition, 
+  hrEditPosition, 
+  hrEditPosition2
+ } from '@/api'
+import { createVNode } from 'vue';
+import { EyeOutlined, EditOutlined, DeleteOutlined, PlusSquareOutlined,ExclamationCircleOutlined } from '@ant-design/icons-vue'
+import { Form, message,Modal } from 'ant-design-vue'
 import type { FormInstance } from 'ant-design-vue'
+import {useGetConditionData} from "@/store/condition"
+import {getTime,getTimeBefore} from "@/utils/formatTime"
+const {conditionData} = useGetConditionData()
+//删除数组中为不限的一项
+type TConditionData = {
+  code:number,name:string
+}
+const dealWithData  = (data:TConditionData[])=>{
+  return data.filter(item=>item.name!=='不限')
+}
+// const s = dealWithData(conditionData[0] as TConditionData[])
 interface position {
     id: number;
     position_id: string;
@@ -143,27 +183,27 @@ interface position {
 }
 interface formType {
     position_name: string,
-    salary: string,
+    salary: string | undefined,
     cityArr: string[],
-    experiences: string,
-    degrees: string,
+    experiences: string | undefined,
+    degrees: string | undefined,
     welfare_tag: [],
     position_desc: string,
-    job_type: string,
+    job_type: string | undefined,
     position_type: [],
 }
 const formRef = ref<FormInstance>()
 const propertyMap: Record<string, string> = {
     position_name: '职位名称',
-    salary: '薪资',
+    job_type: '职位招聘类型',
     cityName: '发布城市',
     pos_region: '发布区域',
     experiences: '经验要求',
     degrees: '学历要求',
+    salary: '薪资',
     pos_addTime: '发布时间',
     updateTime: '最近更新时间',
     position_state: '职位状态',
-    job_type: '职位招聘类型',
     oprate: '操作'
 }
 const columns = ref<any[]>([])
@@ -225,6 +265,34 @@ const job_typeArr = ref([
         value: '校招'
     }
 ])
+const salaryArr = ref(  [
+    
+    {
+      "value": "3K以下",
+      "name": "3K以下"
+    },
+    {
+      "value": "3-5K",
+      "name": "3-5K"
+    },
+    {
+      "value": "5-10K",
+      "name": "5-10K"
+    },
+    {
+      "value": "10-20K",
+      "name": "10-20K"
+    },
+    {
+      "value": "20-50K",
+      "name": "20-50K"
+    },
+    {
+      "value": "50K以上",
+      "name": "50K以上"
+    }
+  ],)
+
 const positionTypeList = ref(JSON.parse(localStorage.getItem('positionType') as string).positionTypeList)
 const positionTypeListCom = computed<[]>(() => {
     const resultArr = positionTypeList.value.map((item: any) => {
@@ -289,37 +357,57 @@ const experiencesArr = ref([
 ])
 const formState = reactive<formType>({
     position_name: '',
-    salary: '',
+    salary: undefined,
     cityArr: [],
-    experiences: '',
-    degrees: '',
+    experiences: undefined,
+    degrees: undefined,
     welfare_tag: [],
     position_desc: '',
-    job_type: '',
+    job_type: undefined,
     position_type: []
 })
 const rulesRef = reactive({
-    position_name: [{ required: true, message: '该字段不能为空!', trigger: 'blur' }],
-    salary: [{ required: true, message: '该字段不能为空!', trigger: 'blur' }],
-    cityArr: [{ required: true, message: '该字段不能为空!', trigger: 'blur' }],
-    experiences: [{ required: true, message: '该字段不能为空!', trigger: 'blur' }],
-    degrees: [{ required: true, message: '该字段不能为空!', trigger: 'blur' }],
-    welfare_tag: [{ required: true, message: '该字段不能为空!', trigger: 'blur' }],
-    position_desc: [{ required: true, message: '该字段不能为空!', trigger: 'blur' }],
-    job_type: [{ required: true, message: '该字段不能为空!', trigger: 'blur' }],
-    position_type1: [{ required: true, message: '该字段不能为空!', trigger: 'blur' }],
-    position_type2: [{ required: true, message: '该字段不能为空!', trigger: 'blur' }]
+    position_name: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+    salary: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+    cityArr: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+    experiences: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+    degrees: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+    welfare_tag: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+    position_desc: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+    job_type: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+    position_type1: [{ required: true, message: '该字段不能为空', trigger: 'blur' }],
+    position_type2: [{ required: true, message: '该字段不能为空', trigger: 'blur' }]
 })
 const router = useRouter()
 const { validate } = useForm(formState, rulesRef)
 const getDetail = () => {
     hrPositionManage(localStorage.getItem('company_id') as string, pageIndex.value, pageSize.value).then((res: any) => {
         columns.value = Object.keys(propertyMap).map((item, index) => {
-            return {
-                title: propertyMap[item],
-                dataIndex: item,
-                key: item
-            }
+          if(item=='oprate'){
+                return {
+                    title: propertyMap[item],
+                    dataIndex: item,
+                    key: item,
+                    fixed: 'right' ,
+                    width:260
+                }
+              }else if(item=='position_state'){
+                return {
+                    title: propertyMap[item],
+                    dataIndex: item,
+                    key: item,
+                    fixed: 'right' ,
+                    width:90
+                }
+              }
+              else{
+                return {
+                    title: propertyMap[item],
+                    dataIndex: item,
+                    key: item
+                  }
+              }
+            
         })
         const tmpArr = res.data.map((item: position) => {
             return {
@@ -360,13 +448,13 @@ const lookDetail = (position_id: string) => {
         }
     })
 }
+
 // 发布/编辑职位
 const addPositionHandle = async () => {
     if (btnText.value === 'edit') {
-        await validate()
-        if (!formState.salary.includes('k') && !formState.salary.includes('K')) {
-            formState.salary = formState.salary + 'k'
-        }
+        await formRef.value?.validateFields()
+        if(!formState.position_type.length ) return message.warning('职位分类必须填写')
+        if(!formState.cityArr.length ) return message.warning('发布城市必须填写')
         hrEditPosition2({ position_id: position_id_variable.value, formData: formState }).then((res: any) => {
             if (res.code === 200) {
                 message.success(res.msg)
@@ -385,12 +473,11 @@ const addPositionHandle = async () => {
             addVisible.value = false
         })
     } else {
-        await validate()
+      await formRef.value?.validateFields()
+      if(!formState.position_type.length ) return message.warning('职位分类必须填写')
+        if(!formState.cityArr.length ) return message.warning('发布城市必须填写')
         const company_id = localStorage.getItem('company_id') as string
         const telephone = JSON.parse(localStorage.getItem('loginInfo') as string).telephone
-        if (!formState.salary.includes('k')) {
-            formState.salary = formState.salary + 'k'
-        }
         hrAddPosition({ company_id: company_id, telephone: telephone, formData: formState }).then((res: any) => {
             if (res.code === 200) {
                 message.success(res.msg)
@@ -413,7 +500,8 @@ const addPositionHandle = async () => {
         })
     }
 }
-const editOrAddPosition = (position_id?: string) => {
+const editOrAddPosition = (position_id?: string,position_state?:string) => {
+  if(position_state=='0') return message.warning("该职位正在加速审核中，暂无法编辑")
     addVisible.value = true
     if (position_id) {
         position_id_variable.value = position_id
@@ -438,7 +526,15 @@ const editOrAddPosition = (position_id?: string) => {
 
 // 删除职位
 const delPosition = (position_id: string) => {
-    hrDelPosition(position_id).then((res: any) => {
+  Modal.confirm({
+        title: '温馨提示',
+        okText:'确认删除',
+        cancelText:'取消',
+        centered:true,
+        icon: createVNode(ExclamationCircleOutlined),
+        content: createVNode('div', { style: 'color:red;' }, '您确定要删除该职位吗?'),
+        onOk() {
+          hrDelPosition(position_id).then((res: any) => {
         if (res.code === 200) {
             message.success(res.msg)
             getDetail()
@@ -447,19 +543,30 @@ const delPosition = (position_id: string) => {
             getDetail()
         }
     })
+        },
+        onCancel() {
+        },
+        class: 'test',
+      });
+   
 }
 const cancel = () => {
     formRef.value?.resetFields()
-    let i: keyof formType
-    for (i in formState) {
-        if (Array.isArray(formState[i])) {
-            formState[i] = <string | any>[]
-        } else {
-            formState[i] = '' as any
-        }
-    }
+    // let i: keyof formType
+    // for (i in formState) {
+    //     if (Array.isArray(formState[i])) {
+    //         formState[i] = <string | any>[]
+    //     } else {
+    //         formState[i] = '' as any
+    //     }
+    // }
+    formState.degrees = undefined
+    formState.cityArr = []
+    formState.position_type = []
     addVisible.value = false
-}
-</script>
+  }
+  </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+
+</style>

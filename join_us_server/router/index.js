@@ -14,6 +14,8 @@ router.use(require("./resume"))
 router.use(require("./userInfo"))
 router.use(require("./send"))
 router.use(require("./consult"))
+router.use(require("./swiper"))
+router.use(require("./industry"))
 router.use('/upload',require("./upload"))
 
 module.exports = router

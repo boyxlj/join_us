@@ -1,6 +1,5 @@
 <template>
-  <div class="companyPage">
-
+  <div class="companyPage" id="company_mangers">
     <a-layout class="loyOut">
       <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible>
         <div class="title" v-if="!collapsed"><span>招聘</span>企业版</div>
@@ -70,11 +69,35 @@ const pathList = [
 ]
 </script>
 
-<style lang='less' scoped> .ant-layout {
-   height: 100vh !important;
+<style lang='less' >
+#company_mangers{
+  .ant-btn{
+    border-radius: 4px !important;
+  }
+  .ant-tag{
+    border-radius: 4px !important;
+  }
+  .ant-input{
+    border-radius: 0px !important;
+  }
+}
+.ant-input{
+    border-radius: 4px !important;
+  }
+.ant-select-selector{
+    border-radius: 4px !important;
+  }
 
+ .ant-layout {
+   height: 100vh !important;
+   
    .ant-layout-header {
      padding: 0 20px !important;
+   }
+   .ant-layout-content {
+    padding:  20px !important;
+    box-sizing: border-box;
+    overflow-y: auto;
    }
 
    .title {

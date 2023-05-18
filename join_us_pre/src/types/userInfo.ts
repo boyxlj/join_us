@@ -28,5 +28,7 @@ export interface IUserInfo {
   hope_city: string;
   hope_industry: string;
   hope_job_type: string;
-  value?:any
+  value?:any,
+  userState?:string  
+
 }

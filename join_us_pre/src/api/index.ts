@@ -158,6 +158,14 @@ export const hrAddPosition = (data: Record<string, any>) => {
     data: data
   })
 }
+// hr绑定公司
+export const hrAddCompany = (data: Record<string, any>) => {
+  return request({
+    url: '/hr/add/company',
+    method: 'post',
+    data: data
+  })
+}
 
 
 //-------------投递相关
@@ -345,5 +353,21 @@ export const selectConsultOne = (consult_id:string) => {
     url: '/consult',
     method: 'get',
     params:{consult_id}
+  })
+}
+
+
+//---------轮播
+export const selectSwiper = () => {
+  return request({
+    url: '/swipers',
+    method: 'get',
+  })
+}
+//---------行业
+export const selectIndustry = () => {
+  return request({
+    url: '/industrys',
+    method: 'get',
   })
 }

@@ -155,11 +155,11 @@
           <div>
             <li class="boxs">
               <span
-                @click="selectIndustry(item)"
+                @click="selectIndustry(item.industry_name)"
                 class="item"
                 v-for="item in industryData"
-                :key="item"
-                >{{ item }}</span
+                :key="item.id"
+                >{{ item.industry_name }}</span
               >
             </li>
           </div>
@@ -172,19 +172,21 @@
 
 <script setup lang="ts">
 import type { Rule } from "ant-design-vue/es/form";
-import dayjs, { Dayjs } from "dayjs";
 import type { FormInstance } from "ant-design-vue";
 import { message } from "ant-design-vue";
 import { useCity } from "@/store/city";
 import { useJobTypeStore } from "@/store/positionType";
-import { IPositionType1, IPositionTypeChild } from "@/types/jobType";
+import { IPositionType1 } from "@/types/jobType";
 import Empty from "@/components/common/empty/index.vue";
 import type { ShowSearchType } from "ant-design-vue/es/cascader";
 import {useUserInfo} from "@/store/user"
+import {useIndustryStore} from "@/store/industry"
+import {IIndustryData} from "@/types/industry"
+import {IUserInfo} from "@/types/userInfo"
 const userStore = useUserInfo()
+const {industryList} =  useIndustryStore()
 const { provinceAndCityList } = useCity();
-const props = withDefaults(defineProps<{ changeHopeJobForm: any ,userInfo:any}>(), {});
-
+const props = withDefaults(defineProps<{ changeHopeJobForm: any ,userInfo:IUserInfo}>(), {});
 onMounted(()=>{
   if(props.userInfo.hope_salary){
     if(props.userInfo.hope_salary=='面议'){
@@ -262,8 +264,8 @@ const selectHopeJob = (hopeJob:string)=>{
 
 //-----------期望行业
 
-const industryList = ['计算机软件','电子商务','游戏','媒体广告','营销数据服务','医疗健康']
-const industryData = ref(industryList)
+// const industryList = ['计算机软件','电子商务','游戏','媒体广告','营销数据服务','医疗健康']
+const industryData = ref<IIndustryData[]>(industryList)
 //期望行业搜索框
 const industryValue = ref("");
 const onSearchIndustry= (val: string) => {
@@ -272,7 +274,7 @@ const onSearchIndustry= (val: string) => {
     return;
   }
   industryData.value = industryList;
-  const res = industryData.value?.filter(item=>item.includes(val))
+  const res = industryData.value?.filter(item=>item.industry_name.includes(val))
   industryData.value = res;
 };
 //期望行业对话框
@@ -295,12 +297,12 @@ const selectIndustry= (industry:string)=>{
 }
 
 interface FormState {
-  job_type: string  | undefined;
-  city: string;
+  hope_job_type: string  | undefined;
+  city: string|any[];
   salaryStart: string | undefined;
   hope_job: string;
   salaryEnd: string  | undefined;
-  industry: string;
+  hope_industry: string;
 }
 const monthFormat = "YYYY/MM";
 const formRef = ref<FormInstance>();

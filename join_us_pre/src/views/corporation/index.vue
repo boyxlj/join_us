@@ -149,6 +149,8 @@ import { useGetConditionData } from "@/store/condition";
 import { selectCompanys } from "@/api";
 import { message } from "ant-design-vue";
 import { ICompanyData } from "@/types/company";
+import {useIndustryStore} from "@/store/industry"
+const {industryList}  =useIndustryStore()
 const route = useRoute();
 const router = useRouter();
 const { hotCityList, allCityList, preventCity } = useCity();
@@ -265,14 +267,10 @@ const showCityModel = () => {
 };
 
 let condition: any = useGetConditionData();
-const cityNameData = [
-  { code: 0, name: "不限" },
-  { code: 1, name: "计算机软件" },
-  { code: 2, name: "医疗健康" },
-  { code: 3, name: "体育健身" },
-];
+
+const industryData = ref<any>([{id:-10,industry_name:"不限"},...industryList])
 condition = [
-  cityNameData,
+  industryData.value.map((item:any)=>({id:item.id,name:item.industry_name})),
   condition.conditionData[condition.conditionData.length - 2],
   condition.conditionData[condition.conditionData.length - 1],
 ];

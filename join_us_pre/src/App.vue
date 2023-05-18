@@ -13,14 +13,27 @@ import { useJobTypeStore } from "@/store/positionType";
 import { useHotSearchPosition } from "@/store/position";
 import { useConsult } from "@/store/consult";
 import { useCity } from "@/store/city";
-const jobType = useJobTypeStore();
-const hotSearchPosition = useHotSearchPosition();
+import { useSwiperStore } from "@/store/swiper";
+import { useIndustryStore } from "@/store/industry";
 const { preventCity } = useCity();
-const  consult  = useConsult();
-jobType.getJobs(); //职位类型
-hotSearchPosition.getData(preventCity); //热招职位
-hotSearchPosition.getSortOrRandomData(preventCity); //热招职位
-consult.getConsultCategory(); //资讯分类
+import {emitter} from "@/utils/emitter"
+useJobTypeStore().getJobs(); //职位类型
+useHotSearchPosition().getData(preventCity); //热招职位
+useHotSearchPosition().getSortOrRandomData(preventCity); //热招职位
+useConsult().getConsultCategory(); //资讯分类
+useSwiperStore().getSwiper(); //轮播
+useIndustryStore().getIndustry(); //行业
+useCity().getCity()
+emitter.on('getData',()=>{
+  useCity().getCity()
+  useJobTypeStore().getJobs(); //职位类型
+useHotSearchPosition().getData(preventCity); //热招职位
+useHotSearchPosition().getSortOrRandomData(preventCity); //热招职位
+useConsult().getConsultCategory(); //资讯分类
+useSwiperStore().getSwiper(); //轮播
+useIndustryStore().getIndustry(); //行业
+
+})
 </script>
 
 <style scoped>

@@ -152,10 +152,13 @@ import { useCity } from "@/store/city";
 import { useUserLoginState } from "@/hooks/useUserLoginState";
 import { useGetConditionData } from "@/store/condition";
 import { getPositionList } from "@/api";
+import {useIndustryStore} from "@/store/industry"
 import { message } from "ant-design-vue";
+const {industryList}  =useIndustryStore()
 const route = useRoute()
 const { hotCityList, allCityList, preventCity } = useCity();
 const keyName = [
+  "industry",
   "job_type",
   "experiences",
   "salary",
@@ -243,9 +246,12 @@ const getPositionData = async () => {
 const showCityModel = () => {
   visible.value = true;
 };
-
 const condition = useGetConditionData();
-const conditionData = ref(condition.conditionData);
+const industryData = ref<any>([{id:-10,industry_name:"不限"},...industryList])
+const conditionData = ref([
+  industryData.value.map((item:any)=>({id:item.id,name:item.industry_name}))
+  ,...condition.conditionData,
+]);
 const loginState = useUserLoginState(true);
 
 const allCities = ref(allCityList.map((item) => item.subLevelModelList).flat());
@@ -258,9 +264,16 @@ const showQu = ref(true);
 const getClickValue = (val: string, idx: number) => {
   for (let item in formData) {
     if (item.includes(idx + "")) {
-      formData[item] = val;
+      // if(val=='不限'){
+      //   random.value = 1
+      //   formData[item] = showValues.value[idx]
+      // }else
+      {
+        formData[item] = val;
+      }
     }
   }
+  
   pageNationParams.pageOn = 1
   //发送请求
   getPositionData();
@@ -345,8 +358,10 @@ const formData = reactive<any>({
   value3: "不限",
   value4: "不限",
   value5: "不限",
+  value6: "不限",
 });
 const showValues = ref([
+  "所属行业",
   "求职类型",
   "工作经验",
   "薪资待遇",

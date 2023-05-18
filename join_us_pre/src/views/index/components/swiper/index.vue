@@ -30,18 +30,12 @@
           </div>
         </template>
         <template #nextArrow>
-          <div class="custom-slick-arrow" style="right: 10px">
+          <div class="custom-slick-arrow" style="right: 10px;z-index: 1">
             <right-circle-outlined />
           </div>
         </template>
-        <div>
-          <img src="../../../../assets/images/banner.jpg" alt="" />
-        </div>
-        <div>
-          <img src="../../../../assets/images/banner.jpg" alt="" />
-        </div>
-        <div>
-          <img src="../../../../assets/images/banner.jpg" alt="" />
+        <div @click="navigateLinks(item.links)" v-for="(item,index) in swiperList" :key="index">
+          <img :src="item.imgUrl" />
         </div>
       </a-carousel>
     </div>
@@ -52,10 +46,25 @@
 import { LeftCircleOutlined, RightCircleOutlined } from "@ant-design/icons-vue";
 import { useJobTypeStore } from "@/store/positionType";
 import {IPositionType1,IPositionTypeChild} from "@/types/jobType"
+import { useSwiperStore } from "@/store/swiper";
+type TSwiperData = {
+  id:number,
+  imgUrl:string,
+  links:string
+}
+const swiperList = computed(()=>useSwiperStore().swiperList as TSwiperData[])
+//跳转轮播链接
+const navigateLinks=  (links:string)=>{
+  const reg= /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i
+  if(reg.test(links)){
+    window.open(links)
+  }
+}
 const router = useRouter()
 const onChange = (current: number) => {
   // console.log(current);
 };
+
 const showBox = ref(false);
 
 const data = ref<IPositionType1[]>([]);

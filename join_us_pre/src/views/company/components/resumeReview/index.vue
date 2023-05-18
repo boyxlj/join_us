@@ -1,20 +1,26 @@
 <template>
     <div>
-        <a-table :pagination="false" :data-source="deliveryRecordList" :columns="columns" bordered>
+        <a-table :scroll="{ x: 1700 }" :pagination="false" :data-source="deliveryRecordList" :columns="columns" bordered>
             <template #bodyCell="{ column, record }">
                 <template v-if="column.key === 'avatar'">
                     <img style="width: 50px; height: 50px; border-radius: 50%;" :src="record.avatar" alt="">
                 </template>
+                <template v-if="column.key === 'sendTime'">
+                  <a-tooltip>
+                    <template #title>{{ getTime(record.sendTime,'time') }}</template>
+                  <span>{{ getTimeBefore(record.sendTime) }}</span>
+                  </a-tooltip>
+                </template>
                 <template v-if="column.key === 'types'">
                     <a-tag v-show="record.types === '1'" color="success">约面试</a-tag>
-                    <a-tag v-show="record.types === '0'" color="processing">已投递</a-tag>
+                    <a-tag v-show="record.types === '0'" color="warning">待回复</a-tag>
                     <a-tag v-show="record.types === '2'" color="error">不合适</a-tag>
                 </template>
-                <template v-if="column.key === 'oprate'">
+                <template v-if="column.key === 'oprate'" >
                     <a-button style="margin: 0 5px;" type="primary" @click="openModal(record.userId)">查看简历</a-button>
-                    <a-button style="margin: 0 5px;" type="primary"
+                    <a-button :disabled="record.types === '1'" style="margin: 0 5px;" type="primary"
                         @click="updateState(record.sendId, 'interview')">约面试</a-button>
-                    <a-button style="margin: 0 5px;" type="primary"
+                    <a-button :disabled="record.types === '2'" style="margin: 0 5px;" type="primary"
                         @click="updateState(record.sendId, 'inappropriate')">不合适</a-button>
                 </template>
             </template>
@@ -32,6 +38,7 @@
 <script setup lang="ts">
 import { deliveryRecord, updateDeliveryState } from '@/api'
 import { message } from 'ant-design-vue'
+import {getTime,getTimeBefore} from "@/utils/formatTime"
 import onlineResume from '@/components/common/onlineResume/index.vue'
 interface deliveryRecordType {
     userId: string,
@@ -58,14 +65,15 @@ interface deliveryRecordType {
     school_type: string
 }
 const propertyMap: Record<string, string> = {
+  avatar: '头像',
+  name: '姓名',
     position_name: '投递职位名称',
-    name: '姓名',
     phone: '手机号',
     email: '邮箱',
     school: '学校',
     degree: '学历',
     leave_schoolTime: '毕业时间',
-    avatar: '头像',
+    sendTime: '投递时间',
     types: '投递状态',
     oprate: '操作'
 }
@@ -84,12 +92,35 @@ const getDeliveryRecord = () => {
             deliveryRecordList.value = res.data
             total.value = res.total
             columns.value = Object.keys(propertyMap).map((item) => {
+              console.log(item)
+              if(item=='oprate'){
+                return {
+                    title: propertyMap[item],
+                    dataIndex: item,
+                    key: item,
+                    align: 'center',
+                    fixed: 'right' ,
+                    width:300
+                }
+              }else if(item=='types'){
+                return {
+                    title: propertyMap[item],
+                    dataIndex: item,
+                    key: item,
+                    align: 'center',
+                    fixed: 'right' ,
+                    width:90
+                }
+              }
+              else{
                 return {
                     title: propertyMap[item],
                     dataIndex: item,
                     key: item,
                     align: 'center'
                 }
+              }
+               
             })
         } else {
             message.error('数据查询失败!')

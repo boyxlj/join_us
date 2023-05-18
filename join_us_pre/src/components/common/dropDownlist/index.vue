@@ -1,6 +1,6 @@
 <template>
   <div class="downList">
-    <div class="top" @mouseleave="showBoxList = false" @mouseenter="showBoxList = true" :class="activeValue?'selectActive':''">
+    <div class="top"  @mouseleave="showBoxList = false" @mouseenter="showBoxList = true" :class="activeValue?'selectActive':''">
       {{ names }}<span class="arrow"></span>
       <div v-show="showBoxList" class="bottom" ref="itemBox" :style="{minWidth:customStyle.width} ">
         <div class="box" :style="{maxHeight:customStyle.height} " @click.capture="clickItem">

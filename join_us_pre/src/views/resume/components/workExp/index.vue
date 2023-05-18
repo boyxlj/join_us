@@ -167,10 +167,10 @@
           <div>
             <li class="boxs">
               <span
-              @click="selectIndustry(item)"
+              @click="selectIndustry(item.industry_name)"
                 class="item"
                 v-for="item in industryData"
-                :key="item"
+                :key="item.industry_id"
                 >{{ item}}</span
               >
             </li>
@@ -184,21 +184,22 @@
 
 <script setup lang="ts">
 import type { Rule } from "ant-design-vue/es/form";
-import dayjs, { Dayjs } from "dayjs";
 import { FormInstance, message } from "ant-design-vue";
 import { useCity } from "@/store/city";
 import { useJobTypeStore } from "@/store/positionType";
-import { IPositionType1, IPositionTypeChild } from "@/types/jobType";
+import { IPositionType1 } from "@/types/jobType";
 import Empty from "@/components/common/empty/index.vue";
 import type { ShowSearchType } from "ant-design-vue/es/cascader";
 import {addUserResume,updateUserResume} from "@/api"
+import {useIndustryStore} from "@/store/industry"
+import {IIndustryData} from "@/types/industry"
+import {IUserInfo} from "@/types/userInfo"
 import {useUserInfo} from "@/store/user"
 const userStore = useUserInfo()
-const userInfo = computed(()=>userStore.userInfoList[0])
-const resumeList:IResumeData[] = computed(()=>userStore.resumeList)
+const userInfo = computed(()=>userStore.userInfoList[0] as IUserInfo)
+const resumeList = computed(()=>userStore.resumeList as IResumeData[])
+const {industryList} =  useIndustryStore()
 const { provinceAndCityList } = useCity();
-
-
 
 const skillTag = ref(['Html','Css','Javascript','Typescript','Vue','React','Express','NodeJs',
 'spring','springCloud','Python','Java'])
@@ -239,16 +240,7 @@ onMounted(()=>{
 
 const props = withDefaults(defineProps<{ changeWorkExpForm: any,resumeId:string|'' }>(), {});
 const mode2 = ref<any>(["month", "month"]);
-interface FormState {
-  enter_time: any[];
-  department: string;  //部门
-  company: string;
-  post: string;    //职务
-  industry: string;  
-  content: string;
-  performance: string;   //业绩
-  skill: string;
-}
+
 //---------期望职位
 const { positionTypeList } = useJobTypeStore();
 const positionTypeData = ref<IPositionType1[] | any[]>(positionTypeList);
@@ -297,9 +289,7 @@ const selectHopeJob = (hopeJob:string)=>{
 }
 
 //-----------期望行业
-
-const industryList = ['计算机软件','电子商务','游戏','媒体广告','营销数据服务','医疗健康']
-const industryData = ref(industryList)
+const industryData = ref<IIndustryData[]>(industryList)
 //期望行业搜索框
 const industryValue = ref("");
 const onSearchIndustry= (val: string) => {
@@ -308,7 +298,7 @@ const onSearchIndustry= (val: string) => {
     return;
   }
   industryData.value = industryList;
-  const res = industryData.value?.filter(item=>item.includes(val))
+  const res = industryData.value?.filter(item=>item.industry_name.includes(val))
   industryData.value = res;
 };
 //期望行业对话框
@@ -330,7 +320,16 @@ const selectIndustry= (industry:string)=>{
   formState.industry = industry
 }
 
-const monthFormat = "YYYY/MM";
+interface FormState {
+  enter_time: any[];
+  department: string;  //部门
+  company: string;
+  post: string;    //职务
+  industry: string;  
+  content: string;
+  performance: string;   //业绩
+  skill: string | undefined; 
+}
 const formRef = ref<FormInstance>();
 const formState = reactive<FormState>({
   enter_time: [],
@@ -338,7 +337,7 @@ const formState = reactive<FormState>({
   post: "",
   content: "",
   industry: "",
-  skill: undefined,
+  skill: undefined ,
   company: "",
   performance: "",
 });
@@ -430,13 +429,13 @@ const handleFinish =async (values: FormState) => {
   const skillArr  = JSON.stringify(values.skill) 
   const obj = {...values,skill:skillArr,resume_id:props.resumeId,userId:userInfo.value.userId,enter_time:formState.enter_time[0],leave_time:formState.enter_time[1]}
   if(props.resumeId){
-    const res = await updateUserResume(obj)
+    const res:any = await updateUserResume(obj)
     if(res.code!==200) return message.error('修改失败')
     message.success('修改成功')
     userStore.getUseInfo(userInfo.value.userId)
     props.changeWorkExpForm();
   }else{
-    const res = await addUserResume(obj)
+    const res:any = await addUserResume(obj)
     if(res.code!==200) return message.error('添加失败')
     message.success('添加成功')
     userStore.getUseInfo(userInfo.value.userId)
