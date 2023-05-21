@@ -5,6 +5,48 @@ const app = express()
 app.use(cors())
 app.use(express.urlencoded({extended:false}))
 app.use(express.json())
+const AllowOriginList = [
+  'http://localhost:5173',
+   'http://127.0.0.1:5173',
+    'http://localhost:5174',
+     'http://127.0.0.1:5174',
+      'http://zhaopin.helloxlj.top','http://small-zhaopin.helloxlj.top'
+]
+const publicApiList = [ '/static/upload']  
+app.all("*", (req, res, next) => {
+if (req.url.includes( '/static/upload')) {
+  res.header("Access-Control-Allow-Origin", req.headers.origin)
+  res.header("Access-Control-Allow-Headers", "content-type")
+  res.header("Access-Control-Allow-Headers",["content-type",'Authorization']);
+  res.header("Access-Control-Allow-Methods", 'DELETE,PUT,POST,PATCH,GET,OPTIONS')
+  if (req.method.toLowerCase() == 'options') {
+   res.send(200)
+  } else {
+    return  next()
+  }
+    
+} else {
+  if (AllowOriginList.includes(req.headers.origin)) {
+    res.header("Access-Control-Allow-Origin", req.headers.origin)
+    res.header("Access-Control-Allow-Headers", "content-type")
+    res.header("Access-Control-Allow-Headers",["content-type",'Authorization']);
+    res.header("Access-Control-Allow-Methods", 'DELETE,PUT,POST,PATCH,GET,OPTIONS')
+    if (req.method.toLowerCase() == 'options') {
+      res.send(200)
+    } else {
+      next()
+    }
+  } else {
+    res.status(404).send({
+      code: 404,
+      msg: 'error'
+    })
+  }
+}
+})
+
+
+//post中间件
 
 app.use('/api',require('./router'))
 app.use('/api/manger',require('./mangerRouter'))

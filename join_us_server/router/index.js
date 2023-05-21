@@ -4,6 +4,8 @@ const router = express.Router()
 
 
 
+//鉴权中间件
+router.use(require("./authorization"))
 //路由中间件-前台
 router.use(require("./position_type"))
 router.use(require("./company"))

@@ -132,7 +132,7 @@ const navigateCompanyDetail = (company_id: string) => {
       align-items: center;
 
       img {
-        widows: 100%;
+        width: 100%;
         height: 100%;
       }
     }

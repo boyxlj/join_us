@@ -219,7 +219,7 @@ const getPositionData = async () => {
     newObj[keyName[(i.slice(5) as any) * 1]] = formData[i];
   }
   const params = {
-    region: cityData.qu,
+    pos_region: cityData.qu,
     keyword:keyword.value,
     ...newObj,
     position_type1:position_type1.value,

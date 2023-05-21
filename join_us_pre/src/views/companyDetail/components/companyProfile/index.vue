@@ -1,13 +1,13 @@
 <template>
   <div class="companyProfile">
-    <div class="hotPosition">
-      <div class="tops">
+    <div class="hotPosition" v-if="companyDetailData.positionCount">
+      <div class="tops" >
         <li class="title">热招职位</li>
-        <li class="alls" @click="navigateTag1">
+        <li class="alls" @click="navigateTag1" >
           查看全部{{companyDetailData.positionCount}}个职位<span></span>
         </li>
       </div>
-      <div class="list">
+      <div class="list" >
         <div class="item" @click="navigatePosDetails(item.position_id)" v-for="item in companyDetailData.posData?.slice(0,3)" :key="item.id">
           <div class="itemTop">
             <span class="posName">{{item.position_name}}</span>
@@ -129,7 +129,7 @@
         </div>
       </div>
     </div>
-    <div class="hotPosition otherPosition">
+    <div class="hotPosition otherPosition" v-if="companyDetailData.positionCount">
       <div class="tops">
         <li class="title">在招职位</li>
         <li class="alls" @click="navigateTag1">
@@ -212,12 +212,13 @@ const sendPos = async(position_id:string,company_id:string)=>{
       width: 100%;
       height: 110px;
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
 
       .item {
         width: 368px;
         height: 94px;
         padding: 20px;
+        margin-right: 10px;
         border: 1px solid #ededed;
         background: #fff;
         border-radius: 12px;

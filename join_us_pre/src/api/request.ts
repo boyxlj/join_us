@@ -1,29 +1,58 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { message } from 'ant-design-vue'
 const request = axios.create({
-    baseURL: import.meta.env.VITE_APP_BASE_URL,
-    timeout: 5000
+  baseURL: import.meta.env.VITE_APP_BASE_URL,
+  timeout: 5000
 })
 
 request.interceptors.request.use(config => {
-    if (localStorage.getItem('token')) {
-        config.headers.Authorization = localStorage.getItem('token')
-    } else {
-        // message.warn('token不存在', 1)
-    }
-    return config
+  const token = localStorage.getItem('token')
+  const companyToken = localStorage.getItem('companyToken')
+  
+  if (token!=='null' && token ) {
+    config.headers.Authorization = token
+  }
+  if (companyToken && token!=='null' ) {
+    config.headers.Authorizations = companyToken
+  }
+  return config
 })
 
 request.interceptors.response.use((response): any => {
-    if (response.status === 200) {
-        return response.data
+  const token = response.headers.authorization
+  const tokens = response.headers.authorizations
+  const tokenLocal = localStorage.getItem('token')
+  if (token && token!=='null') {
+    if (tokenLocal && tokenLocal!=='null' ) {
+      localStorage.setItem("token", token)
     } else {
-        message.error(response.data.msg, 1)
+      if (tokens && tokens!=='null') {
+        localStorage.setItem("companyToken", tokens)
+      }
     }
+  }
+  if (tokens && tokens!=='null') {
+    localStorage.setItem("companyToken", tokens)
+  }
+
+
+  if (response.data.code == 401) {
+    if (!location.href.includes('/login')) {
+      // return authError()
+    }
+    // Message.clear()
+    // return Message.warning('token不存在或已失效',)
+  }
+  if (response.status === 200) {
+    return response.data
+  } else {
+    // Message.error(response.data.msg,)
+  }
+
 })
 
 export default <T>(config: AxiosRequestConfig) => {
-    return request(config).then(res => {
-        return res
-    })
+  return request(config).then(res => {
+    return res
+  })
 }

@@ -2,7 +2,7 @@
   <div class="navbar">
     <div class="container">
       <div class="logo">
-        <img @click="clickLogo" src="../../../assets/vue.svg" alt="" />
+        <img @click="clickLogo" src="../../../assets/images/zhaopin.png" alt="" />
         <p class="city" @click="changeCity">
           <span class="weight">{{ positionCity }}</span>
           <span class="changeCity">[切换城市]</span>
@@ -17,9 +17,11 @@
         >
         <router-link to="/home/corporation" active-class="homeLinkActive">公司</router-link>
         <router-link to="/home/consult" active-class="homeLinkActive">资讯百科</router-link>
+        <router-link to="/home/about" active-class="homeLinkActive">关于</router-link>
       </ul>
       <ul class="profile" v-if="!loginState">
-        <li @click="navigateLinks('/home/user/resume',true)">上传简历</li>
+        <li style="width: 70px;"></li>
+        <!-- <li @click="navigateLinks('/home/user/resume',true)">上传简历</li> -->
         <li @click="navigateLinks('/home/job')">我要找工作</li>
         <li @click="navigateLinks('/login?query=boss')">我要招聘</li>
         <div class="loginBtn" @click="navigateLogin">登录/注册</div>
@@ -110,8 +112,10 @@ const navigateLogin = () => {
 };
 
 const cancelLogin = (e: Event) => {
+  // localStorage.clear()
   localStorage.removeItem("token");
-  location.href = '/'
+  // location.href = '/'
+  location.reload()
 };
 
 const navigateLinks = (path:string,validateLogin:boolean=false)=>{
@@ -155,6 +159,10 @@ const leaveUserInfo = ()=>{
       min-width: 230px;
       p {
         margin: 0;
+      }
+      img{
+        width: 40px;
+        height:40px
       }
       .city {
         margin-left: 40px;
@@ -209,6 +217,7 @@ const leaveUserInfo = ()=>{
         padding: 2px 14px;
         cursor: pointer;
         transition: all 0.2s;
+        margin-top: 2px;
         &:hover {
           border: 1px solid var(--themeColor);
           color: var(--themeColor);

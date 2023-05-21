@@ -83,7 +83,7 @@
         <a-table-column title="成立时间" data-index="create_time">
           <template #cell="{ record }">
             <a-tooltip :content="getTime(record.create_time)">
-              <span>{{ getTimeBefore(record.create_time) }}</span>
+              <span>{{ getTime(record.create_time) }}</span>
             </a-tooltip>
           </template>
         </a-table-column>

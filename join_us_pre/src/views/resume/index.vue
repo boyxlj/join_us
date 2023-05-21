@@ -54,7 +54,8 @@
               }}</span>
             </li>
             <li>
-              <img src="../../assets/images/icon/email.png" alt="" /><span>{{
+              <img src="../../assets/images/icon/email.png" alt="" />
+              <span>{{
                 userInfo.email
               }}</span>
             </li>
@@ -64,7 +65,13 @@
               <span>点击可上传头像</span>
             </template>
             <div class="avatar" @click.stop="clickAvatar">
-              <img :src="userInfo.avatar" alt="" />
+              <a-avatar :size="64" :src="userInfo.avatar" v-if="userInfo.avatar">
+                  <template #icon><UserOutlined /></template>
+                </a-avatar>
+              <a-avatar :size="64" v-else>
+                  <template #icon><UserOutlined /></template>
+                </a-avatar>
+              <!-- <img :src="userInfo.avatar" alt="" /> -->
             </div>
           </a-tooltip>
           <div class="editor">
@@ -295,6 +302,7 @@ import {
   EditOutlined,
   FundOutlined,
   TransactionOutlined,
+  UserOutlined
 } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import type { UploadChangeParam } from "ant-design-vue";

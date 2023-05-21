@@ -27,27 +27,27 @@ function debounce(fn: any, wait: any) {
 }
 const authError = debounce(
   () => {
-    Modal.warning({ 
-      simple: true, hideCancel:false,title: "温馨提示", content: "您的登录信息已经过期，请选择是否重新登录？",
-      okText:"跳转登录",
-      cancelText:"取消",
+    Modal.warning({
+      simple: true, hideCancel: false, title: "温馨提示", content: "您的登录信息已经过期，请选择是否重新登录？",
+      okText: "跳转登录",
+      cancelText: "取消",
       onOk(e) {
         localStorage.clear()
-        if(!location.href.includes('/login')){
+        if (!location.href.includes('/login')) {
           // router.replace(`/login`)
           location.reload()
         }
       },
-     })
+    })
   }, 1000);
-  request.interceptors.response.use((response): any => {
+request.interceptors.response.use((response): any => {
   const mangerToken = response.headers.authorization
   if (mangerToken) {
     localStorage.setItem("mangerToken", mangerToken)
   }
 
   if (response.data.code == 401) {
-    if(!location.href.includes('/login')){
+    if (!location.href.includes('/login')) {
       return authError()
     }
     // Message.clear()

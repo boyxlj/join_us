@@ -9,14 +9,13 @@
 </template>
 
 <script setup lang="ts">
-import indexJob from '@/components/common/indexJob/index.vue'
-import { ref } from "vue";
-const router = useRouter();
-const lis = ref<HTMLElement>();
-const cardContainer = ref();
 import { Iobj, IPositionType, Iposition_type } from '@/types/jobType'
 import { getPositionByHot } from '@/api'
 import { useJobTypeStore } from '@/store/positionType'
+import indexJob from '@/components/common/indexJob/index.vue'
+const lis = ref<HTMLElement>();
+const router = useRouter();
+const cardContainer = ref();
 const typeStore = useJobTypeStore()
 //热门职位列表
 const hotJobList = ref<Iposition_type[]>([])

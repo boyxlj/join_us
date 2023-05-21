@@ -1,7 +1,7 @@
 <template>
   <div class="jobVacancy">
-    <div class="select">
-      <div class="left" :key="random">
+    <div class="select" v-if="companyDetailData.positionCount"  >
+      <div class="left" :key="random" > 
         <template v-for="(item, index) in conditionData" :key="index">
           <DropDownlist
             class="dropDownlist"
@@ -21,7 +21,8 @@
       <div class="left">
         <positionList v-if="positionData.length" :positionData="positionData" />
         <div class="empty" v-else>
-          <Empty />
+          <Empty v-if="companyDetailData.positionCount" />
+          <Empty v-else msg="该公司还未发布相关职位" />
         </div>
         <div class="pageNation">
           <a-pagination
@@ -49,12 +50,14 @@ import Empty from "@/components/common/empty/index.vue";
 import { message } from "ant-design-vue";
 import { useGetConditionData } from "@/store/condition";
 import { selectCompanysPositions } from "@/api";
+import {ICompanyDetailData} from "@/types/company"
 const route = useRoute();
 const keyName = ["cityName", "experiences", "degrees", "salary"];
 const keyword = ref(route.query.keyword as string);
 const position_type1 = ref(route.query.position_type1 as string);
 const position_type2 = ref(route.query.position_type2 as string);
 let condition: any = useGetConditionData();
+defineProps<{companyDetailData:ICompanyDetailData}>()
 
 const pageNationParams = reactive({
   pageOn: 1,

@@ -27,7 +27,7 @@
       <div class="details" v-if="JSON.parse(item.welfare_tag)?.length">
         <div class="titles">福利待遇</div>
         <div class="con">
-          <span v-for="(item,index) in JSON.parse(item.welfare_tag)" :key="index">{{item}}</span>
+          <span v-for="(items,index) in JSON.parse(item?.welfare_tag )" :key="index">{{items}}</span>
         </div>
       </div>
       <div class="details" v-if="item.work_time ">

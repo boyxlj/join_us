@@ -4,7 +4,7 @@ const jwt = require('../../utils/jsonwebtoken')
 const arr = [
   '/manger/positionTypes/show',
   '/manger/industrys/show',
-  '/manger/category'
+  '/manger/category',
 ]
 authorizationRouter.use((req,res,next)=>{
   if(req.path.includes("/login")){
@@ -27,7 +27,7 @@ authorizationRouter.use((req,res,next)=>{
       return res.send({ code: 401, msg: "无效token" })
     }
   }else{
-   return res.send({ code: 401, msg: "无效token" })
+   return next()
   }
 })
 

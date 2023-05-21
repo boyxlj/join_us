@@ -62,7 +62,7 @@
         </a-form-item>
       </a-form>
       
-      <div class="footerBox"><Footer :ba="true" :Copyright="false"/></div>
+      <!-- <div class="footerBox"><Footer :ba="true" :Copyright="false"/></div> -->
     </div>
   </div>
 </template>
@@ -117,8 +117,8 @@ const coderContainer = ref<HTMLDivElement>();
   })
 
 const form = reactive({
-  username:"123456",
-  password:"123456",
+  username:"666666",
+  password:"666666",
   coderInputValue:""
 })
 </script>

@@ -9,6 +9,8 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AAlert: typeof import('ant-design-vue/es')['Alert']
+    AAvatar: typeof import('ant-design-vue/es')['Avatar']
     AButton: typeof import('ant-design-vue/es')['Button']
     ACard: typeof import('ant-design-vue/es')['Card']
     ACarousel: typeof import('ant-design-vue/es')['Carousel']
@@ -16,10 +18,10 @@ declare module '@vue/runtime-core' {
     ADatePicker: typeof import('ant-design-vue/es')['DatePicker']
     ADescriptions: typeof import('ant-design-vue/es')['Descriptions']
     ADescriptionsItem: typeof import('ant-design-vue/es')['DescriptionsItem']
+    ADropdown: typeof import('ant-design-vue/es')['Dropdown']
     AForm: typeof import('ant-design-vue/es')['Form']
     AFormItem: typeof import('ant-design-vue/es')['FormItem']
     AInput: typeof import('ant-design-vue/es')['Input']
-    AInputNumber: typeof import('ant-design-vue/es')['InputNumber']
     AInputSearch: typeof import('ant-design-vue/es')['InputSearch']
     ALayout: typeof import('ant-design-vue/es')['Layout']
     ALayoutContent: typeof import('ant-design-vue/es')['LayoutContent']
@@ -45,9 +47,7 @@ declare module '@vue/runtime-core' {
     BirthCake: typeof import('./src/components/common/onlineResume/components/BirthCake/index.vue')['default']
     CompanyApply: typeof import('./src/components/companyApply/index.vue')['default']
     CompanyBaseForm: typeof import('./src/components/companyApply/components/companyBaseForm/index.vue')['default']
-    CompanyForm: typeof import('./src/components/companyApply/components/companyForm/index.vue')['default']
     CompanyOtherForm: typeof import('./src/components/companyApply/components/companyOtherForm/index.vue')['default']
-    copy: typeof import('./src/components/companyApply/components/companyBaseForm copy/index.vue')['default']
     DegreeIcon: typeof import('./src/components/common/onlineResume/components/degreeIcon/index.vue')['default']
     DropDownlist: typeof import('./src/components/common/dropDownlist/index.vue')['default']
     Empty: typeof import('./src/components/common/empty/index.vue')['default']

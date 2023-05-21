@@ -74,7 +74,7 @@
 <script setup lang="ts">
 import { IconEdit, IconPlus, IconUser } from "@arco-design/web-vue/es/icon";
 import { ISwiperData } from "@/types/swiper";
-import type { FileItem, ValidatedError } from "@arco-design/web-vue";
+import type { FileItem, ValidatedError ,} from "@arco-design/web-vue";
 import { Message } from "@arco-design/web-vue";
 import { uploadPhotoUrl } from "@/api/upload";
 import { useAuth } from "@/hooks/useAuth";
@@ -85,7 +85,7 @@ const form = reactive({
   swiper_id: "",
 });
 
-const file = ref<TFileItem[]>([
+const file = ref<any[]>([
   {
     url: '',
     name: "",

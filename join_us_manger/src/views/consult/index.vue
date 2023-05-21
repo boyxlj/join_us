@@ -1,6 +1,34 @@
 <template>
   <div class="consult">
+    <div class="select">
     <a-button type="primary" @click="openModelVisible()">发布资讯</a-button>
+    <li class="item">
+      <a-select style="margin-right: 10px;" v-model="category" allow-clear  allow-search @change="changeSelect" :disabled="loading" :style="{width:'320px'}" placeholder="请选择资讯分类">
+      <a-option :value="item.categoryName" v-for="(item,index) in consultCategoryData" :key="index">{{ item.categoryName }}</a-option>
+    </a-select>
+      <a-input-search 
+       @clear="changeSelect" 
+       @search="changeSelect" 
+        @press-enter="changeSelect" allow-clear  
+        allow-search v-model.trim="keyword" 
+        :disabled="loading "  
+        :style="{width:'360px'}" 
+        placeholder="请输入资讯标题或分类等关键字查询" 
+        search-button>
+        <template #button-icon>
+          <icon-search />
+        </template>
+        <template #button-default >
+          查询
+        </template>
+      </a-input-search>
+      <a-button  class="clear" @click="clearSelect">
+      <template #icon>
+        <icon-refresh/>
+      </template>
+      <template #default>重置</template>
+      </a-button>
+    </li></div>
     <a-table
       class="table"
       @page-change="changePageNation"
@@ -126,15 +154,30 @@ import { IConsultData } from "@/types/consult";
 import { IMangerData } from "@/types/manger";
 import { useAuth } from "@/hooks/useAuth";
 import {useMangerStore} from "@/store/manger"
-import {  IconUser } from "@arco-design/web-vue/es/icon";
+import {useConsultStore} from "@/store/consult"
+import {  IconUser,IconSearch,IconRefresh } from "@arco-design/web-vue/es/icon";
 import {btnStyle} from "@/config/btnStyle"
 const consultModelVisible = ref(false);
 const consultData = ref<IConsultData[]>([]);
+const {consultCategoryData} =  useConsultStore()
 const pageNationParams = reactive({
   pageOn: 1,
   pageSize: 15,
   total: 2,
 });
+
+//搜索
+const keyword=ref('')
+const category = ref('')  //select 父级选中分类
+const changeSelect =  ()=>{
+  pageNationParams.pageOn = 1
+  getConsult();
+}
+const clearSelect = ()=>{
+  pageNationParams.pageOn = 1
+  keyword.value = ''
+  getConsult();
+}
 const changePageNation = (pageOn: number) => {
   pageNationParams.pageOn = pageOn;
   getConsult();
@@ -142,7 +185,6 @@ const changePageNation = (pageOn: number) => {
 
 const changeSwitch = async (state: any, consult_id: string) => {
   const res: any = await updateConsultState({ state, consult_id });
-  console.log(res)
   if (res.code !== 200) {
     Message.error(res.msg);
     // getConsult();
@@ -185,7 +227,10 @@ const loading = ref(false);
 //获取资讯数据
 const getConsult = async () => {
   loading.value = true;
-  const res: any = await selectConsult(pageNationParams);
+  const res: any = await selectConsult({...pageNationParams,
+    keyword:keyword.value,
+    category:category.value,
+  });
   setTimeout(() => {
     if (res.code !== 200)
       return (consultData.value = []), (loading.value = false);
@@ -251,6 +296,17 @@ const deleteConsult = (consult_id: string) => {
 .consult {
   .table {
     margin-top: 20px;
+  }
+  .select{
+    display: flex;
+    .item{
+      display: flex;
+      align-items: center;
+      margin-left: 30px;
+      .clear{
+        margin-left: 12px;
+      }
+    }
   }
 }
 .tableTitle {

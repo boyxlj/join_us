@@ -12,14 +12,16 @@ router.beforeEach((to, from, next) => {
   if (token && (to.path.includes('/login') && !to.fullPath.includes('boss') )) {
     return next('/')
   }
+  if (companyToken &&  to.fullPath=='/login?query=boss' ) {
+    return next('/company')
+  }
   if(!token && to.fullPath.includes('/home/user')){
      message.warning("请登录后进行访问")
     return next('/login')
   }
-  
-  if(!companyToken && to.fullPath.includes('/company')){
+  if(!companyToken && to.path?.split('/')[1]==='company'){
      message.warning("请登录后进行访问")
-    return next('/login')
+    return next('/login?query=boss')
   }
   
   next()

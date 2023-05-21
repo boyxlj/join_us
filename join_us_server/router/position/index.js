@@ -8,7 +8,7 @@ const {returnErr} = require("../../utils/returnErr.js")
 positionRouter.post('/positions', (req, res) => {
   let { pageOn, pageSize } = req.body
   // console.log(req.body)
-  const arr = ['pageOn', 'pageSize', 'position_name', 'cityName', 'salary', 'region', 'experiences', 'degrees',
+  const arr = ['pageOn', 'pageSize', 'position_name', 'cityName', 'salary', 'pos_region', 'experiences', 'degrees',
     'position_type1', 'position_type2', 'job_type', 'people_num', 'company_name', 'industry', 'financing'
   ]
   delete req.body.pageOn
@@ -110,6 +110,7 @@ positionRouter.post('/positions', (req, res) => {
     const sql = `select * from pos inner join company on pos.company_id = company.company_id ${ResStr} order by pos.id desc
     limit ${(pageOn - 1) * pageSize},${pageSize}
   `
+
 
     query(sqlCount, count => {
       query(sql, result => {

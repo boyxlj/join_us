@@ -108,7 +108,6 @@ const iconList = [
   InboxOutlined,     // 干货文章 FundOutlined
   CompassOutlined,     // 公司动态
   NotificationOutlined,    //全部资讯
-  
 ]
 
 </script>

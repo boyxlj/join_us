@@ -40,6 +40,8 @@ import { deliveryRecord, updateDeliveryState } from '@/api'
 import { message } from 'ant-design-vue'
 import {getTime,getTimeBefore} from "@/utils/formatTime"
 import onlineResume from '@/components/common/onlineResume/index.vue'
+import { useCompanyState } from "@/hooks/useCompanyState";
+import { useHrState } from "@/hooks/useHrState";
 interface deliveryRecordType {
     userId: string,
     advantage: string,
@@ -80,9 +82,9 @@ const propertyMap: Record<string, string> = {
 const columns = ref<any[]>([])
 const deliveryRecordList = ref<Array<deliveryRecordType>>([])
 const company_id = localStorage.getItem('company_id') as string
-const telephone = JSON.parse(localStorage.getItem('loginInfo') as string).telephone
+const telephone = JSON.parse(localStorage.getItem('loginInfo') as string)?.telephone
 const pageIndex = ref(1)
-const pageSize = ref(5)
+const pageSize = ref(10)
 const total = ref(0)
 let visible = ref(false)
 let userIdVar = ref('')
@@ -92,7 +94,6 @@ const getDeliveryRecord = () => {
             deliveryRecordList.value = res.data
             total.value = res.total
             columns.value = Object.keys(propertyMap).map((item) => {
-              console.log(item)
               if(item=='oprate'){
                 return {
                     title: propertyMap[item],
@@ -128,7 +129,9 @@ const getDeliveryRecord = () => {
     })
 }
 getDeliveryRecord()
-const updateState = (sendId: string, type: string) => {
+const updateState =async (sendId: string, type: string) => {
+  if (!(await useCompanyState()).state) return;
+  if (!(await useHrState()).state) return;
     updateDeliveryState(sendId, type).then((res: any) => {
         if (res.code === 200) {
             message.success('状态更新成功！')

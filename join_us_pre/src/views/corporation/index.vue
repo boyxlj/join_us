@@ -196,7 +196,7 @@ const companyData = ref<ICompanyData[]>([]);
 
 const pageNationParams = reactive({
   pageOn: 1,
-  pageSize: 30,
+  pageSize: 32,
   total: 0,
 });
 const changePageNation = (page: number, pageSize: number) => {

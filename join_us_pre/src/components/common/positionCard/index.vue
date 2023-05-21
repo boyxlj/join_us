@@ -18,8 +18,8 @@
 
 <script setup lang="ts">
 import {useHotSearchPosition} from "@/store/position"
-const {randomPositionData,sortPositionData} = useHotSearchPosition()
 import {Iposition_type} from '@/types/jobType'
+const {randomPositionData,sortPositionData} = useHotSearchPosition()
 
 const data = ref<Iposition_type[]>(randomPositionData)
 

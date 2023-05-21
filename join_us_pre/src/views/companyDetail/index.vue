@@ -37,7 +37,7 @@
       </div>
 
       <CompanyProfile :companyDetailData="companyDetailData" v-show="activeIdx===0"/>
-      <JobVacancy v-show="activeIdx===1"/>
+      <JobVacancy :companyDetailData="companyDetailData" v-show="activeIdx===1"/>
     </div>
   </div>
 </template>
@@ -69,10 +69,9 @@ const companyDetailData = reactive<ICompanyDetailData>({
 })
 const getCompanyDetails = async()=>{
   const res:any = await selectCompanysDetail(route.query.company_id as string)
-  console.log(res)
   if(res.code!==200){
     message.error("服务异常")
-    router.replace("/notfound")
+    // router.replace("/notfound")
     return 
   }else{
     companyDetailData.bossCount = res.bossCount
@@ -82,7 +81,7 @@ const getCompanyDetails = async()=>{
     companyDetailData.posData = res.posData
   }
   if(res.companyInfo[0]?.state!='1'){
-    router.replace("/notfound")
+    // router.replace("/notfound")
   }
   if(res.companyInfo[0]?.company_name){
     document.title =res.companyInfo[0]?.company_name

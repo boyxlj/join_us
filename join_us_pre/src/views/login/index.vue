@@ -11,16 +11,40 @@
         </li>
       </div>
       <div class="formBox">
-        <a-form class="form" ref="formRef" name="custom-validation" :model="formState" :rules="rules" v-bind="layout"
-          @finish="handleFinish" @validate="handleValidate" @finishFailed="handleFinishFailed">
+        <a-form
+          class="form"
+          ref="formRef"
+          name="custom-validation"
+          :model="formState"
+          :rules="rules"
+          v-bind="layout"
+          @finish="handleFinish"
+          @validate="handleValidate"
+          @finishFailed="handleFinishFailed"
+        >
           <a-form-item v-if="activeKey === 0" name="email">
-            <a-input v-model:value="formState.email" type="text" autocomplete="off" placeholder="请输入您的邮箱" />
+            <a-input
+              v-model:value="formState.email"
+              type="text"
+              autocomplete="off"
+              placeholder="请输入您的邮箱"
+            />
           </a-form-item>
           <a-form-item v-if="activeKey === 1" name="username">
-            <a-input v-model:value="formState.username" type="text" autocomplete="off" placeholder="请输入您的手机号" />
+            <a-input
+              v-model:value="formState.username"
+              type="text"
+              autocomplete="off"
+              placeholder="请输入您的手机号"
+            />
           </a-form-item>
           <a-form-item v-if="activeKey === 1" name="psd">
-            <a-input v-model:value="formState.psd" type="password" autocomplete="off" placeholder="请输入您的登录密码" />
+            <a-input
+              v-model:value="formState.psd"
+              type="password"
+              autocomplete="off"
+              placeholder="请输入您的登录密码"
+            />
           </a-form-item>
 
           <a-form-item class="sendCode" v-if="activeKey === 0" name="code">
@@ -36,15 +60,27 @@
               @click="clickSendCode"
               >{{ sendCodeBtnText }}</a-button
             >
-           
           </a-form-item>
-          <a-form-item class="coders" name="inputCodeValue" v-show="activeKey === 1">
-            <a-input v-model:value="formState.inputCodeValue" placeholder="请输入数字验证码" />
+          <a-form-item
+            class="coders"
+            name="inputCodeValue"
+            v-show="activeKey === 1"
+          >
+            <a-input
+              v-model:value="formState.inputCodeValue"
+              placeholder="请输入数字验证码"
+            />
             <div class="photo" @click="refresh()" ref="validateContainer"></div>
           </a-form-item>
           <a-form-item :wrapper-col="{ span: 24, offset: 0 }">
-            <a-button class="submitBtn" style="width: 100%" type="primary" @click="submit"
-              :disabled="disabledSubmit">登录/注册</a-button>
+            <a-button
+              class="submitBtn"
+              style="width: 100%"
+              type="primary"
+              @click="submit"
+              :disabled="disabledSubmit"
+              >登录/注册</a-button
+            >
           </a-form-item>
         </a-form>
       </div>
@@ -59,9 +95,11 @@ import type { Rule } from "ant-design-vue/es/form";
 import type { FormInstance } from "ant-design-vue";
 import { getValidateCoder } from "validate-coder";
 import { userSendCode, userLogin, hrLoginOrRegister } from "@/api";
-import { useUserInfo } from "@/store/user"
-import CompanyApply from "@/components/companyApply/index.vue"
-import {emitter} from "@/utils/emitter"
+import { useUserInfo } from "@/store/user";
+import { useCompanyInfo } from "@/store/company_hr";
+import { useHrInfo } from "@/store/hr";
+import CompanyApply from "@/components/companyApply/index.vue";
+import { emitter } from "@/utils/emitter";
 const router = useRouter();
 const route = useRoute();
 interface FormState {
@@ -78,7 +116,7 @@ const validateCoder = ref<string>();
 onMounted(() => {
   if (route.query?.query === "boss") {
     activeKey.value = 1;
-    document.title='企业登录'
+    document.title = "企业登录";
   } else {
     activeKey.value = 0;
   }
@@ -88,14 +126,19 @@ onMounted(() => {
 const validateContainer = ref<HTMLDivElement>();
 const changeActive = (actIdx: number) => {
   if (activeKey.value === actIdx) return;
-  const token = localStorage.getItem('token')
-  if(token && activeKey.value==1) return
+  // const token = localStorage.getItem('token')
+  // if(token && activeKey.value==1) return
   activeKey.value = actIdx;
+  if (activeKey.value == 0) {
+    router.replace("/login");
+  } else {
+    router.replace("/login?query=boss");
+  }
   formRef.value?.resetFields();
   refresh();
 };
 
-const disabledSubmit = ref(false)
+const disabledSubmit = ref(false);
 //验证码按钮
 const sendCodeBtnText = ref("发送验证码");
 const disabledSendCodeBtn = ref(false);
@@ -141,7 +184,7 @@ const formRef = ref<FormInstance>();
 const formState = reactive<FormState>({
   code: "111111",
   email: "x709500@126.com",
-  username: "13870000001",
+  username: "13870000000",
   psd: "zzq123456",
   inputCodeValue: "",
 });
@@ -214,55 +257,83 @@ const handleFinish = (values: FormState) => {
 const handleFinishFailed = (errors: any) => {
   // console.log(errors);
 };
-const submit = async () => {
 
+window.addEventListener("beforeunload", function (e) {
+  const companyToken = localStorage.getItem("companyToken");
+  const hr_id = localStorage.getItem("hr_id");
+  if(companyToken && hr_id){
+    localStorage.removeItem('companyToken')
+  }
+});
+
+const submit = async () => {
   if (activeKey.value == 1) {
-    await formRef.value?.validateFields(['username', 'psd'])
-    const res: any = await hrLoginOrRegister({ telephone: formState.username, password: formState.psd })
-    console.log(res)
+    await formRef.value?.validateFields(["username", "psd"]);
+    if (formState.inputCodeValue !== validateCoder.value) {
+      refresh();
+      return message.error("验证码有误");
+    }
+    const res: any = await hrLoginOrRegister({
+      telephone: formState.username,
+      password: formState.psd,
+    });
     refresh();
     if (res.code === 200) {
-      localStorage.clear()
-      emitter.emit('getData')
+      localStorage.removeItem("token");
+      // localStorage.clear()
+      // emitter.emit('getData')
       if (res.remark || !res.company_id) {
         // 首次注册后续操作，填写表单等
-        // visible.value = true
-        console.log(123)
-        emitter.emit('changeCompanyState',123)
-        emitter.emit('sendHrInfo',{hr_id:res.hr_id,companyToken:res.token})
+        localStorage.setItem("companyToken", res.token);
+        localStorage.setItem("hr_id", res.hr_id);
+        localStorage.setItem(
+          "loginInfo",
+          JSON.stringify({ telephone: formState.username })
+          );
+          emitter.emit("changeCompanyState");
       } else {
         localStorage.setItem("companyToken", res.token);
-        localStorage.setItem('company_id', res.company_id)
-        localStorage.setItem('loginInfo', JSON.stringify({ telephone: formState.username }))
+        localStorage.setItem("company_id", res.company_id);
+        localStorage.setItem(
+          "loginInfo",
+          JSON.stringify({ telephone: formState.username })
+        );
+        useCompanyInfo().saveCompanyId(res.company_id);
+        useCompanyInfo().getCompanyInfo(res.company_id);
+        useHrInfo().saveHrId(res.hr_id);
+        useHrInfo().getHrInfo(res.hr_id);
         message.success("企业登录成功");
         // router.push('/company')
+        setTimeout(() => {
+          router.push("/company");
+        }, 100);
       }
-      
-    }else{
+    } else {
       message.error("登录失败");
     }
   } else {
     await formRef.value?.validateFields(["email", "code"]);
     const params = { email: formState.email, validateCode: formState.code };
     const res: any = await userLogin(params);
-    disabledSubmit.value = true
-    console.log("$$$$$$", res);
+    disabledSubmit.value = true;
     refresh();
     if (res.code != 200) {
-      disabledSubmit.value = false
+      disabledSubmit.value = false;
       return message.error(res.msg);
     }
+    // localStorage.clear()
+    localStorage.removeItem("companyToken");
     localStorage.setItem("token", res.token);
+    useUserInfo().saveUserId(res.userInfo[0]?.userId);
+    useUserInfo().getUseInfo(res.userInfo[0]?.userId);
     message.success("登录成功");
-    useUserInfo().saveUserId(res.userInfo[0]?.userId)
-    useUserInfo().getUseInfo(res.userInfo[0]?.userId)
-    router.push("/");
+    setTimeout(() => {
+      location.reload();
+    }, 100);
   }
 };
 
-const handleValidate = (...args: any) => {
-};
-
+const handleValidate = (...args: any) => {};
 </script>
 
 <style lang="less" scoped>
@@ -272,7 +343,7 @@ const handleValidate = (...args: any) => {
   background: url("../../assets/images/login_bg.webp") no-repeat center center;
   background-size: 100% 100%;
   user-select: none;
-  .reg-modal-input{
+  .reg-modal-input {
     margin: 15px 0;
   }
 

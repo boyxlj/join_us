@@ -12,6 +12,7 @@ export const routes: RouteRecordRaw[] = [
   {
     path: "/home",
     component: lazyLoad('home'),
+    redirect: '/home/index',
     children:[
       {
         path: "index",
@@ -22,6 +23,11 @@ export const routes: RouteRecordRaw[] = [
         path: "job",
         component: lazyLoad('job'),
         meta:{title:'职位'}
+      },
+      {
+        path: "about",
+        component: lazyLoad('about'),
+        meta:{title:'关于'}
       },
       {
         name: 'jobDetail',
@@ -75,7 +81,7 @@ export const routes: RouteRecordRaw[] = [
     path: "/company",
     component: lazyLoad('company'),
     meta: { title: '企业管理' },
-    redirect: '/company/dataAnalysis',
+    redirect: '/company/positionManage',
     children: [
       {
         path: '/company/dataAnalysis',
@@ -83,7 +89,8 @@ export const routes: RouteRecordRaw[] = [
       },
       {
         path: '/company/positionManage',
-        component: () => import('@/views/company/components/positionManage/index.vue')
+        component: () => import('@/views/company/components/positionManage/index.vue'),
+        meta:{title:'职位管理'}
       },
       {
         path: '/company/searchCattle',
@@ -91,7 +98,8 @@ export const routes: RouteRecordRaw[] = [
       },
       {
         path: '/company/resumeReview',
-        component: () => import('@/views/company/components/resumeReview/index.vue')
+        component: () => import('@/views/company/components/resumeReview/index.vue'),
+        meta:{title:'简历审核'}
       },
       {
         path: '/company/toolBox',
@@ -99,11 +107,13 @@ export const routes: RouteRecordRaw[] = [
       },
       {
         path: '/company/companyInfo',
-        component: () => import('@/views/company/components/companyInfo/index.vue')
+        component: () => import('@/views/company/components/companyInfo/index.vue'),
+        meta:{title:'公司信息'}
       },
       {
-        path: '/company/more',
-        component: () => import('@/views/company/components/more/index.vue')
+        path: '/company/profile',
+        component: () => import('@/views/company/components/profile/index.vue'),
+        meta:{title:'个人中心'}
       }
     ]
   },

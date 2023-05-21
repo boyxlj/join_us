@@ -10,7 +10,7 @@ export const routes: RouteRecordRaw[] = [
   {
     path: "/",
     component: lazyLoad('layout'),
-    redirect:"statistics",
+    redirect:"consult",
     children: [
       {
         path: "statistics",

@@ -30,7 +30,13 @@ userInfoRouter.post('/user/login', (req, res) => {
       })
     } else {
       //登录
-      res.status(200).send({ code: 200, msg: '登录成功', data: null, userInfo: selectSqlRes, token: jwt.sendToken({ email }, '1day') })
+      const token =  jwt.sendToken({ email }, '6day')
+      res.setHeader("authorization",token)
+      res.header("Access-Control-Expose-Headers","authorization")
+      res.status(200).send({ code: 200, 
+        msg: '登录成功', data: null, 
+        userInfo: selectSqlRes, 
+        token })
     }
   })
 })

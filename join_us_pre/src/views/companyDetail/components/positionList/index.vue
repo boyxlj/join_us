@@ -14,7 +14,13 @@
       </div>
       <div class="right">
         <div class="logo">
-          <img :src="item.avatar" alt="">
+          <a-avatar v-if="item.avatar" :src="item.avatar" size="large">
+          <template #icon><UserOutlined /></template>
+        </a-avatar>
+          <a-avatar v-else size="large">
+          <template #icon><UserOutlined /></template>
+        </a-avatar>
+          <!-- <img :src="item.avatar" alt=""> -->
         </div>
         <a-button type="primary" class="send" @click.stop="sendPos(item.position_id,item.company_id)">立即投递</a-button>
         <div class="hrInfo">
@@ -33,6 +39,7 @@ import {useUserInfo} from "@/store/user"
 import {message} from 'ant-design-vue'
 import {useUserLoginState} from "@/hooks/useUserLoginState"
 import { useValidateResume } from "@/hooks/useValidateResume";
+import { UserOutlined } from '@ant-design/icons-vue';
 const {userId} = useUserInfo()
 const props = defineProps<{positionData?:ICompanyPositionsData[]}>()
 
@@ -138,16 +145,16 @@ const navigatePosDetails = (position_id:string)=>{
         top:6px;
         z-index: 99;
       }
-      .logo{
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        overflow: hidden;
-        img{
-          width: 100%;
-          height: 100%;
-        }
-      }
+      // .logo{
+        // width: 48px;
+        // height: 48px;
+        // border-radius: 50%;
+        // overflow: hidden;
+        // img{
+        //   width: 100%;
+        //   height: 100%;
+        // }
+      // }
       .hrInfo{
         opacity: 1;
         margin-right: 86px;

@@ -98,7 +98,7 @@ sendRouter.get("/send/deliveryRecord", (req, res) => {
   const { company_id, telephone, pageIndex, pageSize } = req.query
   const hr_sql = `select hr_id from hr where telephone = '${telephone}'`
   query(hr_sql, (result) => {
-    const hr_id = result[0].hr_id
+    const hr_id = result[0]?.hr_id
     const sql = `select userId, position_name from send inner join pos on pos.position_id = send.position_id where send.company_id = '${company_id}' and send.hr_id = '${hr_id}'`;
     query(sql, (result2) => {
       const user_sql = `
@@ -144,7 +144,13 @@ sendRouter.get("/send/deliveryRecord", (req, res) => {
             total: result2.length
           })
         } else {
-          return returnErr(res, '查询失败')
+          res.status(200).send({
+            code: 200,
+            data: [],
+            msg: '查询成功',
+            total: result2.length
+          })
+          // return returnErr(res, '查询失败')
         }
       })
     })
@@ -194,4 +200,11 @@ sendRouter.get('/send/onlineResume', (req, res) => {
       })
   })
 })
+
+
+
+
+
+
+
 module.exports = sendRouter

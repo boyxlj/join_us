@@ -38,9 +38,6 @@
         placeholder="请填写公司工作时间"
       />
     </a-form-item>
-
-  
-
     <a-form-item has-feedback label="工作制度" name="rest">
       <a-select
         v-model:value="formState.rest"

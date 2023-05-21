@@ -357,6 +357,7 @@ export const selectConsultOne = (consult_id:string) => {
 }
 
 
+
 //---------轮播
 export const selectSwiper = () => {
   return request({
@@ -368,6 +369,94 @@ export const selectSwiper = () => {
 export const selectIndustry = () => {
   return request({
     url: '/industrys',
+    method: 'get',
+  })
+}
+
+
+
+//---------------企业端()
+//通过人事id获取公司信息
+export const selectCompanyInfo = (company_id:string) => {
+  return request({
+    url: '/hr/company/info',
+    method: 'post',
+    data:{company_id}
+  })
+}
+//通过人事信息
+export const selectHrInfo = (hr_id:string) => {
+  return request({
+    url: '/hr/info',
+    method: 'post',
+    data:{hr_id}
+  })
+}
+
+//查询所有公司的相册
+export const selCompanyPhoto = (company_id:string) => {
+  return request({
+    url: '/company/photos',
+    method: 'get',
+    params:{company_id}
+  })
+}
+//修改公司信息
+export const updateCompanyInfo = (data:any) => {
+  return request({
+    url: '/hr/company',
+    method: 'patch',
+    data
+  })
+}
+
+//获取人事状态
+export const selHrState = (hr_id:string) => {
+  return request({
+    url: '/hr/state',
+    method: 'get',
+    params:{hr_id}
+  })
+}
+//获取公司状态
+export const selCompanyState = (company_id:string) => {
+  return request({
+    url: '/company/state',
+    method: 'get',
+    params:{company_id}
+  })
+}
+//修改人事
+export const updateHr = (data:any) => {
+  return request({
+    url: '/hr/info',
+    method: 'patch',
+    data
+  })
+}
+
+//查询所有公司
+export const getAllCompany = () => {
+  return request({
+    url: '/companys/all',
+    method: 'get',
+  })
+}
+
+//hr选择绑定公司
+export const setHrCompany = (data:any) => {
+  return request({
+    url: '/hr/build/company',
+    method: 'post',
+    data
+  })
+}
+
+
+//查询关于内容
+export const getAbout = ()=>{
+  return request({
+    url:"/about/content",
     method: 'get',
   })
 }
