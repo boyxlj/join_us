@@ -314,8 +314,8 @@ hrRouter.get('/hr/state', (req, res) => {
 
 //修改人事(企业端)
 hrRouter.patch('/hr/info', (req, res) => {
-  let { hr_id, name, password, telephone, avatar } = req.body
-  if ( !telephone || !name || !hr_id) return returnErr(res, '参数错误')
+  let { hr_id, name, password, telephone, avatar,hr_identity } = req.body
+  if ( !telephone || !name || !hr_id || !hr_identity) return returnErr(res, '参数错误')
   let str = ''
   if (avatar) {
     str = `,avatar = '${avatar}'`
@@ -324,11 +324,11 @@ hrRouter.patch('/hr/info', (req, res) => {
   }
   let sql = ''
   if (password) {
-    sql = `update hr set name = '${name}',
+    sql = `update hr set name = '${name}', hr_identity = '${hr_identity}',
     telephone = '${telephone}',password = '${password}' ${str}
     where hr_id = '${hr_id}'`
   } else {
-    sql = `update hr set name = '${name}',
+    sql = `update hr set name = '${name}', hr_identity = '${hr_identity}',
     telephone = '${telephone}' ${str}
         where hr_id = '${hr_id}'`
   }

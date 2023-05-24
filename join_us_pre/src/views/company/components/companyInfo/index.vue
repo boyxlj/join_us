@@ -188,7 +188,7 @@ const getPhotos = async (company_id: string) => {
 .profileBox {
   padding: 15px 20px;
   box-sizing: border-box;
-  width: 80%;
+  width: 1100px;
   min-height: 400px;
   display: flex;
   justify-content: space-between;
@@ -305,7 +305,7 @@ const getPhotos = async (company_id: string) => {
     flex-wrap: wrap;
   }
   .img{
-    width: 235px!important;
+    width: 245px!important;
     height: 150px!important;
     border-radius: 12px;
     overflow: hidden;
@@ -330,7 +330,7 @@ const getPhotos = async (company_id: string) => {
   height:60px;
   border-radius: 50px;
   background: #fff;
-  top:25%;   
+  top:50%;   
   transform: translateY(-50%);
   box-shadow: 0 16px 40px 0 rgba(153, 153, 153, 0.3);
   transition: all .2s linear;

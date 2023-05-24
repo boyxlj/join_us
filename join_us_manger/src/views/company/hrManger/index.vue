@@ -40,7 +40,11 @@
           </template>
         </a-table-column>
        
-        <a-table-column title="昵称" data-index="name"></a-table-column>
+        <a-table-column title="昵称" data-index="name">
+          <template #cell="{ record }">
+            <span>{{ record.name || '/'}}</span>
+          </template>
+        </a-table-column>
         <a-table-column title="账号" data-index="telephone"></a-table-column>
         <a-table-column title="身份" data-index="hr_identity"></a-table-column>
         <a-table-column title="所属公司" data-index="title">

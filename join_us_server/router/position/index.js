@@ -59,6 +59,7 @@ positionRouter.post('/positions', (req, res) => {
     const sql = `select * from pos inner join company on pos.company_id = company.company_id ${ResStr}  order by pos.id desc 
     limit ${(pageOn - 1) * pageSize},${pageSize}
   `
+
     query(sqlCount, count => {
       query(sql, result => {
         res.status(200).send({ code: 200, msg: 'ok', data: result, total: count[0]['count(*)'] })

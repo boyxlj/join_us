@@ -172,8 +172,8 @@ const handleSubmit = async ({
       location.reload();
     } else {
       Message.success(res.msg);
-      useMangerStore().getManger();
       isEditor.value = false;
+      useMangerStore().getManger();
     }
   }
 };
@@ -194,11 +194,13 @@ const file = ref<TFileItem[]>([
 
 
 const beforeUpload = ()=>{
-  if(!useAuth()) return
-
+  if(!useAuth()) return 
 }
 const onChange = (_: FileItem[], currentFile: FileItem) => {
-  if(!useAuth(false)) return
+  if(!useAuth(false)){
+    Message.clear()
+    return Message.error("您没有权限操作")
+  }
   if (currentFile.status === "done") {
     if (currentFile.response.code !== 200) {
       return Message.error(currentFile.response.msg);

@@ -199,7 +199,7 @@
     </a-form-item>
     <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
       <a-button type="primary" html-type="submit">提交</a-button>
-      <a-button style="margin-left: 10px" @click="resetForm">重置</a-button>
+      <!-- <a-button style="margin-left: 10px" @click="resetForm">重置</a-button> -->
     </a-form-item>
   </a-form>
   </div>
@@ -566,7 +566,7 @@ const rules: Record<string, Rule[]> = {
 };
 const layout = {
   labelCol: { span: 5 },
-  wrapperCol: { span: 16 },
+  wrapperCol: { span: 18 },
 };
 
 </script>
@@ -577,11 +577,12 @@ const layout = {
   justify-content: flex-start;
   flex-wrap: wrap;
   margin-top: 50px;
-  margin-left: 20px;
+  margin-left: 50px;
 
   ::v-deep(.ant-form-item){
     width: 460px !important;
     padding-bottom: 10px;
+    margin-left: 20px;
     &:last-child{
       text-align: right;
       position: relative;
@@ -594,6 +595,12 @@ const layout = {
 
 }
 .ant-input {
-  border-radius: 0 !important;
+  border-radius: 4px !important;
+}
+::v-deep(.ant-select-selection-item) {
+  border-radius: 4px !important;
+}
+::v-deep(.ant-picker) {
+  border-radius: 4px !important;
 }
 </style>

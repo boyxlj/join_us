@@ -11,7 +11,7 @@
   >
     <a-form-item has-feedback label="经营范围" name="business_scope">
       <a-textarea
-        v-model:value.trim="formState.business_scope"
+        v-model:value="formState.business_scope"
         placeholder="请填写公司经营范围"
         :rows="2"
       />
@@ -19,14 +19,14 @@
 
     <a-form-item has-feedback label="公司简介" name="company_introduction">
       <a-textarea
-        v-model:value.trim="formState.company_introduction"
+        v-model:value="formState.company_introduction"
         placeholder="请填写公司简介"
         :rows="2"
       />
     </a-form-item>
     <a-form-item has-feedback label="发展历程" name="development_history">
       <a-textarea
-        v-model:value.trim="formState.development_history"
+        v-model:value="formState.development_history"
         placeholder="请填写公司发展历程"
         :rows="2"
       />
@@ -250,6 +250,18 @@ const layout = {
   }
 }
 .ant-input {
-  border-radius: 0 !important;
+  border-radius: 4px !important;
+}
+.ant-btn {
+  border-radius: 4px !important;
+}
+::v-deep(.ant-select-selection-item) {
+  border-radius: 4px !important;
+}
+::v-deep(.ant-picker) {
+  border-radius: 4px !important;
+}
+::v-deep(.ant-select-selector) {
+  border-radius: 4px !important;
 }
 </style>

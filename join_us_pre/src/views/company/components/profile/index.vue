@@ -4,6 +4,9 @@
       <template v-for="item in hrInfoList" :key="item.id">
       <div class="item"><span>昵称：</span>{{ item.name||'未设置昵称' }}</div>
       <div class="item"><span>账号：</span>{{ item.telephone }}</div>
+      <div class="item"><span>身份：</span>
+        <a-tag color="blue" >{{item.hr_identity}}</a-tag>
+      </div>
       <div class="item"><span>状态：</span>
         <a-tag color="success" v-if="item.hr_state=='1' ">正常</a-tag>
         <a-tag color="red" v-else>异常</a-tag>
@@ -34,6 +37,7 @@
         <a-input
           v-model:value.trim="formState.name"
           autocomplete="off"
+          placeholder="请填写您的昵称"
         />
       </a-form-item>
       <a-form-item has-feedback label="账号" name="telephone">
@@ -41,6 +45,7 @@
         disabled
           v-model:value.trim="formState.telephone"
           autocomplete="off"
+          placeholder="请填写您的账号"
         />
       </a-form-item>
       <a-form-item has-feedback label="密码" name="password">
@@ -48,6 +53,15 @@
           type="password"
           v-model:value.trim="formState.password"
           autocomplete="off"
+          placeholder="请填写您的登录密码"
+        />
+      </a-form-item>
+      <a-form-item has-feedback label="身份" name="hr_identity">
+        <a-input
+          type="text"
+          v-model:value.trim="formState.hr_identity"
+          autocomplete="off"
+          placeholder="请填写您的身份"
         />
       </a-form-item>
       <a-form-item has-feedback label="图像" name="">
@@ -184,10 +198,20 @@ let validateName = async (_rule: Rule, value: string) => {
       return Promise.resolve();
   }
 };
+let validateHr_identity = async (_rule: Rule, value: string) => {
+  if (!value) {
+    return Promise.reject("您填写您的身份");
+  }
+  if (value.length<2 || value.length>12) {
+    return Promise.reject("昵称只能为2-12个字符组成");
+  }else {
+      return Promise.resolve();
+  }
+};
 const rules: Record<string, Rule[]> = {
   name: [{ required: true, validator: validateName, trigger: "change" }],
   telephone: [{required: true, validator: validateUserName, trigger: "change" }],
-  // password: [{ validator: validateUserPsd, trigger: "change" }],
+  hr_identity: [{required: true, validator: validateHr_identity, trigger: "change" }],
 };
 const layout = {
   labelCol: { span: 4 },
@@ -208,7 +232,7 @@ const handleValidate = (...args: any) => {
 <style scoped lang="less">
 .hr_info{
   .infoBox{
-    width: 300px;
+    width: 350px;
     height: 200px;
     box-shadow: 0 0 20px #ddd;
     border-radius: 10px;

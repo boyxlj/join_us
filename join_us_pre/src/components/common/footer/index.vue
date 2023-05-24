@@ -28,10 +28,12 @@ withDefaults(defineProps<{Copyright?:boolean,ba?:boolean}>(),{
   text-align: center;
   display: flex;
   width:100%;
-  height: 60px;
+  height: 80px;
   justify-content: center;
+  align-items: center;
+  border-top: 1px solid #ddd;
   .ba{
-    margin-left: 10px;
+    margin-left: 15px;
     a{
       color: #666;
       transition: all .2s linear;

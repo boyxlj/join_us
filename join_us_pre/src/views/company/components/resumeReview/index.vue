@@ -17,10 +17,10 @@
                     <a-tag v-show="record.types === '2'" color="error">不合适</a-tag>
                 </template>
                 <template v-if="column.key === 'oprate'" >
-                    <a-button style="margin: 0 5px;" type="primary" @click="openModal(record.userId)">查看简历</a-button>
-                    <a-button :disabled="record.types === '1'" style="margin: 0 5px;" type="primary"
+                    <a-button size="small" style="margin: 0 5px;" type="primary" @click="openModal(record.userId)">查看简历</a-button>
+                    <a-button size="small" :disabled="record.types === '1'" style="margin: 0 5px;" type="primary"
                         @click="updateState(record.sendId, 'interview')">约面试</a-button>
-                    <a-button :disabled="record.types === '2'" style="margin: 0 5px;" type="primary"
+                    <a-button  size="small" :disabled="record.types === '2'" style="margin: 0 5px; "  type="danger"
                         @click="updateState(record.sendId, 'inappropriate')">不合适</a-button>
                 </template>
             </template>
@@ -84,7 +84,7 @@ const deliveryRecordList = ref<Array<deliveryRecordType>>([])
 const company_id = localStorage.getItem('company_id') as string
 const telephone = JSON.parse(localStorage.getItem('loginInfo') as string)?.telephone
 const pageIndex = ref(1)
-const pageSize = ref(10)
+const pageSize = ref(15)
 const total = ref(0)
 let visible = ref(false)
 let userIdVar = ref('')
@@ -101,7 +101,7 @@ const getDeliveryRecord = () => {
                     key: item,
                     align: 'center',
                     fixed: 'right' ,
-                    width:300
+                    width:250
                 }
               }else if(item=='types'){
                 return {
@@ -118,7 +118,8 @@ const getDeliveryRecord = () => {
                     title: propertyMap[item],
                     dataIndex: item,
                     key: item,
-                    align: 'center'
+                    align: 'center',
+                    width:160
                 }
               }
                

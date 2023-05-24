@@ -37,6 +37,7 @@
         >
           <a-input
             v-model.trim="form.password"
+            type="password"
             placeholder="请输入登录密码"
           />
         </a-form-item>

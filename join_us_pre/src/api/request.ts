@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { message } from 'ant-design-vue'
+import router from '@/router'
 const request = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL,
   timeout: 5000
@@ -34,14 +35,17 @@ request.interceptors.response.use((response): any => {
   if (tokens && tokens!=='null') {
     localStorage.setItem("companyToken", tokens)
   }
-
-
   if (response.data.code == 401) {
-    if (!location.href.includes('/login')) {
-      // return authError()
-    }
-    // Message.clear()
-    // return Message.warning('token不存在或已失效',)
+      message.destroy()
+      message.warning("您的登录信息已过期,请你重新登录")
+      localStorage.removeItem("token")
+      localStorage.removeItem("companyToken")
+      if(location.href.includes('/home')){
+        router.push("/login")
+      }else{
+        router.push("/login?query=boss")
+      }
+      return
   }
   if (response.status === 200) {
     return response.data

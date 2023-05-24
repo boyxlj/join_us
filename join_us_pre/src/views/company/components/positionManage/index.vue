@@ -302,7 +302,9 @@ import { getTime, getTimeBefore } from "@/utils/formatTime";
 import { useCompanyState } from "@/hooks/useCompanyState";
 import { useHrState } from "@/hooks/useHrState";
 import {useCity} from "@/store/city"
+import {useCompanyInfo} from "@/store/company_hr"
 const { conditionData } = useGetConditionData();
+const {company_id}  =useCompanyInfo()
 //删除数组中为不限的一项
 type TConditionData = {
   code: number;
@@ -361,7 +363,7 @@ const propertyMap: Record<string, string> = {
 const columns = ref<any[]>([]);
 const positionList = ref<position[]>([]);
 const pageIndex = ref(1);
-const pageSize = ref(10);
+const pageSize = ref(15);
 const total = ref(0);
 const positionDetailObj: any = ref({});
 const cityList = ref(useCity().allCityList);
@@ -555,7 +557,7 @@ const router = useRouter();
 const { validate } = useForm(formState, rulesRef);
 const getDetail = () => {
   hrPositionManage(
-    localStorage.getItem("company_id") as string,
+    company_id,
     pageIndex.value,
     pageSize.value
   ).then((res: any) => {

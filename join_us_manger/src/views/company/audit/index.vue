@@ -45,6 +45,7 @@
     </a-tab-pane>
   </a-tabs>
   <a-table
+  :scroll="scroll" :scrollbar="scrollbar"
       class="table"
       @page-change="changePageNation"
       :pagination="pageNationParams"
@@ -93,20 +94,17 @@
               <span>{{ getTimeBefore(record.addTime) }}</span>
             </a-tooltip>
           </template>
-          
         </a-table-column>
-        <a-table-column title="状态" data-index="state">
+        <a-table-column fixed="right"  :width="100" title="状态" data-index="state">
           <template #cell="{ record }">
             <a-tag color="orange" v-if="record.state=='0'">待审核</a-tag>
             <a-tag color="green" v-if="record.state=='1'">审核通过</a-tag>
             <a-tag color="red" v-if="record.state=='2'">已驳回/关闭</a-tag>
           </template>
         </a-table-column>
-        <a-table-column title="操作" data-index="category">
+        <a-table-column fixed="right"  :width="255" title="操作" data-index="category">
           <template #cell="{ record }">
-            <a-button  style="margin: 0 4px"  :size="btnStyle.select.size" :status="btnStyle.select.status"  type="outline" @click="seeCompany(record.company_id)"
-              >查看详情</a-button
-            >
+            <a-button  style="margin: 0 4px"  :size="btnStyle.select.size" :status="btnStyle.select.status"  type="outline" @click="seeCompany(record.company_id)">查看详情</a-button>
             <a-button
             v-if="record.state==0 || record.state==2"
             style="margin: 0 4px"
@@ -128,14 +126,14 @@
               >重新审核</a-button
             >
             <a-button
-            v-if="record.state==0 || record.state==1"
-            style="margin: 0 4px"
-            type="outline"
-            :disabled="!useAuth(false)"
-            :size="btnStyle.select.size"
-              :status="btnStyle.delete.status"
-              @click="changeState(record.company_id,'2')"
-              >驳回</a-button
+              v-if="record.state==0 || record.state==1"
+              style="margin: 0 4px"
+              type="outline"
+              :disabled="!useAuth(false)"
+              :size="btnStyle.select.size"
+                :status="btnStyle.delete.status"
+                @click="changeState(record.company_id,'2')"
+                >驳回</a-button
             >
            
           </template>
@@ -182,7 +180,14 @@ const pageNationParams = reactive({
   total: 2,
 });
 const companyData = ref<ICompanyData[]>([]);
-
+  const scrollbar = ref(true);
+const scroll = {
+  x: 2000,
+};
+const scrollPercent = {
+  x: '120%',
+  y: '100%'
+};
 //select
 const form = reactive({
   financing:'',

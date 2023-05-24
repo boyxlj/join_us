@@ -90,6 +90,7 @@ const clickAdd = () => {
   const company_id = companyData.value.filter(
     (item) => item.company_name == selectCompany.value
   );
+  console.log('')
   Modal.confirm({
     title: "温馨提示",
     cancelText:"取消",
@@ -214,5 +215,17 @@ const stepStyle = {
       margin-top: 10px;
     }
   }
+}
+.ant-input {
+  border-radius: 4px !important;
+}
+.ant-btn {
+  border-radius: 4px !important;
+}
+::v-deep(.ant-select-selection-item) {
+  border-radius: 4px !important;
+}
+::v-deep(.ant-picker) {
+  border-radius: 4px !important;
 }
 </style>

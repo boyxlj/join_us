@@ -233,7 +233,7 @@ let validateUserPsd = async (_rule: Rule, value: string) => {
   }
 };
 let validateInputCodeValue = async (_rule: Rule, value: string) => {
-  if (value === "") {
+  if (!value) {
     return Promise.reject("请填写数字验证码");
   } else {
     return Promise.resolve();
@@ -242,10 +242,10 @@ let validateInputCodeValue = async (_rule: Rule, value: string) => {
 
 const rules: Record<string, Rule[]> = {
   code: [{ required: true, validator: validateEmailCode, trigger: "change" }],
-  email: [{ validator: validateEmail, trigger: "change" }],
-  username: [{ validator: validateUserName, trigger: "change" }],
-  psd: [{ validator: validateUserPsd, trigger: "change" }],
-  inputCodeValue: [{ validator: validateInputCodeValue, trigger: "change" }],
+  email: [{required: true, validator: validateEmail, trigger: "change" }],
+  username: [{required: true, validator: validateUserName, trigger: "change" }],
+  psd: [{ required: true,validator: validateUserPsd, trigger: "change" }],
+  inputCodeValue: [{required: true, validator: validateInputCodeValue, trigger: "change" }],
 };
 const layout = {
   labelCol: { span: 0 },
@@ -268,7 +268,7 @@ window.addEventListener("beforeunload", function (e) {
 
 const submit = async () => {
   if (activeKey.value == 1) {
-    await formRef.value?.validateFields(["username", "psd"]);
+    await formRef.value?.validateFields(["username", "psd",'inputCodeValue']);
     if (formState.inputCodeValue !== validateCoder.value) {
       refresh();
       return message.error("验证码有误");

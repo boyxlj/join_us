@@ -1,8 +1,8 @@
 <template>
     <div class="salary-caculate-container">
         <p>工资计算器</p>
-        <input v-model.number="inputSalary" class="salary-input" placeholder="请输入税前工资" />
-        <span style="position: absolute; right: 40px; top: 65px;font-weight: bold; color: var(--themeColor);">元</span>
+        <input style="outline: none;" v-model.number="inputSalary" class="salary-input" placeholder="请输入税前工资" />
+        <span style="position: absolute; right: 40px; top: 68px;font-weight: bold; color: var(--themeColor);">元</span>
         <a-button @click="salaryCaculateDialog" class="btn">开始计算</a-button>
         <a-modal centered okText="确定"  cancelText="取消" style="text-align: center;" v-model:visible="visible" title="薪资计算器" @ok="handleOk">
             <a-spin v-show="isShown" size="large" />
@@ -19,6 +19,8 @@
 </template>
 
 <script setup lang="ts">
+import { message } from "ant-design-vue"
+
 let inputSalary = ref<number>(0)
 const visible = ref(false)
 const isShown = ref(true)
@@ -55,6 +57,9 @@ const getNetSalary = (salaryNum: number): taxObj => {
     }
 }
 const salaryCaculateDialog = () => {
+  if(inputSalary.value<=0){
+    return message.warning("请输入合法的薪资")
+  }
     visible.value = !visible.value
     netSalary.value = getNetSalary(Number(inputSalary.value))
     if (isShown.value) {
@@ -78,7 +83,7 @@ const handleOk = () => {
 .salary-caculate-container {
     width: 350px;
     height: 200px;
-    border-radius: 20px;
+    border-radius: 14px;
     border: 1px solid var(--themeColor);
     background: linear-gradient(to bottom, var(--themeColor) 50%, #fff 100%);
     text-align: center;

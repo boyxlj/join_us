@@ -323,7 +323,20 @@ const layout = {
   }
 
 }
+
 .ant-input {
-  border-radius: 0 !important;
+  border-radius: 4px !important;
+}
+.ant-btn {
+  border-radius: 4px !important;
+}
+::v-deep(.ant-select-selection-item) {
+  border-radius: 4px !important;
+}
+::v-deep(.ant-picker) {
+  border-radius: 4px !important;
+}
+::v-deep(.ant-select-selector) {
+  border-radius: 4px !important;
 }
 </style>

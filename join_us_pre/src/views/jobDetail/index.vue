@@ -1,5 +1,4 @@
 <template>
-  <div>
     <div class="detail-header">
       <div class="info-title">
         <div class="name-salary-row">
@@ -82,7 +81,7 @@
             }}</span>
           </template>
         </div>
-        <div ref="desc" class="position-desc"></div>
+        <div  class="position-desc"> <pre style="white-space:pre-wrap;word-wrap:break-word;">{{jobDetailData.position_desc}}</pre> </div>
         <div class="company-info-container">
           <div class="info" @click="navigateCompanyDetail(jobDetailData.company_id)">
             <img class="company-avatar" :src="jobDetailData.logo" alt="" />
@@ -100,7 +99,6 @@
         <salaryCaculate />
       </div>
     </div>
-  </div>
 </template>
 
 <script lang="ts" setup>
@@ -134,7 +132,6 @@ let jobDetailData = ref<Iposition_type>({} as Iposition_type);
 let welfare_tagArr = ref<string[]>([]);
 let welfare_tagShown = ref(false);
 let desc_tagArr = ref<string[]>([]);
-const desc = ref<HTMLDivElement>();
 const { userId } = useUserInfo();
 const clickSendBtn = async () => {
   if (!useUserLoginState()) return;
@@ -192,7 +189,7 @@ onMounted(() => {
     if (res.data.position_name) {
       document.title =  res.data.position_name;
     }
-    desc.value!.innerHTML = jobDetailData.value.position_desc;
+    // desc.value!.innerHTML = jobDetailData.value.position_desc;
     if (res.data.position_state !== "1") return router.replace("/notFound");
   });
   getState();
@@ -360,8 +357,8 @@ const navigateCompanyDetail = (company_id: string) => {
       }
     }
     .position-desc {
-      width: 600px;
-      min-height: 300px;
+      width: 90%;
+      min-height: 100px;
     }
     .company-info-container {
       width: 850px;

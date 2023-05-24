@@ -137,6 +137,7 @@ const cancelLogin = () => {
     onOk() {
       // localStorage.clear();
       localStorage.removeItem('companyToken');
+      localStorage.removeItem('company_id');
       location.reload();
     },
     onCancel() {},

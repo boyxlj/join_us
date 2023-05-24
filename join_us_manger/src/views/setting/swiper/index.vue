@@ -35,8 +35,16 @@
           </a-popover>
         </template>
         </a-table-column>
-        <a-table-column title="链接" ellipsis tooltip :width="200" data-index="links"></a-table-column>
-        <a-table-column title="备注" ellipsis tooltip :width="100" data-index="others"></a-table-column>
+        <a-table-column title="链接" ellipsis tooltip :width="200" data-index="links">
+          <template #cell="{ record }">
+            <span>{{ record.links || '/' }}</span>
+          </template>
+        </a-table-column>
+        <a-table-column title="备注" ellipsis tooltip :width="100" data-index="others">
+          <template #cell="{ record }">
+            <span>{{ record.others || '/' }}</span>
+          </template>
+        </a-table-column>
         <a-table-column title="轮播状态">
           <template #cell="{ record }">
             <a-switch
