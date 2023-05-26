@@ -1,7 +1,12 @@
 <template>
   <div class="index">
-    <div class="banner">
-      <img src="../../assets/images/banner.jpg" alt="" />
+    <div class="banner" style="background: var(--themeColor);">
+      <!-- <img src="../../assets/images/banner.jpg" alt="" /> -->
+      <div class="bannerCon">
+        <span class="txt1">好工作等您来</span>
+      <span class="txt2">这里将是您打开未来的金钥匙</span>
+      </div>
+      <!-- <img src="http://zhaopin.helloxlj.top/static/upload/1684747652490.png" alt="" /> -->
     </div>
     <div class="content">
       <Search />
@@ -62,7 +67,32 @@ const getScrollTop = () => {
 .index {
   .banner {
     width: 100%;
-    height: 200px;
+    height: 130px;
+    position: relative;
+    .bannerCon{
+      width: 1200px;
+      margin: 0 auto;
+      font-size: 36px;
+      color: #fff;
+      position: relative;
+      .txt1{
+        position: absolute;
+        left: 20px;
+        top: 18px;
+        letter-spacing: 0.05em;
+        // font-family:'方正舒体';
+        font-family:'华文新魏';
+        font-family:'华文行楷';
+      }
+      .txt2{
+        position: absolute;
+        left: 160px;
+        top: 66px;
+        letter-spacing: 0.05em;
+        font-family:'华文行楷';
+      }
+      
+    }
     img {
       width: 100%;
       height: 100%;

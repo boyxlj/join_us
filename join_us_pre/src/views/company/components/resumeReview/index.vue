@@ -25,7 +25,7 @@
                 </template>
             </template>
         </a-table>
-        <a-pagination style="margin: 10px auto;" @change="changePage" :pageSize="pageSize" v-model:current="pageIndex" :total="total" show-less-items />
+        <a-pagination     v-if="deliveryRecordList.length" style="margin: 10px auto;" @change="changePage" :pageSize="pageSize" v-model:current="pageIndex" :total="total" show-less-items />
     </div>
     <a-modal width="1000px" v-model:visible="visible" title="在线简历" ok-text="确认" @ok="visible = false">
         <template #footer>

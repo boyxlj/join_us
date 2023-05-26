@@ -96,10 +96,10 @@ sendRouter.get('/send/num',(req,res)=>{
 // 指定公司和hr查询投递记录
 sendRouter.get("/send/deliveryRecord", (req, res) => {
   const { company_id, telephone, pageIndex, pageSize } = req.query
-  const hr_sql = `select hr_id from hr where telephone = '${telephone}'`
+  const hr_sql = `select hr_id from hr where telephone = '${telephone}' `
   query(hr_sql, (result) => {
     const hr_id = result[0]?.hr_id
-    const sql = `select userId, position_name from send inner join pos on pos.position_id = send.position_id where send.company_id = '${company_id}' and send.hr_id = '${hr_id}'`;
+    const sql = `select userId, position_name from send inner join pos on pos.position_id = send.position_id where send.company_id = '${company_id}' and send.hr_id = '${hr_id}' `;
     query(sql, (result2) => {
       const user_sql = `
         SELECT
@@ -134,7 +134,9 @@ sendRouter.get("/send/deliveryRecord", (req, res) => {
           INNER JOIN userinfo ON userinfo.userId = send.userId
         WHERE
           send.company_id = '${company_id}' 
-          AND send.hr_id = '${hr_id}' limit ${(pageIndex - 1) * pageSize}, ${pageSize}`
+          AND send.hr_id = '${hr_id}' limit ${(pageIndex - 1) * pageSize}, ${pageSize}
+         
+          `
       query(user_sql, (result3) => {
         if (result3.length) {
           res.status(200).send({

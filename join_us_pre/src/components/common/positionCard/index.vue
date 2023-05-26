@@ -55,8 +55,9 @@ if(props.dataList?.length){
   min-height:80px ;
   background: #fff;
   border-radius: var(--radiusSize); 
-  padding: 6px 8px 10px 8px;
+  // padding: 6px 8px 10px 8px;
   box-sizing:border-box;
+  overflow: hidden;
   margin-bottom: 20px;
   
   .title{
@@ -73,7 +74,7 @@ if(props.dataList?.length){
   .box{
     background: #fff;
     min-height: 100px;
-    padding: 4px 0px;
+    padding: 10px 8px;
     box-sizing:border-box;
     .item{
       cursor: pointer;

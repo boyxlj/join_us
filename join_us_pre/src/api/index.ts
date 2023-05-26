@@ -460,3 +460,13 @@ export const getAbout = ()=>{
     method: 'get',
   })
 }
+
+//--------------------数据统计
+//查询关于内容
+export const getStatistics = (data:{company_id:string,hr_id:string})=>{
+  return request({
+    url:`/statistics`,
+    method: 'get',
+    params:data
+  })
+}

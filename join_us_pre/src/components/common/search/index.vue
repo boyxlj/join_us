@@ -550,6 +550,7 @@ const searchSubmit = () => {
 
         &:hover {
           background: #7b3ebd;
+          background:rgb(138, 215, 246);
         }
       }
     }

@@ -81,11 +81,16 @@ export const routes: RouteRecordRaw[] = [
     path: "/company",
     component: lazyLoad('company'),
     meta: { title: '企业管理' },
-    redirect: '/company/positionManage',
+    redirect: '/company/statistics',
     children: [
       {
         path: '/company/dataAnalysis',
         component: () => import('@/views/company/components/dataAnalysis/index.vue')
+      },
+      {
+        path: '/company/statistics',
+        component: () => import('@/views/company/components/statistics/index.vue'),
+        meta:{title:'数据可视化'}
       },
       {
         path: '/company/positionManage',

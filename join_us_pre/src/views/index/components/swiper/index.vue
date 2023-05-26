@@ -35,7 +35,7 @@
           </div>
         </template>
         <div @click="navigateLinks(item.links)" v-for="(item,index) in swiperList" :key="index">
-          <img :src="item.imgUrl" />
+          <img  v-lazy="item.imgUrl" />
         </div>
       </a-carousel>
     </div>

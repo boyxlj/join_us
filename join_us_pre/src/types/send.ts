@@ -42,4 +42,5 @@ export interface ISendData {
   telephone?: string;
   avatar?: string;
   reg_time?: string;
+  hr_identity?: string;
 }

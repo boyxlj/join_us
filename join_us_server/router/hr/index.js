@@ -85,7 +85,12 @@ hrRouter.get('/hr/positionDetail', (req, res) => {
         data: result[0]
       })
     } else {
-      return returnErr(res, '请求失败')
+      // return returnErr(res, '请求失败')
+      res.status(200).send({
+        code: 200,
+        msg: '请求成功',
+        data: []
+      })
     }
   })
 })

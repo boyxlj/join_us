@@ -150,11 +150,13 @@ const toDetail = (item: Iposition_type) => {
   border: none;
   font-size: 14px;
   font-weight: 400;
-  border-radius:10px;
+  border-radius:var(--radiusSize);
   transition: all 0.14s linear;
   background: rgba(182, 79, 219, 0.1);
+  background:rgb(138, 215, 246);
+  color: #fff;
   &:hover {
-    border-radius:10px !important;
+    border-radius:var(--radiusSize) !important;
     background-color: var(--themeColor);
     color: #fff;
   }

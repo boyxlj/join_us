@@ -7,11 +7,17 @@
   >
     <div class="top">
       <img
-        src="http://localhost:3303/static/upload/1683171527115.jpeg"
+      v-if="item.avatar"
+        :src="item.avatar"
         alt=""
       />
-      <span class="hrName">潘佳磊</span>
-      <span class="hr">人事</span>
+      <img
+        v-else
+        src="https://img.bosszhipin.com/boss/avatar/avatar_7.png?x-oss-process=image/resize,w_100,limit_0"
+        alt=""
+      />
+      <span class="hrName" v-if="item.name">{{ item.name || '' }}</span>
+      <span class="hr">{{item.hr_identity || '人事'}}</span>
       <a-button
         v-show="activeIdx == 0 && item.position_state !== '2'"
         type="primary"
@@ -67,7 +73,7 @@
           <img :src="item.logo" alt="" />
         </div>
         <div class="companyInfo">
-          <div class="companyName">{{ item.company_name }}</div>
+          <div class="companyName" @click="navigateCompany(item.company_id)">{{ item.company_name }}</div>
           <div class="tagList">
             <span class="tag">{{ item.industry }}</span>
             <span class="tag">{{
@@ -88,8 +94,13 @@ import { message } from "ant-design-vue";
 import { DeleteOutlined} from '@ant-design/icons-vue';
 const props = defineProps<{ sendList: ISendData[]; activeIdx: number }>();
 const emits = defineEmits(["refreshData"]);
+
 //position_state
 
+
+const navigateCompany  = (company_id:string)=>{
+  window.open(`/home/companyDetail?company_id=${company_id}`)
+}
 //取消投递
 const cancelSendBtn = async (sendId: string, flag?: boolean) => {
   const res: any = await cancelOrDelSend({ sendId });
@@ -156,6 +167,7 @@ const deleteInfo = async (sendId: string, collect_id: string | undefined) => {
     box-sizing: border-box;
     background: linear-gradient(90deg, #f5fcfc, #fcfbfa);
     display: flex;
+    border-radius: var(--radiusSize) var(--radiusSize) 0 0 ;
     align-items: center;
     width: 100%;
     position: relative;

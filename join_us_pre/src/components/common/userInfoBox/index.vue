@@ -19,10 +19,10 @@
         <span class="weight">{{ sendNum.sendAllNum }}</span><span>已投递</span>
       </li>
       <li @click="$router.push('/home/user/jobs/fromChat?tag=1')">
-        <span class="weight">{{ sendNum.sendErrNum }}</span><span>不合适</span>
+        <span class="weight">{{ sendNum.sendOkNum }}</span><span>约面试</span>
       </li>
       <li @click="$router.push('/home/user/jobs/fromChat?tag=2')">
-        <span class="weight">{{ sendNum.sendOkNum }}</span><span>面试</span>
+        <span class="weight">{{ sendNum.sendErrNum }}</span><span>不合适</span>
       </li>
       <li @click="$router.push('/home/user/jobs/fromChat?tag=3')">
         <span class="weight">{{ sendNum.collectNum }}</span><span>感兴趣</span>
@@ -52,7 +52,7 @@ const userInfo = computed(
   height: 195px;
   margin-bottom: 20px;
   border-radius: var(--radiusSize);
-  padding: 10px 20px;
+  padding-top: 20px;
   box-sizing: border-box;
   .info {
     width: 100%;
@@ -60,7 +60,7 @@ const userInfo = computed(
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+      padding: 10px 20px;
     box-sizing: border-box;
     .left {
       width: 47px;
@@ -104,7 +104,7 @@ const userInfo = computed(
     }
   }
   .btns {
-    width: 100%;
+    width: 86%;
     border-radius: var(--radiusSize);
     cursor: pointer;
     height: 38px;
@@ -112,6 +112,7 @@ const userInfo = computed(
     transition: all 0.2s linear;
     display: flex;
     justify-content: center;
+    box-sizing: border-box;
     align-items: center;
     border: 1px solid #d4d5d6;
     &:hover {
@@ -121,10 +122,13 @@ const userInfo = computed(
   }
   .sendInfo {
     width: 100%;
-    height: 50px;
+    height: 60px;
     display: flex;
+    padding:  0 20px;
+    box-sizing: border-box;
     background: linear-gradient(90deg, #f5fcfc, #fcfbfa);
     justify-content: space-between;
+    border-radius: 0 0  var(--radiusSize) var(--radiusSize);
     li {
       display: flex;
       flex-direction: column;

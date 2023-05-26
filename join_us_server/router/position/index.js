@@ -8,7 +8,7 @@ const {returnErr} = require("../../utils/returnErr.js")
 positionRouter.post('/positions', (req, res) => {
   let { pageOn, pageSize } = req.body
   // console.log(req.body)
-  const arr = ['pageOn', 'pageSize', 'position_name', 'cityName', 'salary', 'pos_region', 'experiences', 'degrees',
+  const arr = ['pageOn', 'pageSize', 'position_name', 'cityName', 'salary', 'pos_region','region', 'experiences', 'degrees',
     'position_type1', 'position_type2', 'job_type', 'people_num', 'company_name', 'industry', 'financing'
   ]
   delete req.body.pageOn

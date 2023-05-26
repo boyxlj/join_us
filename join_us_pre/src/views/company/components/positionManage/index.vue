@@ -92,6 +92,7 @@
       v-model:current="pageIndex"
       :total="total"
       show-less-items
+      v-if="positionList.length"
     />
   </div>
   <a-modal

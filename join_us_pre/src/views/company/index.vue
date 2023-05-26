@@ -63,7 +63,6 @@
           }"
         >
           <router-view></router-view>
-        
         </a-layout-content>
         <!-- <div class="footer"> -->
         <!-- <Footer/> -->
@@ -91,8 +90,8 @@ import { createVNode } from "vue";
 import { IHrData } from "@/types/hr";
 import { useHrInfo } from "@/store/hr";
 import { Modal } from "ant-design-vue";
-import Footer from "@/components/common/footer/index.vue"
-const hrInfoList = computed(()=>useHrInfo().hrInfoList as  IHrData[]) ;
+import Footer from "@/components/common/footer/index.vue";
+const hrInfoList = computed(() => useHrInfo().hrInfoList as IHrData[]);
 const route = useRoute();
 const router = useRouter();
 const selectedKeys = ref<string[]>([route.path]);
@@ -108,7 +107,7 @@ const componentsList = [
   MoreOutlined,
 ];
 const menuList = ref([
-  // { id: 0, name: '数据分析' },
+  { id: 0, name: '数据分析' },
   { id: 1, name: "职位管理" },
   // { id: 2, name: '搜索牛人' },
   { id: 3, name: "简历审核" },
@@ -117,7 +116,7 @@ const menuList = ref([
   { id: 5, name: "个人中心" },
 ]);
 const pathList = [
-  // '/company/dataAnalysis',
+  '/company/statistics',
   "/company/positionManage",
   // '/company/searchCattle',
   "/company/resumeReview",
@@ -129,15 +128,15 @@ const pathList = [
 const cancelLogin = () => {
   Modal.confirm({
     title: "温馨提示",
-    cancelText:'取消',
-    okText:'确认',
-    centered:true,
+    cancelText: "取消",
+    okText: "确认",
+    centered: true,
     icon: createVNode(ExclamationCircleOutlined),
     content: "您确定要退出登录吗",
     onOk() {
       // localStorage.clear();
-      localStorage.removeItem('companyToken');
-      localStorage.removeItem('company_id');
+      localStorage.removeItem("companyToken");
+      localStorage.removeItem("company_id");
       location.reload();
     },
     onCancel() {},
@@ -164,14 +163,13 @@ const cancelLogin = () => {
 .ant-select-selector {
   border-radius: 4px !important;
 }
-.footer{
+.footer {
   position: fixed;
   left: 50%;
   width: 100%;
   transform: translateX(-50%);
   bottom: -18px;
-  ::v-deep(.footer){
-    
+  ::v-deep(.footer) {
     font-size: 12px !important;
   }
 }
@@ -200,7 +198,19 @@ const cancelLogin = () => {
     box-sizing: border-box;
     overflow-y: auto;
   }
-
+  .ant-layout-sider {
+    background: #fff;
+    color: #111 !important;
+    .ant-menu {
+      background: #fff !important;
+      color: #111 !important;
+    }
+    .ant-menu-item{
+      height: 50px;
+      color: #222;
+      margin: 6px 0 4px;
+    }
+  }
   .title {
     color: #fff;
     height: 64px;
@@ -208,11 +218,12 @@ const cancelLogin = () => {
     justify-content: center;
     align-items: center;
     background: var(--themeColor);
+    // color: #222;
     font-weight: 500;
-    font-size: 16px;
+    font-size: 18px;
 
     span {
-      font-size: 18px;
+      font-size: 20px;
     }
   }
 }
