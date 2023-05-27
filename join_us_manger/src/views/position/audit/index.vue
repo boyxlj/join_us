@@ -52,9 +52,9 @@
     <a-tabs  :active-key="activeIdx" @change="changeTabs">
     <a-tab-pane key="0" title="待审核">
     </a-tab-pane>
-    <a-tab-pane key="1" title="已通过">
+    <a-tab-pane key="1" title="已通过/已开启">
     </a-tab-pane>
-    <a-tab-pane key="2" title="已驳回">
+    <a-tab-pane key="2" title="已驳回/已关闭">
     </a-tab-pane>
   </a-tabs>
   <a-table
@@ -113,7 +113,7 @@
             <a-tag color="red" v-if="record.position_state=='2'">已驳回/关闭</a-tag>
           </template>
         </a-table-column>
-        <a-table-column fixed="right" :width="$route.query.tag=='1'?180:290" title="操作" data-index="category">
+        <a-table-column fixed="right" :width="$route.query.tag=='1'?200:290" title="操作" data-index="category">
           <template #cell="{ record }">
             <a-button  style="margin: 0 4px"  :size="btnStyle.select.size" :status="btnStyle.select.status"  type="outline" @click="seeCompany(record.position_id)"
               >查看详情</a-button
@@ -126,7 +126,7 @@
               :disabled="!useAuth(false)"
               :size="btnStyle.select.size"
               @click="changeState(record.position_id,'1')"
-              >通过</a-button
+              >通过/开启</a-button
             >
             <a-button
             v-if="record.position_state==2"
@@ -146,7 +146,7 @@
             :size="btnStyle.select.size"
               :status="btnStyle.delete.status"
               @click="changeState(record.position_id,'2')"
-              >驳回</a-button
+              >驳回/关闭</a-button
             >
            
           </template>
@@ -172,8 +172,8 @@ import { IPositionData } from "@/types/position";
 import {Message} from "@arco-design/web-vue"
 import { getTime, getTimeBefore } from "@/utils/formatTime";
 import { useAuth } from "@/hooks/useAuth";
-import {  IconUser } from "@arco-design/web-vue/es/icon";
 import {btnStyle} from "@/config/btnStyle"
+import {  IconUser,IconSearch,IconRefresh } from "@arco-design/web-vue/es/icon";
 import SelectPositionDetail from "../components/selectPositionDetail/index.vue";
 import {useIndustryStore} from "@/store/industry"
 import {useCity} from "@/store/city"

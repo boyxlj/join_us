@@ -1,5 +1,5 @@
 <template>
-  <div class="jobList" v-for="item in positionData" :key="item.position_id">
+  <div class="jobList" v-for="(item,index) in positionData" :key="index">
     <div class="top">
       <div class="left">
         <p class="jobName" @click="navigateDetail(item.position_id)">{{ item.position_name }} [{{ item.cityName }}] </p>

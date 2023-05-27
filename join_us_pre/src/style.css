@@ -26,6 +26,7 @@ img{
 /* 滚动条样式 */
 ::-webkit-scrollbar{
   width: 5px;
+  height:6px;
   background-color: #fff;
   border-radius: 8px;
 }

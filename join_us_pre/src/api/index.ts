@@ -155,7 +155,7 @@ export const hrAddPosition = (data: Record<string, any>) => {
   return request({
     url: '/hr/addPosition',
     method: 'post',
-    data: data
+    data
   })
 }
 // hr绑定公司
@@ -468,5 +468,25 @@ export const getStatistics = (data:{company_id:string,hr_id:string})=>{
     url:`/statistics`,
     method: 'get',
     params:data
+  })
+}
+
+//---------------企业端职位查询
+export const getCompanyPositions = (data:any)=>{
+  return request({
+    url:`/company/select/positions`,
+    method: 'post',
+    data
+  })
+}
+
+
+
+//修改职位状态(企业端)
+export const updatePositionState = (data:any)=>{
+  return request({
+    url:`/position/state`,
+    method: 'post',
+    data
   })
 }

@@ -65,7 +65,7 @@ StatisticsRouter.get("/statistics", (req, res) => {
               todaySend_total:dealWithData(todaySendResult), //今日一已投递
               position_total: dealWithData(degreesResult),  // 总职位数
               send_total: dealWithData(sendResult),   //总投递数量
-              hr_total: dealWithData(hrResult),   //人事总数
+              hr_total: hrResult.length,   //人事总数
 
               //公司
               companyTodaySend_total: todaySendResult.length || 0,//今日一已投递

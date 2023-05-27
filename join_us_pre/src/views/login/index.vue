@@ -185,7 +185,7 @@ const formState = reactive<FormState>({
   code: "111111",
   email: "x709500@126.com",
   username: "13870000000",
-  psd: "zzq123456",
+  psd: "123456",
   inputCodeValue: "",
 });
 

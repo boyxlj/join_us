@@ -10,7 +10,7 @@ const { v4: uuidv4 } = require('uuid');
 positionRouter.post('/positions', (req, res) => {
   let { pageOn, pageSize } = req.body
   const arr = ['pageOn', 'pageSize', 'position_name', 'cityName', 'salary', 'region', 'experiences', 'degrees',
-    'position_type1', 'position_type2',,'position_state' ,'job_type', 'people_num', 'company_name', 'industry', 'financing'
+    'position_type1', 'position_type2','position_state' ,'job_type', 'people_num', 'company_name', 'industry', 'financing'
   ]
   delete req.body.pageOn
   delete req.body.pageSize

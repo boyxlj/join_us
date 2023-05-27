@@ -229,6 +229,185 @@ positionRouter.get("/positionDetail", (req, res) => {
 });
 
 
+//职位查询(企业端)
+positionRouter.post('/company/select/positions', (req, res) => {
+  let { pageOn, pageSize } = req.body
+  const arr = ['pageOn', 'pageSize','hr_id','company_id', 'position_name', 'cityName', 'salary', 'pos_region', 'experiences', 'degrees',
+    'position_type1', 'position_type2', 'job_type',  'position_state',
+  ]
+
+  const tagValue = req.body.tagValue
+  const hr_id = req.body.hr_id
+  const company_id = req.body.company_id
+  delete req.body.hr_id
+  delete req.body.company_id
+  delete req.body.pageOn
+  delete req.body.tagValue
+  delete req.body.pageSize
+  if (!req.body.cityName) {
+    delete req.body.cityName
+    let str = ''
+    function getKeySql(val) {
+      return `(pos.position_name like '%${val}%' )`
+    }
+    let vsKey = 'where '
+    if (req.body.keyword) {
+      
+      vsKey += getKeySql(req.body.keyword)
+    } else {
+      vsKey = ''
+    }
+    for (let i in req.body) {
+      if (!arr.includes(i) || !req.body[i]) {
+        delete req.body[i]
+      }
+    }
+    if (Object.keys(req.body).length) {
+      for (let i in req.body) {
+        str += ` and pos.${i} = '${req.body[i]}' `
+      }
+    } else {
+      str = ''
+    }
+    let ResStr = ''
+    if (str || vsKey) {
+      vsKey = vsKey ? vsKey : 'where'
+      if (vsKey == 'where') {
+        str = str.slice(4)
+      }
+      ResStr = !vsKey == 'where' ? vsKey + ' and ' + str : vsKey + str
+    } else {
+      ResStr = ''
+    }
+    if (pageSize >= 10) {
+      pageSize = 10
+    }
+    if(ResStr.includes('where')){
+      if(tagValue=='hr'){
+        if(!hr_id) return returnErr(res,'参数错误')
+        ResStr+=`and pos.hr_id = '${hr_id}' and pos.company_id = '${company_id}'`
+      }else if(tagValue=='company'){
+          if(!company_id) return returnErr(res,'参数错误')
+
+        ResStr+=`and pos.company_id = '${company_id}'`
+      }
+    }else{
+      if(tagValue=='hr'){
+        if(!hr_id) return returnErr(res,'参数错误')
+        ResStr+=`where pos.hr_id = '${hr_id}' and pos.company_id = '${company_id}'`
+      }else if(tagValue=='company'){
+        if(!company_id) return returnErr(res,'参数错误')
+        ResStr+=`where pos.company_id = '${company_id}'`
+      }
+    }
+    const sqlCount = `select count(*) from  pos   inner join hr on pos.hr_id=hr.hr_id ${ResStr}`
+    const sql = `select * from pos  inner join hr on pos.hr_id=hr.hr_id ${ResStr}  order by pos.id desc 
+    limit ${(pageOn - 1) * pageSize},${pageSize}
+  `
+
+    query(sqlCount, count => {
+      query(sql, result => {
+        const RES = result?.map(item => {
+          if (item.password) {
+            delete item.password
+          }
+          return item
+        })
+        res.status(200).send({ code: 200, msg: 'ok', data: RES, total: count[0]['count(*)'] })
+      })
+    })
+  } else {
+    let str = ''
+    function getKeySql(val) {
+      return `(pos.position_name like '%${val}%' )`
+    }
+    let vsKey = 'where '
+    if (req.body.keyword) {
+      vsKey += getKeySql(req.body.keyword)
+    } else {
+      vsKey = ''
+    }
+    for (let i in req.body) {
+      if (!arr.includes(i) || !req.body[i]) {
+        delete req.body[i]
+      }
+    }
+
+    if (Object.keys(req.body).length) {
+      for (let i in req.body) {
+        str += ` and pos.${i} = '${req.body[i]}' `
+      }
+    } else {
+      str = ''
+    }
+    let ResStr = ''
+    if (str || vsKey) {
+      vsKey = vsKey ? vsKey : 'where'
+      if (vsKey == 'where') {
+        str = str.slice(4)
+      }
+      ResStr = !vsKey == 'where' ? vsKey + ' and ' + str : vsKey + str
+    } else {
+      ResStr = ''
+    }
+    if (pageSize >= 10) {
+      pageSize = 10
+    }
+    if(ResStr.includes('where')){
+      if(tagValue=='hr'){
+        if(!hr_id) return returnErr(res,'参数错误')
+        ResStr+=`and pos.hr_id = '${hr_id}' and pos.company_id = '${company_id}'`
+      }else if(tagValue=='company'){
+          if(!company_id) return returnErr(res,'参数错误')
+        ResStr+=`and pos.company_id = '${company_id}'`
+      }
+    }else{
+      if(tagValue=='hr'){
+        if(!hr_id) return returnErr(res,'参数错误')
+        ResStr+=`where pos.hr_id = '${hr_id}' and pos.company_id = '${company_id}'`
+      }else if(tagValue=='company'){
+        if(!company_id) return returnErr(res,'参数错误')
+        ResStr+=`where pos.company_id = '${company_id}'`
+      }
+    }
+    const sqlCount = `select count(*)  from  pos   inner join hr on pos.hr_id=hr.hr_id ${ResStr} order by pos.id desc
+  `
+    const sql = `select * from pos inner join hr on pos.hr_id=hr.hr_id  ${ResStr}  order pos.by id desc
+    limit ${(pageOn - 1) * pageSize},${pageSize}
+  `
+    query(sqlCount, count => {
+      query(sql, result => {
+        const RES = result?.map(item => {
+          if (item.password) {
+            delete item.password
+          }
+          return item
+        })
+        res.status(200).send({ code: 200, msg: 'ok', data: RES, total: count[0]['count(*)'] })
+      })
+    })
+  }
+
+
+ 
+})
+
+
+
+//修改职位状态(企业端)
+positionRouter.post('/position/state', (req, res) => {
+  let { position_id ,state} = req.body
+  if (!position_id ||  !state) return returnErr(res, '参数错误')
+  if((state*1)<0 || (state*1)>2) return returnErr(res, '参数错误')
+  const sql = `update pos set position_state = '${state}' where position_id='${position_id}' `
+  query(sql, result => {
+    if (result.affectedRows >= 1) {
+      res.send({ code: 200, msg: '修改职位状态成功', data: null })
+    } else {
+      return returnErr(res, '修改职位状态失败')
+    }
+  })
+})
 
 
 module.exports = positionRouter;

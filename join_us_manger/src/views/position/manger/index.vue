@@ -33,7 +33,7 @@
       <a-option  v-for="(item,index) in degreesList" :key="index">{{ item.name }}</a-option>
     </a-select></li>
     <li class="item">
-     <a-select  v-model="form.state" allow-clear  allow-search @change="changeSelect" :disabled="loading" :style="{width:'320px'}" placeholder="请选择公司状态">
+     <a-select  v-model="form.state" allow-clear  allow-search @change="changeSelect" :disabled="loading" :style="{width:'320px'}" placeholder="请选择职位状态">
       <a-option :value="item.state" v-for="(item,index) in stateList" :key="index">{{ item.name }}</a-option>
     </a-select></li>
     <li class="item">
@@ -253,7 +253,6 @@ const getPosition = async () => {
   const params = {
     keyword:form.keyword,
     cityName: form.city.length?form.city[1]:'',
-		// region: form.city.length?form.city[2]:'',
     position_state:form.state?form.state:'',
     industry:form.industry?form.industry:'',
     financing:form.financing=='不限'?'':form.financing,
