@@ -171,7 +171,7 @@
                 class="item"
                 v-for="item in industryData"
                 :key="item.industry_id"
-                >{{ item}}</span
+                >{{ item.industry_name}}</span
               >
             </li>
           </div>
