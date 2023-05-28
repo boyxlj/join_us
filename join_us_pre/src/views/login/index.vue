@@ -278,7 +278,6 @@ const submit = async () => {
       password: formState.psd,
     });
     refresh();
-    
     if (res.code === 200) {
       localStorage.removeItem("token");
       // localStorage.clear()
@@ -303,6 +302,7 @@ const submit = async () => {
         useCompanyInfo().getCompanyInfo(res.company_id);
         useHrInfo().saveHrId(res.hr_id);
         useHrInfo().getHrInfo(res.hr_id);
+        localStorage.removeItem("token")
         message.success("企业登录成功");
         // router.push('/company')
         setTimeout(() => {
@@ -323,10 +323,10 @@ const submit = async () => {
       return message.error(res.msg);
     }
     // localStorage.clear()
-    localStorage.removeItem("companyToken");
     localStorage.setItem("token", res.token);
     useUserInfo().saveUserId(res.userInfo[0]?.userId);
     useUserInfo().getUseInfo(res.userInfo[0]?.userId);
+    localStorage.removeItem("companyToken");
     message.success("登录成功");
     setTimeout(() => {
       location.reload();

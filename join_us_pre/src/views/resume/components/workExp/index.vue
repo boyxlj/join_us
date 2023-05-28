@@ -143,8 +143,8 @@
       </div>
       
     </a-modal>
-<!-- 期望职行业对话框 -->
-    <a-modal
+  <!-- 期望职行业对话框 -->
+  <a-modal
       centered
       :width="1000"
       :maskClosable="false"
@@ -167,11 +167,11 @@
           <div>
             <li class="boxs">
               <span
-              @click="selectIndustry(item.industry_name)"
+                @click="selectIndustry(item.industry_name)"
                 class="item"
                 v-for="item in industryData"
-                :key="item.industry_id"
-                >{{ item.industry_name}}</span
+                :key="item.id"
+                >{{ item.industry_name }}</span
               >
             </li>
           </div>
