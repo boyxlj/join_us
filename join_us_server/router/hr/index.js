@@ -28,7 +28,9 @@ hrRouter.post('/hr/LoginOrRegister', (req, res) => {
     } else {
       const lengthSQl = 'select * from hr'
       query(lengthSQl, (result1) => {
-        const insertSQl = `insert into hr(id, hr_id, name, company_id, telephone, password, avatar, reg_time) values('${result1.length + 1}', '${hr_id}', '', '', '${telephone}', '${password}', '', '${time}')`
+        const insertSQl = 
+        `insert into hr( id,hr_id,  telephone, password) 
+        values( '${result1.length + 1}','${hr_id}', '${telephone}', '${password}')`
         query(insertSQl, (result2) => {
           if (result2.affectedRows) {
             return res.send({
@@ -109,7 +111,7 @@ hrRouter.post("/hr/addPosition", (req, res) => {
   //    return returnErr(res,'参数错误') 
   //   }
   // }
-  const position_tag = JSON.stringify([experiences,degrees])
+  const position_tag = JSON.stringify([experiences, degrees])
   const sql = `insert into pos(company_id, hr_id, position_name, salary,
     cityName, pos_region, experiences, degrees, welfare_tag, position_desc, job_type,
     position_type1, position_type2,position_id,position_tag) values(
@@ -179,9 +181,9 @@ hrRouter.post('/hr/editPositionR', (req, res) => {
     position_type1, position_type2
   } = req.body
 
-  for(let i in req.body){
-    if(!req.body[i]){
-     return returnErr(res,'参数错误') 
+  for (let i in req.body) {
+    if (!req.body[i]) {
+      return returnErr(res, '参数错误')
     }
   }
   const sql = `update pos set
@@ -198,9 +200,9 @@ hrRouter.post('/hr/editPositionR', (req, res) => {
                     job_type='${job_type}',
                     position_state='0',
                     position_tag='${JSON.stringify([
-                    experiences,
-                    degrees,
-                  ])}',
+    experiences,
+    degrees,
+  ])}',
                     welfare_tag='${welfare_tag}'
    where position_id='${position_id}'`;
   query(sql, (result) => {
@@ -376,6 +378,31 @@ hrRouter.post('/hr/build/company', (req, res) => {
     } else {
       return returnErr(res, '绑定公司失败')
     }
+  })
+})
+
+
+//查询公司人事
+hrRouter.post('/company/hrs', (req, res) => {
+  let { pageOn, pageSize, company_id } = req.body
+  if (!pageOn || !pageSize || !company_id) return returnErr(res, '参数错误')
+  if (pageSize > 15) pageSize = 15
+
+  const countSql = `select * from hr where company_id = '${company_id}'`
+  const sql = `select * from hr where company_id = '${company_id}' order by id desc limit ${(pageOn - 1) * pageSize},${pageSize}
+  `
+  query(countSql, countSqlRes => {
+   
+    query(sql, result => {
+      const RES = result?.map(item => {
+        if (item.password) {
+          delete item.password
+        }
+        return item
+      })
+      return res.send({ code: 200, msg: "查询成功", data: RES, total: countSqlRes.length })
+
+    })
   })
 })
 module.exports = hrRouter

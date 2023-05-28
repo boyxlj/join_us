@@ -221,7 +221,7 @@ const leaveUserInfo = ()=>{
         &:hover {
           border: 1px solid var(--themeColor);
           color: var(--themeColor);
-          background: #ac9ccb;
+          background: rgb(233, 249, 255);
         }
       }
     }

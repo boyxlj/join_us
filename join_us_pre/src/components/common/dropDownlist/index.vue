@@ -68,7 +68,6 @@ const clickItem = (e:any) => {
     height: 32px;
     padding: 0 10px;
     box-sizing: border-box;
-    background: skyblue;
     display: flex;
     justify-content: center;
     align-items: center;

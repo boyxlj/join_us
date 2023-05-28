@@ -295,16 +295,11 @@ export const selectCompanysDetail = (company_id: string) => {
   })
 }
 // 获取投递继立列表
-export const deliveryRecord = (company_id: string, telephone: string, pageIndex: number, pageSize: number) => {
+export const deliveryRecord = (data:any) => {
   return request({
     url: '/send/deliveryRecord',
     method: 'get',
-    params: {
-      company_id: company_id,
-      telephone: telephone,
-      pageIndex: pageIndex,
-      pageSize: pageSize
-    }
+    params:data
   })
 }
 
@@ -486,6 +481,16 @@ export const getCompanyPositions = (data:any)=>{
 export const updatePositionState = (data:any)=>{
   return request({
     url:`/position/state`,
+    method: 'post',
+    data
+  })
+}
+
+
+//查询公司人事(企业端)
+export const selectCompanyHrs = (data:any)=>{
+  return request({
+    url:`/company/hrs`,
     method: 'post',
     data
   })

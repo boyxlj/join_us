@@ -48,10 +48,13 @@ request.interceptors.response.use((response): any => {
 
   if (response.data.code == 401) {
     if (!location.href.includes('/login')) {
-      return authError()
+      // return authError()
+      Message.clear()
+      Message.warning("您的登录信息已过期,请你重新登录")
+      localStorage.removeItem("mangerToken")
+      router.push("/login")
+      return
     }
-    // Message.clear()
-    // return Message.warning('token不存在或已失效',)
   }
   if (response.status === 200) {
     return response.data

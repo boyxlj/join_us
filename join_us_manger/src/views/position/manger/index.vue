@@ -172,8 +172,6 @@
 import SelectPositionDetail from "../components/selectPositionDetail/index.vue";
 import SelectCompany from "../components/selectCompany/index.vue";
 import {
-  publishConsult,
-  updateConsult,
   selPositionAll,
   updatePositionState,
   delPosition,

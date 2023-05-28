@@ -19,6 +19,7 @@ authorizationRouter.use((req,res,next)=>{
     if(payload){
       const {username,password} = payload
       const mangerToken = jwt.sendToken({username,password},`${60*30}s`)
+      // const mangerToken = jwt.sendToken({username,password},`${60*30}s`)
       res.setHeader("authorization",mangerToken)
       res.header("Access-Control-Expose-Headers","authorization")
       

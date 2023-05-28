@@ -278,6 +278,7 @@ const submit = async () => {
       password: formState.psd,
     });
     refresh();
+    
     if (res.code === 200) {
       localStorage.removeItem("token");
       // localStorage.clear()

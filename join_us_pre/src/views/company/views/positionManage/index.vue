@@ -135,6 +135,7 @@
           class="tagList"
           @change="changeSelect"
           v-model:value="form.tagValue"
+          :disabled="loading"
         >
           <a-radio-button value="hr">您发布的数据</a-radio-button>
           <a-radio-button value="company">公司的所有数据</a-radio-button>
@@ -158,7 +159,7 @@
           </template>
           <template #button-default> 查询 </template>
         </a-input-search>
-        <a-button class="clear" @click="clearSelect">
+        <a-button   :disabled="loading" class="clear" @click="clearSelect">
           <template #icon>
             <ClearOutlined />
           </template>
@@ -167,6 +168,7 @@
         <a-button
           type="primary"
           class="clear"
+          :disabled="loading"
           @click="editOrAddPosition('publish')"
         >
           <template #icon>
@@ -327,12 +329,10 @@ import {
   ExclamationCircleOutlined,
 } from "@ant-design/icons-vue";
 import { createVNode } from "vue";
-import { Form, message, Modal } from "ant-design-vue";
+import {  message, Modal } from "ant-design-vue";
 import { getCompanyPositions, hrDelPosition,updatePositionState } from "@/api";
 import { useCity } from "@/store/city";
 import { useGetConditionData } from "@/store/condition";
-import { useCompanyInfo } from "@/store/company_hr";
-import { useHrInfo } from "@/store/hr";
 import { getTime, getTimeBefore } from "@/utils/formatTime";
 import { IPositionData } from "./types";
 import { useJobTypeStore } from "@/store/positionType";
@@ -340,6 +340,8 @@ import PositionForm from "./components/positionForm/index.vue";
 import SelectCom from "./components/selectCom/index.vue";
 import { useCompanyState } from "@/hooks/useCompanyState";
 import { useHrState } from "@/hooks/useHrState";
+import { useCompanyInfo } from "@/store/company_hr";
+import { useHrInfo } from "@/store/hr";
 const { company_id } = useCompanyInfo();
 const { hr_id } = useHrInfo();
 const { allCityList } = useCity();

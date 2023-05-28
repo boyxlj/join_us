@@ -1,12 +1,13 @@
 <template>
-    <div class="detail-header">
+    <div>
+      <div class="detail-header">
       <div class="info-title">
         <div class="name-salary-row">
           <div class="row-first">
             <span>{{ jobDetailData?.position_name }}</span>
             <span>{{ jobDetailData?.salary }}</span>
           </div>
-          <div v-if="welfare_tagArr.length > 0" class="row-last">
+          <div v-if="welfare_tagArr.length >= 3" class="row-last">
             <span v-for="item in 3" :key="item">{{
               welfare_tagArr[item]
             }}</span>
@@ -16,6 +17,9 @@
               v-if="welfare_tagArr.length > 3"
               >...</span
             >
+          </div>
+          <div v-else class="row-last" style="text-align: right;">
+            <span v-for="(item,index) in welfare_tagArr" :key="index">{{ item }}</span>
           </div>
           <a-card v-show="welfare_tagShown" class="welfare-card">
             <span
@@ -98,6 +102,7 @@
       <div class="aside">
         <salaryCaculate />
       </div>
+    </div>
     </div>
 </template>
 

@@ -28,7 +28,7 @@ type TAside = {
 };
 
 export const asideList: TAside[] = [
-  { path: "/statistics", name: "数据统计", icon: IconComputer },
+  // { path: "/statistics", name: "数据统计", icon: IconComputer },
   { path: "/consult", name: "咨讯百科", icon: IconLayers },
   {
     path: "/industry",

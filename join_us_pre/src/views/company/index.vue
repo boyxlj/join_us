@@ -109,19 +109,17 @@ const componentsList = [
 const menuList = ref([
   { id: 0, name: '数据分析' },
   { id: 1, name: "职位管理" },
-  // { id: 2, name: '搜索牛人' },
   { id: 3, name: "简历审核" },
   { id: 6, name: "公司信息" },
-  // { id: 4, name: '工具箱' },
+  { id: 4, name: '公司人事' },
   { id: 5, name: "个人中心" },
 ]);
 const pathList = [
   '/company/statistics',
   "/company/positionManage",
-  // '/company/searchCattle',
   "/company/resumeReview",
   "/company/companyInfo",
-  // '/company/toolBox',
+  '/company/hrs',
   "/company/profile",
 ];
 

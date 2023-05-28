@@ -236,6 +236,7 @@ positionRouter.post('/company/select/positions', (req, res) => {
     'position_type1', 'position_type2', 'job_type',  'position_state',
   ]
 
+
   const tagValue = req.body.tagValue
   const hr_id = req.body.hr_id
   const company_id = req.body.company_id
@@ -372,17 +373,20 @@ positionRouter.post('/company/select/positions', (req, res) => {
     }
     const sqlCount = `select count(*)  from  pos   inner join hr on pos.hr_id=hr.hr_id ${ResStr} order by pos.id desc
   `
-    const sql = `select * from pos inner join hr on pos.hr_id=hr.hr_id  ${ResStr}  order pos.by id desc
+    const sql = `select * from pos inner join hr on pos.hr_id=hr.hr_id  ${ResStr}  order by pos.id desc
     limit ${(pageOn - 1) * pageSize},${pageSize}
   `
     query(sqlCount, count => {
       query(sql, result => {
-        const RES = result?.map(item => {
+        // if(result==='err'){
+        //   return returnErr(res,'查询失败')
+        // }
+        const RES = result.length?result.map(item => {
           if (item.password) {
             delete item.password
           }
           return item
-        })
+        }):[]
         res.status(200).send({ code: 200, msg: 'ok', data: RES, total: count[0]['count(*)'] })
       })
     })

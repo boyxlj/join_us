@@ -84,40 +84,33 @@ export const routes: RouteRecordRaw[] = [
     redirect: '/company/statistics',
     children: [
       {
-        path: '/company/dataAnalysis',
-        component: () => import('@/views/company/components/dataAnalysis/index.vue')
-      },
-      {
         path: '/company/statistics',
-        component: () => import('@/views/company/components/statistics/index.vue'),
+        component: () => import('@/views/company/views/statistics/index.vue'),
         meta:{title:'数据可视化'}
       },
       {
         path: '/company/positionManage',
-        component: () => import('@/views/company/components/positionManage/index.vue'),
+        component: () => import('@/views/company/views/positionManage/index.vue'),
         meta:{title:'职位管理'}
       },
       {
-        path: '/company/searchCattle',
-        component: () => import('@/views/company/components/searchCattle/index.vue')
-      },
-      {
         path: '/company/resumeReview',
-        component: () => import('@/views/company/components/resumeReview/index.vue'),
+        component: () => import('@/views/company/views/resumeReview/index.vue'),
         meta:{title:'简历审核'}
       },
       {
-        path: '/company/toolBox',
-        component: () => import('@/views/company/components/toolBox/index.vue')
-      },
-      {
         path: '/company/companyInfo',
-        component: () => import('@/views/company/components/companyInfo/index.vue'),
+        component: () => import('@/views/company/views/companyInfo/index.vue'),
         meta:{title:'公司信息'}
       },
       {
+        path: '/company/hrs',
+        component: () => import('@/views/company/views/hrs/index.vue'),
+        meta:{title:'公司人事'}
+      },
+      {
         path: '/company/profile',
-        component: () => import('@/views/company/components/profile/index.vue'),
+        component: () => import('@/views/company/views/profile/index.vue'),
         meta:{title:'个人中心'}
       }
     ]
