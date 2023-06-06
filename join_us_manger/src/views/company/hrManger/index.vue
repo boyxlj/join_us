@@ -40,19 +40,14 @@
           </template>
         </a-table-column>
        
-        <a-table-column title="昵称" data-index="name">
+        <a-table-column ellipsis tooltip :width="140" title="昵称" data-index="name">
           <template #cell="{ record }">
             <span>{{ record.name || '/'}}</span>
           </template>
         </a-table-column>
         <a-table-column title="账号" data-index="telephone"></a-table-column>
-        <a-table-column title="身份" data-index="hr_identity"></a-table-column>
-        <a-table-column title="所属公司" data-index="title">
-          <template #cell="{ record }">
-            <a-tooltip :content="record.company_name">
-              <span class="tableTitle">{{ record.company_name }}</span>
-            </a-tooltip>
-          </template>
+        <a-table-column ellipsis tooltip :width="140" title="身份" data-index="hr_identity"></a-table-column>
+        <a-table-column ellipsis tooltip :width="140" title="所属公司" data-index="company_name">
         </a-table-column>
         <a-table-column title="公司logo" data-index="logo">
           <template #cell="{ record }">
@@ -62,17 +57,17 @@
               v-if="record.logo"
               :imageUrl="record.logo"
             ></a-avatar>
-            <a-avatar shape="square" v-else>
-              <IconUser />
+            <a-avatar :size="50" shape="square" v-else>
+              <IconCodepen />
             </a-avatar>
           </template>
         </a-table-column>
-        <a-table-column title="注册城市" data-index="reg_city">
+        <a-table-column ellipsis tooltip :width="140" title="注册城市" data-index="reg_city">
           <template #cell="{ record }">
             <span>{{ record.reg_city }} <span v-if="record.region"> · </span> {{ record.region }}</span>
           </template>
         </a-table-column>
-        <a-table-column title="行业" data-index="industry"></a-table-column>
+        <a-table-column ellipsis tooltip :width="140" title="行业" data-index="industry"></a-table-column>
         <a-table-column title="规模" data-index="people_num"></a-table-column>
         <a-table-column title="融资" data-index="financing"></a-table-column>
         <a-table-column title="注册时间" data-index="reg_time">
@@ -138,7 +133,7 @@
 </template>
 
 <script setup lang="ts">
-import { IconUser,IconSearch,IconRefresh } from "@arco-design/web-vue/es/icon";
+import {IconCodepen, IconUser,IconSearch,IconRefresh } from "@arco-design/web-vue/es/icon";
 // import IndustryForm from "./components/industryForm/index.vue";
 import {
   addIndustry,
@@ -163,7 +158,7 @@ const pageNationParams = reactive({
 
 const scrollbar = ref(true);
 const scroll = {
-  x: 2000,
+  x: 1880,
 };
 const scrollPercent = {
   x: '120%',

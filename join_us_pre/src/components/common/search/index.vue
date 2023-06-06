@@ -21,6 +21,7 @@
           <input
             @focus="inputFocus"
             @blur="inputNoFocus"
+            @click="inputFocus"
             @keyup.enter="searchSubmit"
             type="text"
             autocomplete="off"
@@ -113,9 +114,13 @@ import { Modal } from "ant-design-vue";
 import { useJobTypeStore } from "@/store/positionType";
 import { IPositionTypeChild, IPositionType1 } from "@/types/jobType";
 import { useHotSearchPosition } from "@/store/position";
+import {emitter} from "@/utils/emitter"
 const inpVal = ref("");
 const router = useRouter();
 
+emitter.on("closeSearchDropDownCom",()=>{
+  showSearchFocusBox.value = false;
+})
 const hotSearchPositionList = computed(
   () => useHotSearchPosition().hotSearchPositionList
 );

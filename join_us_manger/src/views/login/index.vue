@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="box">
-      <h1>招聘后台管理</h1>
+      <h1>招聘后台管理系统</h1>
       <a-form
         ref="formRef"
         size="large"
@@ -63,8 +63,10 @@
         </a-form-item>
       </a-form>
       
-      <!-- <div class="footerBox"><Footer :ba="true" :Copyright="false"/></div> -->
     </div>
+      <div class="footerBox">
+        <Footer :ba="true" />
+        </div>
   </div>
 </template>
 
@@ -137,20 +139,13 @@ const form = reactive({
     width: 470px;
     height: 437px;
     background-color: #fff;
-    border-radius: 24px;
+    border-radius: 16px;
     box-shadow: 0 2px 8px 0 rgba(203, 212, 221, 0.25);
-    padding: 40px 40px 32px;
     text-align: center;
-    padding: 15px 30px;
+    padding: 36px 30px 15px;
     box-sizing: border-box;
     position: relative;
-    .footerBox{
-      width: 100%;
-      left: 50%;
-      position: absolute;
-      bottom: 43px;
-      transform: translateX(-50%);
-    }
+   
     h1{
       font-weight: normal;
       font-size: 35px;
@@ -177,6 +172,14 @@ const form = reactive({
     }
   }
 }
+.footerBox{
+      width: 100%;
+      left: 50%;
+      position: fixed;
+      bottom: 33px;
+      font-size: 13px;
+      transform: translateX(-50%);
+    }
 .loginBtnItem{
   width: 500px;
 }

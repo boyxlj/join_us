@@ -285,10 +285,11 @@ const deleteSwiper = (swiper_id: string) => {
 .photos{
   width: 230px;
   height: 140px;
+  border-radius: 8px;
   img{
     width: 100%;
     height: 100%;
+    border-radius: 8px;
   }
-  background: #000;
 }
 </style>

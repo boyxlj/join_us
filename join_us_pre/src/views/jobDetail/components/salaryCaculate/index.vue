@@ -95,6 +95,7 @@ const handleOk = () => {
         font-weight: bold;
         color: #fff;
     }
+ 
 
     .salary-input {
         width: 300px;
@@ -111,7 +112,7 @@ const handleOk = () => {
         font-weight: bold;
 
         &:hover {
-            background-color: #8964cf;
+            background-color:  var(--btnHoverThemeColor);
         }
     }
     .loading{
@@ -119,4 +120,11 @@ const handleOk = () => {
         height: 60px;
         background-color: #8964cf;
     }
-}</style>
+}
+
+.content{
+      span{
+        display: inline-block;
+        margin-left: 10px;
+      }
+    }</style>

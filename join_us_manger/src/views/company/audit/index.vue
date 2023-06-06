@@ -61,24 +61,24 @@
               v-if="record.logo"
               :imageUrl="record.logo"
             ></a-avatar>
-            <a-avatar shape="square" v-else>
-              <IconUser />
+            <a-avatar :size="50"  shape="square" v-else>
+              <IconCodepen />
             </a-avatar>
           </template>
         </a-table-column>
-        <a-table-column title="公司名称" data-index="title">
+        <a-table-column ellipsis tooltip :width="140" title="公司名称" data-index="title">
           <template #cell="{ record }">
             <a-tooltip :content="record.company_name">
               <span class="tableTitle">{{ record.company_name }}</span>
             </a-tooltip>
           </template>
         </a-table-column>
-        <a-table-column title="注册城市" data-index="reg_city">
+        <a-table-column ellipsis tooltip :width="140" title="注册城市" data-index="reg_city">
           <template #cell="{ record }">
             <span>{{ record.reg_city }} <span v-if="record.region"> · </span> {{ record.region }}</span>
           </template>
         </a-table-column>
-        <a-table-column title="行业" data-index="industry"></a-table-column>
+        <a-table-column ellipsis tooltip :width="140" title="行业" data-index="industry"></a-table-column>
         <a-table-column title="规模" data-index="people_num"></a-table-column>
         <a-table-column title="融资" data-index="financing"></a-table-column>
         <a-table-column title="成立时间" data-index="create_time">
@@ -159,7 +159,7 @@ import { ICompanyData } from "@/types/company";
 import {Message} from "@arco-design/web-vue"
 import { getTime, getTimeBefore } from "@/utils/formatTime";
 import { useAuth } from "@/hooks/useAuth";
-import {  IconUser } from "@arco-design/web-vue/es/icon";
+import {  IconCodepen } from "@arco-design/web-vue/es/icon";
 import {btnStyle} from "@/config/btnStyle"
 import SelectCompany from "../components/selectCompany/index.vue";
 import {useIndustryStore} from "@/store/industry"
@@ -182,7 +182,7 @@ const pageNationParams = reactive({
 const companyData = ref<ICompanyData[]>([]);
   const scrollbar = ref(true);
 const scroll = {
-  x: 2000,
+  x: 1400,
 };
 const scrollPercent = {
   x: '120%',

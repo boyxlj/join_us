@@ -61,6 +61,7 @@
               >{{ sendCodeBtnText }}</a-button
             >
           </a-form-item>
+
           <a-form-item
             class="coders"
             name="inputCodeValue"
@@ -71,6 +72,11 @@
               placeholder="请输入数字验证码"
             />
             <div class="photo" @click="refresh()" ref="validateContainer"></div>
+          </a-form-item>
+          <a-form-item class="tipsItem" >
+            <p class="loginTips"  >
+               如果您的账号未进行注册，首次登录后系统将会自动为您注册！
+            </p>
           </a-form-item>
           <a-form-item :wrapper-col="{ span: 24, offset: 0 }">
             <a-button
@@ -182,8 +188,8 @@ onMounted(() => {
 
 const formRef = ref<FormInstance>();
 const formState = reactive<FormState>({
-  code: "111111",
-  email: "x709500@126.com",
+  code: "",
+  email: "",
   username: "13870000000",
   psd: "123456",
   inputCodeValue: "",
@@ -252,10 +258,8 @@ const layout = {
   wrapperCol: { span: 24 },
 };
 const handleFinish = (values: FormState) => {
-  // console.log("###", values, formState);
 };
 const handleFinishFailed = (errors: any) => {
-  // console.log(errors);
 };
 
 window.addEventListener("beforeunload", function (e) {
@@ -267,6 +271,8 @@ window.addEventListener("beforeunload", function (e) {
 });
 
 const submit = async () => {
+  await formRef.value?.validate();
+  disabledSubmit.value = true
   if (activeKey.value == 1) {
     await formRef.value?.validateFields(["username", "psd",'inputCodeValue']);
     if (formState.inputCodeValue !== validateCoder.value) {
@@ -280,8 +286,6 @@ const submit = async () => {
     refresh();
     if (res.code === 200) {
       localStorage.removeItem("token");
-      // localStorage.clear()
-      // emitter.emit('getData')
       if (res.remark || !res.company_id) {
         // 首次注册后续操作，填写表单等
         localStorage.setItem("companyToken", res.token);
@@ -306,10 +310,12 @@ const submit = async () => {
         message.success("企业登录成功");
         // router.push('/company')
         setTimeout(() => {
+          disabledSubmit.value = false
           router.push("/company");
         }, 100);
       }
     } else {
+      disabledSubmit.value = false
       message.error("登录失败");
     }
   } else {
@@ -329,6 +335,7 @@ const submit = async () => {
     localStorage.removeItem("companyToken");
     message.success("登录成功");
     setTimeout(() => {
+      disabledSubmit.value = false
       location.reload();
     }, 100);
   }
@@ -349,8 +356,8 @@ const handleValidate = (...args: any) => {};
   }
 
   .box {
-    width: 550px;
-    height: 550px;
+    width: 580px;
+    height: 600px;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -405,7 +412,18 @@ const handleValidate = (...args: any) => {};
         text-align: left;
 
         .ant-form-item {
-          padding-bottom: 10px;
+          padding-bottom: 6px;
+         
+        }
+        .tipsItem{
+          padding: 0;
+          .loginTips{
+            margin: 0;
+            padding: 0;
+            font-size: 13px;
+            color: #939393;
+
+          }
         }
 
         .sendCode {
@@ -414,7 +432,7 @@ const handleValidate = (...args: any) => {};
           position: relative;
 
           .ant-input {
-            width: 282px;
+            width: 292px;
           }
 
           .sendCodeBtn {
@@ -422,7 +440,7 @@ const handleValidate = (...args: any) => {};
             height: 45px;
             position: absolute;
             right: 0;
-            width: 140px;
+            width: 150px;
             // padding: 0 35px;
           }
         }

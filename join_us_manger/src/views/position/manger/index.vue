@@ -71,8 +71,8 @@
               v-if="record.logo"
               :imageUrl="record.logo"
             ></a-avatar>
-            <a-avatar shape="square" v-else>
-              <IconUser />
+            <a-avatar  :size="50" shape="square" v-else>
+              <IconCodepen />
             </a-avatar>
           </template>
         </a-table-column>
@@ -83,12 +83,12 @@
         </a-table-column>
         <a-table-column ellipsis tooltip :width="140"  fixed="left" title="职位名称" data-index="position_name">
         </a-table-column>
-        <a-table-column title="工作城市" data-index="cityName">
+        <a-table-column ellipsis tooltip :width="140" title="工作城市" data-index="cityName">
           <template #cell="{ record }">
             <span>{{ record.cityName }} <span v-if="record.region"> · </span> {{ record.region }}</span>
           </template>
         </a-table-column>
-        <a-table-column title="行业" data-index="industry"></a-table-column>
+        <a-table-column ellipsis tooltip :width="140" title="行业" data-index="industry"></a-table-column>
         <a-table-column title="职位类型" data-index="job_type">
           <template #cell="{ record }">
             <a-tag color="pinkpurple">{{ record.job_type }}</a-tag>
@@ -179,7 +179,7 @@ import {
 import { Message, Modal } from "@arco-design/web-vue";
 import { getTime, getTimeBefore } from "@/utils/formatTime";
 import { useAuth } from "@/hooks/useAuth";
-import {  IconUser,IconSearch,IconRefresh } from "@arco-design/web-vue/es/icon";
+import {  IconCodepen,IconSearch,IconRefresh } from "@arco-design/web-vue/es/icon";
 import {btnStyle} from "@/config/btnStyle"
 import { IPositionData } from "@/types/position";
 import {useIndustryStore} from "@/store/industry"
@@ -193,7 +193,6 @@ const people_numList = conditions[conditions.length-2]
 const job_typeList = conditions[0]
 const salaryList = conditions[2]
 const degreesList = conditions[3]
-const positionModelVisible = ref(false);
 const positionData = ref<IPositionData[]>([]);
 const pageNationParams = reactive({
   pageOn: 1,
@@ -208,7 +207,7 @@ const stateList = [
 ]	
 const scrollbar = ref(true);
 const scroll = {
-  x: 2000,
+  x: 1880,
 };
 
 

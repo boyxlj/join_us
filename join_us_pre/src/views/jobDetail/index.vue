@@ -190,11 +190,9 @@ onMounted(() => {
     jobDetailData.value = res.data as Iposition_type;
     welfare_tagArr.value = JSON.parse(jobDetailData.value.welfare_tag);
     desc_tagArr.value = JSON.parse(jobDetailData.value.position_tag);
-    // 添加感叹号表示该元素一定存在
     if (res.data.position_name) {
       document.title =  res.data.position_name;
     }
-    // desc.value!.innerHTML = jobDetailData.value.position_desc;
     if (res.data.position_state !== "1") return router.replace("/notFound");
   });
   getState();

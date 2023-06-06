@@ -41,6 +41,7 @@
     </li>
     </div>
     <a-table
+    :scroll="scroll" :scrollbar="scrollbar"
       class="table"
       @page-change="changePageNation"
       :pagination="pageNationParams"
@@ -56,24 +57,19 @@
               v-if="record.logo"
               :imageUrl="record.logo"
             ></a-avatar>
-            <a-avatar shape="square" v-else>
-              <IconUser />
+            <a-avatar  :size="50" shape="square" v-else>
+              <IconCodepen />
             </a-avatar>
           </template>
         </a-table-column>
-        <a-table-column title="公司名称" data-index="title">
-          <template #cell="{ record }">
-            <a-tooltip :content="record.company_name">
-              <span class="tableTitle">{{ record.company_name }}</span>
-            </a-tooltip>
-          </template>
+        <a-table-column ellipsis tooltip :width="140" title="公司名称" data-index="company_name">
         </a-table-column>
-        <a-table-column title="注册城市" data-index="reg_city">
+        <a-table-column  ellipsis tooltip :width="140" title="注册城市" data-index="reg_city">
           <template #cell="{ record }">
             <span>{{ record.reg_city }} <span v-if="record.region"> · </span> {{ record.region }}</span>
           </template>
         </a-table-column>
-        <a-table-column title="行业" data-index="industry"></a-table-column>
+        <a-table-column  ellipsis tooltip :width="140"  title="行业" data-index="industry"></a-table-column>
         <a-table-column title="规模" data-index="people_num"></a-table-column>
         <a-table-column title="融资" data-index="financing"></a-table-column>
         <a-table-column title="成立时间" data-index="create_time">
@@ -83,14 +79,14 @@
             </a-tooltip>
           </template>
         </a-table-column>
-        <a-table-column title="状态" data-index="state">
+        <a-table-column :width="110" fixed="right"  title="状态" data-index="state">
           <template #cell="{ record }">
             <a-tag color="orange" v-if="record.state=='0'">待审核</a-tag>
             <a-tag color="green" v-if="record.state=='1'">当前正常</a-tag>
             <a-tag color="red" v-if="record.state=='2'">已驳回/关闭</a-tag>
           </template>
         </a-table-column>
-        <a-table-column title="切换状态">
+        <a-table-column :width="90" fixed="right" title="切换状态">
           <template #cell="{ record }">
             <a-switch
               :disabled="!useAuth(false) || record.state=='0'"
@@ -104,7 +100,7 @@
             </a-switch>
           </template>
         </a-table-column>
-        <a-table-column title="操作" data-index="category">
+        <a-table-column fixed="right" :width="180" title="操作" data-index="category">
           <template #cell="{ record }">
             <a-button  :size="btnStyle.select.size" :status="btnStyle.select.status" :type="btnStyle.select.type" @click="seeCompany(record.company_id)"
               >查看</a-button
@@ -165,7 +161,7 @@ import {
 import { Message, Modal } from "@arco-design/web-vue";
 import { getTime, getTimeBefore } from "@/utils/formatTime";
 import { useAuth } from "@/hooks/useAuth";
-import {  IconUser,IconSearch,IconRefresh } from "@arco-design/web-vue/es/icon";
+import {  IconCodepen,IconSearch,IconRefresh } from "@arco-design/web-vue/es/icon";
 import {btnStyle} from "@/config/btnStyle"
 import { ICompanyData } from "@/types/company";
 import {useIndustryStore} from "@/store/industry"
@@ -183,7 +179,10 @@ const pageNationParams = reactive({
   pageSize: 15,
   total: 2,
 });
-
+const scrollbar = ref(true);
+const scroll = {
+  x: 1300,
+};
 const stateList = [
   {state:"0",name:"待审核"},
   {state:"1",name:"正常"},

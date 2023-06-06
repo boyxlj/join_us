@@ -148,6 +148,7 @@ import NavBar from "@/components/common/navbar/index.vue";
 import DropDownlist from "@/components/common/dropDownlist/index.vue";
 import PositionCard from "@/components/common/positionCard/index.vue";
 import Empty from "@/components/common/empty/index.vue";
+import {emitter} from "@/utils/emitter"
 import { useCity } from "@/store/city";
 import { useUserLoginState } from "@/hooks/useUserLoginState";
 import { useGetConditionData } from "@/store/condition";
@@ -370,6 +371,12 @@ const showValues = ref([
   "融资阶段",
 ]);
 
+
+
+watch(()=>route.query?.keyword,()=>{
+  emitter.emit('closeSearchDropDownCom')
+
+})
 const showNavBar = ref(false);
 onMounted(() => {
   window.addEventListener("scroll", getScrollTop);

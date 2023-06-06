@@ -73,7 +73,6 @@
         <div class="items" v-if="item.development">
           <div class="infoTitle">人才发展</div>
           <p class="tagList">
-            
             <span v-for="welfare in JSON.parse(item.development)" :key="welfare">{{ welfare }}</span>
           </p>
         </div>

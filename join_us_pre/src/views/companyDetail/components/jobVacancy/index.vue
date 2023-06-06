@@ -114,9 +114,7 @@ const getData = async () => {
     }
   }
 
-  console.log(params)
   const res: any = await selectCompanysPositions(params);
-  console.log(res);
   if (res.code !== 200) {
     positionData.value = [];
     message.error("服务异常");
@@ -126,15 +124,20 @@ const getData = async () => {
   }
 
   if (res.workCities.length) {
-    const dat = res.workCities.map((item: string, index: number) => ({
+    const dat:{name:string,code:number}[] = res.workCities.map((item: string, index: number) => ({
       code: index + 1,
       name: item,
     }));
+    const clearCF = [...new Set(dat.map(item=>item.name))]?.map((item,index)=>{
+      return {
+        code:index+1,
+        name:item
+      }
+    })
     if(conditions.value[0].length===1){
-      conditions.value[0] = [...conditions.value[0], ...dat];
+      conditions.value[0] = [...conditions.value[0], ...clearCF];
     }
   }
-
 };
 
 const changePageNation = (page: number, pageSize: number) => {
@@ -146,7 +149,6 @@ const formData = reactive<any>({
   value0: "不限",
   value1: "不限",
   value2: "不限",
-  // value3: "不限",
 });
 const showValues = ref(["工作城市", "经验要求", "学历要求"]);
 
@@ -155,8 +157,8 @@ const showValues = ref(["工作城市", "经验要求", "学历要求"]);
   [{code:0,name:"不限"}],
   condition.conditionData[1],
   condition.conditionData[3],
-  // condition.conditionData[2],
 ]);
+
 const conditionData = ref(conditions.value);
 </script>
 

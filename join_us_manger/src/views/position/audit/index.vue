@@ -74,8 +74,8 @@
               v-if="record.logo"
               :imageUrl="record.logo"
             ></a-avatar>
-            <a-avatar shape="square" v-else>
-              <IconUser />
+            <a-avatar shape="square" :size="50" v-else>
+              <IconCodepen />
             </a-avatar>
           </template>
         </a-table-column>
@@ -83,7 +83,7 @@
         </a-table-column>
         <a-table-column ellipsis tooltip :width="140"  fixed="left" title="职位名称" data-index="position_name">
         </a-table-column>
-        <a-table-column title="工作城市" data-index="cityName">
+        <a-table-column  ellipsis tooltip :width="140" title="工作城市" data-index="cityName">
           <template #cell="{ record }">
             <span>{{ record.cityName }} <span v-if="record.region"> · </span> {{ record.region }}</span>
           </template>
@@ -173,7 +173,7 @@ import {Message} from "@arco-design/web-vue"
 import { getTime, getTimeBefore } from "@/utils/formatTime";
 import { useAuth } from "@/hooks/useAuth";
 import {btnStyle} from "@/config/btnStyle"
-import {  IconUser,IconSearch,IconRefresh } from "@arco-design/web-vue/es/icon";
+import {  IconCodepen,IconSearch,IconRefresh } from "@arco-design/web-vue/es/icon";
 import SelectPositionDetail from "../components/selectPositionDetail/index.vue";
 import {useIndustryStore} from "@/store/industry"
 import {useCity} from "@/store/city"
@@ -197,7 +197,7 @@ const pageNationParams = reactive({
 });
 const positionData = ref<IPositionData[]>([]);
   const scroll = {
-  x: 2000,
+  x: 1800,
 };
 const scrollbar = ref(true);
 
