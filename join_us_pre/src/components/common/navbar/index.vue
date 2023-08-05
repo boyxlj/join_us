@@ -32,9 +32,9 @@
         <li>上传</li>
         <div class="userProfile">
           <div class="cons" @mouseleave="leaveUserInfo" @mouseenter="enterUserInfo"  @click="navigateLinks('/home/user/job')">
-            <span>{{ userInfo.name || '应聘者' }}</span>
+            <span>{{ userInfo?.name || '应聘者' }}</span>
             <div class="avatar">
-              <img :src="userInfo.avatar" alt="" />
+              <img :src="userInfo?.avatar" alt="" />
             </div>
             <div class="hovers" ref="hoverBox">
               <a  @click.stop="navigateLinks('/home/user/resume')" class="centers">

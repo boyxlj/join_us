@@ -30,7 +30,7 @@ const typeList = computed(() => {
   return arr.filter(item => !item.position_type_name.includes('/')).slice(0, 9)
 })
 // 首次获取热门职位列表
-getPositionByHot(typeList.value[0].position_type_id).then((res: any) => {
+getPositionByHot(typeList.value[0]?.position_type_id).then((res: any) => {
   if (res.code === 200) {
     hotJobList.value = res.data
   }

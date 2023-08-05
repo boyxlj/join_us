@@ -14,11 +14,17 @@ import { getPositionByHot } from "@/api";
 const specialJobList = ref<Iposition_type[]>([]);
 const position_type_list: Array<IPositionType> = JSON.parse(
   localStorage.getItem("positionType")!
-).positionTypeList;
+)?.positionTypeList;
 // 首次获取热门职位列表
-getPositionByHot(position_type_list[0].position_type_id).then((res: any) => {
-  if (res.code === 200) {
-    specialJobList.value = res.data;
+onMounted(() => {
+  if (position_type_list[0]?.position_type_id) {
+    getPositionByHot(position_type_list[0]?.position_type_id).then(
+      (res: any) => {
+        if (res.code === 200) {
+          specialJobList.value = res.data;
+        }
+      }
+    );
   }
 });
 </script>

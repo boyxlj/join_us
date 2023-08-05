@@ -18,6 +18,8 @@ import { useIndustryStore } from "@/store/industry";
 const { preventCity } = useCity();
 const mangerToken = localStorage.getItem("mangerToken");
 useJobTypeStore().getJobs(); //职位类型
+
+console.log(useJobTypeStore())
 useIndustryStore().getIndustry(); //行业
 useCity().getCity();
 

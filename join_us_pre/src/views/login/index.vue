@@ -271,12 +271,12 @@ window.addEventListener("beforeunload", function (e) {
 });
 
 const submit = async () => {
-  await formRef.value?.validate();
   disabledSubmit.value = true
   if (activeKey.value == 1) {
     await formRef.value?.validateFields(["username", "psd",'inputCodeValue']);
     if (formState.inputCodeValue !== validateCoder.value) {
       refresh();
+      disabledSubmit.value = false
       return message.error("验证码有误");
     }
     const res: any = await hrLoginOrRegister({
@@ -325,10 +325,8 @@ const submit = async () => {
     disabledSubmit.value = true;
     refresh();
     if (res.code != 200) {
-      disabledSubmit.value = false;
       return message.error(res.msg);
     }
-    // localStorage.clear()
     localStorage.setItem("token", res.token);
     useUserInfo().saveUserId(res.userInfo[0]?.userId);
     useUserInfo().getUseInfo(res.userInfo[0]?.userId);
@@ -337,7 +335,7 @@ const submit = async () => {
     setTimeout(() => {
       disabledSubmit.value = false
       location.reload();
-    }, 100);
+    }, 1000);
   }
 };
 
