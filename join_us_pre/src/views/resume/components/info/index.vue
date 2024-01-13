@@ -78,7 +78,6 @@
 
 <script setup lang="ts">
 import type { Rule } from "ant-design-vue/es/form";
-import dayjs, { Dayjs } from "dayjs";
 import type { FormInstance } from "ant-design-vue";
 import {useUserInfo} from "@/store/user"
 const userStore = useUserInfo()

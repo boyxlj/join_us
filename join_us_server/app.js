@@ -6,10 +6,6 @@ app.use(cors())
 app.use(express.urlencoded({extended:false}))
 app.use(express.json())
 // const AllowOriginList = [
-//   'http://localhost:5173',
-//    'http://127.0.0.1:5173',
-//     'http://localhost:5174',
-//      'http://127.0.0.1:5174',
 //       'http://zhaopin.helloxlj.top','http://small-zhaopin.helloxlj.top'
 // ]
 // const publicApiList = [ '/static/upload']  

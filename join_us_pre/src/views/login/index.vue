@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <div class="box">
-      <h1>验证码登录/注册</h1>
+      <h1>JOIN-US 登录/注册</h1>
       <div class="tabs">
         <li @click="changeActive(0)" :class="activeKey === 0 ? 'active' : ''">
           我要找工作
@@ -73,9 +73,9 @@
             />
             <div class="photo" @click="refresh()" ref="validateContainer"></div>
           </a-form-item>
-          <a-form-item class="tipsItem" >
-            <p class="loginTips"  >
-               如果您的账号未进行注册，首次登录后系统将会自动为您注册！
+          <a-form-item class="tipsItem">
+            <p class="loginTips">
+              如果您的账号未进行注册，首次登录后系统将会自动为您注册！
             </p>
           </a-form-item>
           <a-form-item :wrapper-col="{ span: 24, offset: 0 }">
@@ -96,257 +96,256 @@
 </template>
 
 <script setup lang="ts">
-import { notification, message } from "ant-design-vue";
-import type { Rule } from "ant-design-vue/es/form";
-import type { FormInstance } from "ant-design-vue";
-import { getValidateCoder } from "validate-coder";
-import { userSendCode, userLogin, hrLoginOrRegister } from "@/api";
-import { useUserInfo } from "@/store/user";
-import { useCompanyInfo } from "@/store/company_hr";
-import { useHrInfo } from "@/store/hr";
-import CompanyApply from "@/components/companyApply/index.vue";
-import { emitter } from "@/utils/emitter";
-const router = useRouter();
-const route = useRoute();
+import { notification, message } from 'ant-design-vue'
+import type { Rule } from 'ant-design-vue/es/form'
+import type { FormInstance } from 'ant-design-vue'
+import { getValidateCoder } from 'validate-coder'
+import { userSendCode, userLogin, hrLoginOrRegister } from '@/api'
+import { useUserInfo } from '@/store/user'
+import { useCompanyInfo } from '@/store/company_hr'
+import { useHrInfo } from '@/store/hr'
+import CompanyApply from '@/components/companyApply/index.vue'
+import { emitter } from '@/utils/emitter'
+const router = useRouter()
+const route = useRoute()
 interface FormState {
-  email: string;
-  code: string;
-  username: string;
-  psd: string;
-  inputCodeValue?: string;
+  email: string
+  code: string
+  username: string
+  psd: string
+  inputCodeValue?: string
 }
 
-const activeKey = ref(0);
-const validateCoder = ref<string>();
+const activeKey = ref(0)
+const validateCoder = ref<string>()
 
 onMounted(() => {
-  if (route.query?.query === "boss") {
-    activeKey.value = 1;
-    document.title = "企业登录";
+  if (route.query?.query === 'boss') {
+    activeKey.value = 1
+    document.title = '企业登录'
   } else {
-    activeKey.value = 0;
+    activeKey.value = 0
   }
-});
+})
 
-// const inputCodeValue = ref<string>();
-const validateContainer = ref<HTMLDivElement>();
+const validateContainer = ref<HTMLDivElement>()
 const changeActive = (actIdx: number) => {
-  if (activeKey.value === actIdx) return;
-  // const token = localStorage.getItem('token')
-  // if(token && activeKey.value==1) return
-  activeKey.value = actIdx;
+  if (activeKey.value === actIdx) return
+  activeKey.value = actIdx
   if (activeKey.value == 0) {
-    router.replace("/login");
+    router.replace('/login')
   } else {
-    router.replace("/login?query=boss");
+    router.replace('/login?query=boss')
   }
-  formRef.value?.resetFields();
-  refresh();
-};
+  formRef.value?.resetFields()
+  disabledSubmit.value = false
+  refresh()
+}
 
-const disabledSubmit = ref(false);
+const disabledSubmit = ref(false)
 //验证码按钮
-const sendCodeBtnText = ref("发送验证码");
-const disabledSendCodeBtn = ref(false);
+const sendCodeBtnText = ref('发送验证码')
+const disabledSendCodeBtn = ref(false)
 const clickSendCode = async () => {
-  await formRef.value?.validate(["email"]);
-  disabledSendCodeBtn.value = true;
-  const res: any = await userSendCode(formState.email);
+  await formRef.value?.validate(['email'])
+  disabledSendCodeBtn.value = true
+  const res: any = await userSendCode(formState.email)
   if (res.code === 200) {
     notification.success({
-      message: "验证码发送成功，请注意查收",
-    });
-    let timeout = 60;
+      message: '验证码发送成功，请注意查收'
+    })
+    let timeout = 60
     let timer = setInterval(() => {
-      timeout--;
+      timeout--
       if (timeout === 0) {
-        clearInterval(timer);
-        disabledSendCodeBtn.value = false;
-        return (sendCodeBtnText.value = "发送验证码");
+        clearInterval(timer)
+        disabledSendCodeBtn.value = false
+        return (sendCodeBtnText.value = '发送验证码')
       }
-      sendCodeBtnText.value = `${timeout}后再次尝试发送`;
-    }, 1000);
+      sendCodeBtnText.value = `${timeout}后再次尝试发送`
+    }, 1000)
   } else {
-    disabledSendCodeBtn.value = false;
+    disabledSendCodeBtn.value = false
     notification.error({
-      message: "验证码发送失败",
-    });
+      message: '验证码发送失败'
+    })
   }
-};
+}
 
 //更新验证码
 const refresh = () => {
   validateCoder.value = getValidateCoder(
     validateContainer.value as HTMLDivElement,
-    "#BCDEEA"
-  );
-};
+    '#BCDEEA'
+  )
+}
 
 onMounted(() => {
-  refresh();
-});
+  refresh()
+})
 
-const formRef = ref<FormInstance>();
+const formRef = ref<FormInstance>()
 const formState = reactive<FormState>({
-  code: "",
-  email: "",
-  username: "13870000000",
-  psd: "123456",
-  inputCodeValue: "",
-});
+  code: '',
+  email: '',
+  username: '13870000000',
+  psd: '123456',
+  inputCodeValue: ''
+})
 
 let validateEmailCode = async (_rule: Rule, value: string) => {
-  if (value === "") {
-    return Promise.reject("请填写验证码");
+  if (value === '') {
+    return Promise.reject('请填写验证码')
   } else {
-    if (formState.code !== "") {
-      formRef.value?.validateFields("checkPass");
+    if (formState.code !== '') {
+      formRef.value?.validateFields('checkPass')
     }
-    return Promise.resolve();
+    return Promise.resolve()
   }
-};
+}
 let validateEmail = async (_rule: Rule, value: string) => {
-  const reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
-  if (value === "") {
-    return Promise.reject("请填写您的邮箱");
+  const reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/
+  if (value === '') {
+    return Promise.reject('请填写您的邮箱')
   } else if (!reg.test(formState.email)) {
-    return Promise.reject("请输入合法的邮箱");
+    return Promise.reject('请输入合法的邮箱')
   } else {
-    return Promise.resolve();
+    return Promise.resolve()
   }
-};
+}
 let validateUserName = async (_rule: Rule, value: string) => {
   const reg =
-    /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
-  if (value === "") {
-    return Promise.reject("请填写您的手机号");
+    /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/
+  if (value === '') {
+    return Promise.reject('请填写您的手机号')
   } else if (!reg.test(formState.username)) {
-    return Promise.reject("请输入正确格式的手机号");
+    return Promise.reject('请输入正确格式的手机号')
   } else {
-    return Promise.resolve();
+    return Promise.resolve()
   }
-};
+}
 let validateUserPsd = async (_rule: Rule, value: string) => {
-  const reg = /^[a-z0-9]+$/i;
-  if (value === "") {
-    return Promise.reject("请填写您的登录密码");
+  const reg = /^[a-z0-9]+$/i
+  if (value === '') {
+    return Promise.reject('请填写您的登录密码')
   } else if (!reg.test(formState.psd)) {
-    return Promise.reject("密码只能由6-14位数字和字母组成");
+    return Promise.reject('密码只能由6-14位数字和字母组成')
   } else if (value.length > 14 || value.length < 6) {
-    return Promise.reject("密码只能由6-14位数字和字母组成");
+    return Promise.reject('密码只能由6-14位数字和字母组成')
   } else {
-    return Promise.resolve();
+    return Promise.resolve()
   }
-};
+}
 let validateInputCodeValue = async (_rule: Rule, value: string) => {
   if (!value) {
-    return Promise.reject("请填写数字验证码");
+    return Promise.reject('请填写数字验证码')
   } else {
-    return Promise.resolve();
+    return Promise.resolve()
   }
-};
+}
 
 const rules: Record<string, Rule[]> = {
-  code: [{ required: true, validator: validateEmailCode, trigger: "change" }],
-  email: [{required: true, validator: validateEmail, trigger: "change" }],
-  username: [{required: true, validator: validateUserName, trigger: "change" }],
-  psd: [{ required: true,validator: validateUserPsd, trigger: "change" }],
-  inputCodeValue: [{required: true, validator: validateInputCodeValue, trigger: "change" }],
-};
+  code: [{ required: true, validator: validateEmailCode, trigger: 'change' }],
+  email: [{ required: true, validator: validateEmail, trigger: 'change' }],
+  username: [
+    { required: true, validator: validateUserName, trigger: 'change' }
+  ],
+  psd: [{ required: true, validator: validateUserPsd, trigger: 'change' }],
+  inputCodeValue: [
+    { required: true, validator: validateInputCodeValue, trigger: 'change' }
+  ]
+}
 const layout = {
   labelCol: { span: 0 },
-  wrapperCol: { span: 24 },
-};
-const handleFinish = (values: FormState) => {
-};
-const handleFinishFailed = (errors: any) => {
-};
+  wrapperCol: { span: 24 }
+}
+const handleFinish = (values: FormState) => {}
+const handleFinishFailed = (errors: any) => {}
 
-window.addEventListener("beforeunload", function (e) {
-  const companyToken = localStorage.getItem("companyToken");
-  const hr_id = localStorage.getItem("hr_id");
-  if(companyToken && hr_id){
+window.addEventListener('beforeunload', function (e) {
+  const companyToken = localStorage.getItem('companyToken')
+  const hr_id = localStorage.getItem('hr_id')
+  if (companyToken && hr_id) {
     localStorage.removeItem('companyToken')
   }
-});
+})
 
 const submit = async () => {
-  disabledSubmit.value = true
   if (activeKey.value == 1) {
-    await formRef.value?.validateFields(["username", "psd",'inputCodeValue']);
+    await formRef.value?.validateFields(['username', 'psd', 'inputCodeValue'])
     if (formState.inputCodeValue !== validateCoder.value) {
-      refresh();
+      refresh()
       disabledSubmit.value = false
-      return message.error("验证码有误");
+      return message.error('验证码有误')
     }
+    disabledSubmit.value = true
     const res: any = await hrLoginOrRegister({
       telephone: formState.username,
-      password: formState.psd,
-    });
-    refresh();
+      password: formState.psd
+    })
+    refresh()
     if (res.code === 200) {
-      localStorage.removeItem("token");
+      localStorage.removeItem('token')
       if (res.remark || !res.company_id) {
         // 首次注册后续操作，填写表单等
-        localStorage.setItem("companyToken", res.token);
-        localStorage.setItem("hr_id", res.hr_id);
+        localStorage.setItem('companyToken', res.token)
+        localStorage.setItem('hr_id', res.hr_id)
         localStorage.setItem(
-          "loginInfo",
+          'loginInfo',
           JSON.stringify({ telephone: formState.username })
-          );
-          emitter.emit("changeCompanyState");
+        )
+        emitter.emit('changeCompanyState')
       } else {
-        localStorage.setItem("companyToken", res.token);
-        localStorage.setItem("company_id", res.company_id);
+        localStorage.setItem('companyToken', res.token)
+        localStorage.setItem('company_id', res.company_id)
         localStorage.setItem(
-          "loginInfo",
+          'loginInfo',
           JSON.stringify({ telephone: formState.username })
-        );
-        useCompanyInfo().saveCompanyId(res.company_id);
-        useCompanyInfo().getCompanyInfo(res.company_id);
-        useHrInfo().saveHrId(res.hr_id);
-        useHrInfo().getHrInfo(res.hr_id);
-        localStorage.removeItem("token")
-        message.success("企业登录成功");
-        // router.push('/company')
+        )
+        useCompanyInfo().saveCompanyId(res.company_id)
+        useCompanyInfo().getCompanyInfo(res.company_id)
+        useHrInfo().saveHrId(res.hr_id)
+        useHrInfo().getHrInfo(res.hr_id)
+        localStorage.removeItem('token')
+        message.success('企业登录成功')
         setTimeout(() => {
           disabledSubmit.value = false
-          router.push("/company");
-        }, 100);
+          router.push('/company')
+        }, 100)
       }
     } else {
       disabledSubmit.value = false
-      message.error("登录失败");
+      message.error('登录失败')
     }
   } else {
-    await formRef.value?.validateFields(["email", "code"]);
-    const params = { email: formState.email, validateCode: formState.code };
-    const res: any = await userLogin(params);
-    disabledSubmit.value = true;
-    refresh();
+    await formRef.value?.validateFields(['email', 'code'])
+    const params = { email: formState.email, validateCode: formState.code }
+    const res: any = await userLogin(params)
+    disabledSubmit.value = true
+    refresh()
     if (res.code != 200) {
-      return message.error(res.msg);
+      return message.error(res.msg)
     }
-    localStorage.setItem("token", res.token);
-    useUserInfo().saveUserId(res.userInfo[0]?.userId);
-    useUserInfo().getUseInfo(res.userInfo[0]?.userId);
-    localStorage.removeItem("companyToken");
-    message.success("登录成功");
+    localStorage.setItem('token', res.token)
+    useUserInfo().saveUserId(res.userInfo[0]?.userId)
+    useUserInfo().getUseInfo(res.userInfo[0]?.userId)
+    localStorage.removeItem('companyToken')
+    message.success('登录成功')
     setTimeout(() => {
       disabledSubmit.value = false
-      location.reload();
-    }, 1000);
+      location.reload()
+    }, 1000)
   }
-};
+}
 
-const handleValidate = (...args: any) => {};
+const handleValidate = (...args: any) => {}
 </script>
 
 <style lang="less" scoped>
 .login {
   width: 100vw;
   height: 100vh;
-  background: url("../../assets/images/login_bg.webp") no-repeat center center;
+  background: url('../../assets/images/login_bg.webp') no-repeat center center;
   background-size: 100% 100%;
   user-select: none;
   .reg-modal-input {
@@ -411,16 +410,14 @@ const handleValidate = (...args: any) => {};
 
         .ant-form-item {
           padding-bottom: 6px;
-         
         }
-        .tipsItem{
+        .tipsItem {
           padding: 0;
-          .loginTips{
+          .loginTips {
             margin: 0;
             padding: 0;
             font-size: 13px;
             color: #939393;
-
           }
         }
 

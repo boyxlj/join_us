@@ -62,16 +62,25 @@ consultRouter.get('/about/content', (req, res) => {
   const sql = `select * from consult inner join manger on consult.manger_id = manger.manger_id where consult.consult_id='pc_about' `
   query(sql, (result) => {
     if (result.length ) {
+
+      const arr = result.map(item=>{
+        delete item.password
+        delete item.username
+        return item
+      })
       res.send({
         code: 200,
         msg: '查询资讯成功',
-        data:result
+        data:arr
       })
     } else {
       return returnErr(res, "查询资讯失败");
     }
   })
 })
+
+
+
 
 
 

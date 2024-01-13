@@ -29,8 +29,8 @@ hrRouter.post('/hr/LoginOrRegister', (req, res) => {
       const lengthSQl = 'select * from hr'
       query(lengthSQl, (result1) => {
         const insertSQl = 
-        `insert into hr( id,hr_id,  telephone, password) 
-        values( '${result1.length + 1}','${hr_id}', '${telephone}', '${password}')`
+        `insert into hr( hr_id,  telephone, password) 
+        values( '${hr_id}', '${telephone}', '${password}')`
         query(insertSQl, (result2) => {
           if (result2.affectedRows) {
             return res.send({
