@@ -3,7 +3,7 @@ const query = require('../../utils/mysql')
 const { returnErr } = require('../../utils/returnErr')
 const { v4: uuidv4 } = require('uuid');
 const jwt = require('../../utils/jsonwebtoken')
-
+const {dealEmail} =  require("../../utils/dealNum")
 //查询所有用户信息
 userRouter.post('/users', (req, res) => {
   let { pageOn, pageSize } = req.body
@@ -19,6 +19,7 @@ userRouter.post('/users', (req, res) => {
         if (item.password) {
           delete item.password
         }
+        item.email = dealEmail(item.email)
         return item
       })
       res.send({

@@ -3,7 +3,7 @@ const hrRouter = express.Router()
 const query = require('../../utils/mysql')
 const { returnErr } = require('../../utils/returnErr')
 const { v4: uuidv4 } = require('uuid');
-
+const {dealPhoneNumber} =  require("../../utils/dealNum")
 //查询所有人事
 hrRouter.get('/hrs', (req, res) => {
   let { pageOn, pageSize, keyword } = req.query
@@ -23,6 +23,7 @@ hrRouter.get('/hrs', (req, res) => {
         if (item.password) {
           delete item.password
         }
+        item.telephone =dealPhoneNumber(item.telephone) 
         return item
       })
       res.send({

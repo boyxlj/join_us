@@ -4,6 +4,7 @@ const query = require('../../utils/mysql')
 const { v4: uuidv4, v4 } = require("uuid");
 const jwt = require("../../utils/jsonwebtoken");
 const { returnErr } = require("../../utils/returnErr");
+const {dealPhoneNumber} =  require("../../utils/dealNum")
 //人事表
 
 // hr登陆或注册
@@ -398,6 +399,7 @@ hrRouter.post('/company/hrs', (req, res) => {
         if (item.password) {
           delete item.password
         }
+        item.telephone =dealPhoneNumber(item.telephone) 
         return item
       })
       return res.send({ code: 200, msg: "查询成功", data: RES, total: countSqlRes.length })
