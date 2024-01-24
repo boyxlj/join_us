@@ -30,7 +30,7 @@ import {getTime} from "@/utils/formatTime"
 
   defineProps<{consultData:IConsultData[]}>()
   const navigateConsultDetail =(consult_id:string)=>{
-    window.open(`/home/consultDetail?consult_id=${consult_id}`)
+    window.open(`/#/home/consultDetail?consult_id=${consult_id}`)
   }
 </script>
 

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory,createWebHashHistory } from "vue-router"
 import { routes } from "./routes"
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHashHistory('/manage'),
   routes
 })
 router.beforeEach((to, _from, next) => {

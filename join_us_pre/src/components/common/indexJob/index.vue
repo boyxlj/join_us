@@ -58,7 +58,7 @@ const props = defineProps({
 });
 
 const navigateCompanyDetail = (company_id: string) => {
-  window.open(`/home/companyDetail?company_id=${company_id}`)
+  window.open(`/#/home/companyDetail?company_id=${company_id}`)
 }
 // 跳转详情页
 const toDetail = (item: Iposition_type) => {
@@ -68,7 +68,7 @@ const toDetail = (item: Iposition_type) => {
   //         position_id: item.position_id,
   //     },
   // });
-  window.open(`/home/jobDetail?position_id=${item.position_id}`);
+  window.open(`/#/home/jobDetail?position_id=${item.position_id}`);
 };
 </script>
 

@@ -156,11 +156,11 @@ defineProps<{companyDetailData:ICompanyDetailData}>()
 const router = useRouter();
 const route = useRoute();
 const navigateTag1 = () => {
-  router.push(`/home/companyDetail?company_id=${route.query.company_id}&tag=1`);
+  router.push(`/#/home/companyDetail?company_id=${route.query.company_id}&tag=1`);
 };
 //跳转详情
 const navigatePosDetails = (position_id:string)=>{
-  window.open(`/home/jobDetail?position_id=${position_id}`)
+  window.open(`/#/home/jobDetail?position_id=${position_id}`)
 }
 const sendPos = async(position_id:string,company_id:string)=>{
   if(!useUserLoginState()) return

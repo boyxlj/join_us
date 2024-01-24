@@ -31,7 +31,7 @@ const data = ref<Iposition_type[]>(randomPositionData)
 
   const navigateDetails = (id:string)=>{
     if(id){
-      window.open(`/home/jobDetail?position_id=${id}`)
+      window.open(`/#/home/jobDetail?position_id=${id}`)
     }
 
   }

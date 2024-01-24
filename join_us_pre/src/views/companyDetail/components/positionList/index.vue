@@ -53,7 +53,7 @@ const sendPos = async(position_id:string,company_id:string)=>{
 
 //跳转详情
 const navigatePosDetails = (position_id:string)=>{
-  window.open(`/home/jobDetail?position_id=${position_id}`)
+  window.open(`/#/home/jobDetail?position_id=${position_id}`)
 }
 </script>
 

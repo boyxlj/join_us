@@ -1,8 +1,8 @@
-import { createRouter, createWebHistory } from "vue-router"
+import { createRouter, createWebHashHistory } from "vue-router"
 import { routes } from "./routes"
 import { message } from "ant-design-vue"
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes
 })
 router.beforeEach((to, from, next) => {

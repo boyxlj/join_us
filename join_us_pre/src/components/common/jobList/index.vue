@@ -39,10 +39,10 @@ import { Iposition_type } from '@/types/jobType'
 withDefaults(defineProps<{ positionData: Iposition_type[] }>(), {})
 
 const navigateDetail = (position_id: string) => {
-  window.open(`/home/jobDetail?position_id=${position_id}`)
+  window.open(`/#/home/jobDetail?position_id=${position_id}`)
 }
 const navigateCompanyDetail = (company_id: string) => {
-  window.open(`/home/companyDetail?company_id=${company_id}`)
+  window.open(`/#/home/companyDetail?company_id=${company_id}`)
 }
 </script>
 

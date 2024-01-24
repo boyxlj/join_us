@@ -99,7 +99,7 @@ const emits = defineEmits(["refreshData"]);
 
 
 const navigateCompany  = (company_id:string)=>{
-  window.open(`/home/companyDetail?company_id=${company_id}`)
+  window.open(`/#/home/companyDetail?company_id=${company_id}`)
 }
 //取消投递
 const cancelSendBtn = async (sendId: string, flag?: boolean) => {
@@ -127,7 +127,7 @@ const navigateDetails = (position_id: string, position_state: string) => {
     // message.error("该职位已关闭");
     return 
   }
-  window.open(`/home/jobDetail?position_id=${position_id}`);
+  window.open(`/#/home/jobDetail?position_id=${position_id}`);
 };
 
 //删除
