@@ -9,21 +9,17 @@
         class="form"
         @submit="handleSubmit"
       >
-       
         <a-form-item
           field="username"
           hide-asterisk
           :rules="[
             { required: true, message: '登录账号不能为空' },
             { minLength: 6, message: '登录账号最少为6位' },
-            { maxLength: 16, message: '登录账号最多为16位' },
+            { maxLength: 16, message: '登录账号最多为16位' }
           ]"
           :validate-trigger="['change', 'input']"
         >
-          <a-input
-            v-model.trim="form.username"
-            placeholder="请输入登录账号"
-          />
+          <a-input v-model.trim="form.username" placeholder="请输入登录账号" />
         </a-form-item>
         <a-form-item
           field="password"
@@ -31,7 +27,7 @@
           :rules="[
             { required: true, message: '登录密码不能为空' },
             { minLength: 6, message: '登录密码最少为6位' },
-            { maxLength: 16, message: '登录密码最多为16位' },
+            { maxLength: 16, message: '登录密码最多为16位' }
           ]"
           :validate-trigger="['change', 'input']"
         >
@@ -44,9 +40,7 @@
         <a-form-item
           field="coderInputValue"
           hide-asterisk
-          :rules="[
-            { required: true, message: '验证码不能为空' },
-          ]"
+          :rules="[{ required: true, message: '验证码不能为空' }]"
           :validate-trigger="['change', 'input']"
         >
           <a-input
@@ -55,80 +49,86 @@
           />
           <div @click="changeCode" class="coder" ref="coderContainer"></div>
         </a-form-item>
-        <a-form-item  class="loginBtnItem">
+        <a-form-item class="loginBtnItem">
           <a-space>
-            <a-button :disabled="loginBtnDisAbled" class="loginBtn" type="primary" html-type="submit">登录</a-button>
+            <a-button
+              :disabled="loginBtnDisAbled"
+              class="loginBtn"
+              type="primary"
+              html-type="submit"
+              >登录</a-button
+            >
             <!-- <a-button @click="$refs.formRef.resetFields()">Reset</a-button> -->
           </a-space>
         </a-form-item>
       </a-form>
-      
     </div>
-      <div class="footerBox">
-        <Footer :ba="true" />
-        </div>
+    <div class="footerBox">
+      <Footer :ba="true" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { getValidateCoder } from "validate-coder";
-import Footer from "@/components/common/footer/index.vue"
-import {loginManger} from "@/api"
-import {useMangerStore} from "@/store/manger"
-import { Message } from "@arco-design/web-vue";
+import { getValidateCoder } from 'validate-coder'
+import Footer from '@/components/common/footer/index.vue'
+import { loginManger } from '@/api'
+import { useMangerStore } from '@/store/manger'
+import { Message } from '@arco-design/web-vue'
 const formRef = ref()
 const router = useRouter()
-const loginBtnDisAbled= ref(false)
-const handleSubmit = async({ values, errors }:any) => {
-  const resArr = [];
+const loginBtnDisAbled = ref(false)
+const handleSubmit = async ({ values, errors }: any) => {
+  const resArr = []
   for (let i in errors) {
-    resArr.push(i);
+    resArr.push(i)
   }
   if (resArr.length) return
-  if(values.coderInputValue!==validateCoder.value){
-    Message.error("验证码不正确")
+  if (values.coderInputValue !== validateCoder.value) {
+    Message.error('验证码不正确')
     changeCode()
-    return 
+    return
   }
   loginBtnDisAbled.value = true
-  const res:any  = await loginManger(values)
-  if(res.code!==200){
+  const res: any = await loginManger(values)
+  if (res.code !== 200) {
     Message.error(res.msg)
     changeCode()
     loginBtnDisAbled.value = false
     return
-  }else{
+  } else {
     Message.success(res.msg)
   }
   loginBtnDisAbled.value = false
   useMangerStore().saveMangerId(res.manger_id)
   useMangerStore().getManger()
-  localStorage.setItem('mangerToken',res.mangerToken)
+  localStorage.setItem('mangerToken', res.mangerToken)
   router.push('/')
-};
-const coderContainer = ref<HTMLDivElement>();
-  const validateCoder = ref<string>();
- //生成或更新验证码
- const changeCode = () => {
-    validateCoder.value = getValidateCoder(
-      coderContainer.value as HTMLDivElement,'#c9e4e8'
-    );
-  };
+}
+const coderContainer = ref<HTMLDivElement>()
+const validateCoder = ref<string>()
+//生成或更新验证码
+const changeCode = () => {
+  validateCoder.value = getValidateCoder(
+    coderContainer.value as HTMLDivElement,
+    '#c9e4e8'
+  )
+}
 
-  onMounted(()=>{
-    changeCode()
-  })
+onMounted(() => {
+  changeCode()
+})
 
 const form = reactive({
-  username:"666666",
-  password:"666666",
-  coderInputValue:""
+  username: '',
+  password: '',
+  coderInputValue: ''
 })
 </script>
 
 <style lang="less" scoped>
 .login {
-  background: url("../../assets/images/login-bg.png") no-repeat center center;
+  background: url('../../assets/images/login-bg.png') no-repeat center center;
   background-size: 100% 100%;
   display: flex;
   justify-content: center;
@@ -145,24 +145,24 @@ const form = reactive({
     padding: 36px 30px 15px;
     box-sizing: border-box;
     position: relative;
-   
-    h1{
+
+    h1 {
       font-weight: normal;
       font-size: 35px;
       margin-top: 25px;
     }
-    .form{
+    .form {
       display: flex;
       justify-content: center;
       text-align: center;
       width: 115% !important;
       margin-left: -75px;
       margin-top: 30px;
-      .arco-form-item{
+      .arco-form-item {
         text-align: center;
         width: 100% !important;
         padding-bottom: 8px;
-        .coder{
+        .coder {
           width: 200px;
           height: 36px;
           background: #d7ecef;
@@ -172,18 +172,18 @@ const form = reactive({
     }
   }
 }
-.footerBox{
-      width: 100%;
-      left: 50%;
-      position: fixed;
-      bottom: 33px;
-      font-size: 13px;
-      transform: translateX(-50%);
-    }
-.loginBtnItem{
+.footerBox {
+  width: 100%;
+  left: 50%;
+  position: fixed;
+  bottom: 33px;
+  font-size: 13px;
+  transform: translateX(-50%);
+}
+.loginBtnItem {
   width: 500px;
 }
-.loginBtn{
+.loginBtn {
   width: 372px;
 }
 </style>

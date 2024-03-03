@@ -33,19 +33,31 @@
         </a-button>
         <a-dropdown trigger="hover">
           <div class="mangerInfo">
-            <a-avatar v-if="mangerInfo.avatar" :imageUrl="mangerInfo.avatar"></a-avatar>
-            <a-avatar v-else >
+            <a-avatar
+              v-if="mangerInfo.avatar"
+              :imageUrl="mangerInfo.avatar"
+            ></a-avatar>
+            <a-avatar v-else>
               <IconUser />
             </a-avatar>
             <span>{{ mangerInfo.name }}</span>
           </div>
           <template #content>
-            
-            <a-doption @click="Message.success(`欢迎回来--${mangerInfo.name}(${mangerInfo.manger_state=='1'?'超级管理员':'普通访客👉'})`)">
+            <a-doption
+              @click="
+                Message.success(
+                  `欢迎回来--${mangerInfo.name}(${
+                    mangerInfo.manger_state == '1' ? '超级管理员' : '普通访客👉'
+                  })`
+                )
+              "
+            >
               <template #icon>
                 <IconSettings />
               </template>
-              <template #default>{{ mangerInfo.manger_state=='1'?'超级管理员':'普通访客👉' }}</template>
+              <template #default>{{
+                mangerInfo.manger_state == '1' ? '超级管理员' : '普通访客👉'
+              }}</template>
             </a-doption>
             <a-doption @click="$router.push('/profile')">
               <template #icon>
@@ -82,77 +94,77 @@
 </template>
 
 <script setup lang="ts">
-import { asideList } from "./asides";
-import Footer from "@/components/common/footer/index.vue";
+import { asideList } from './asides'
+import Footer from '@/components/common/footer/index.vue'
 import {
   IconCaretRight,
   IconCaretLeft,
   IconUser,
   IconPoweroff,
-  IconSettings,
-} from "@arco-design/web-vue/es/icon";
-import { Modal,Message } from "@arco-design/web-vue";
-import {useMangerStore} from "@/store/manger"
-import {IMangerData} from "@/types/manger"
-const mangerInfo = computed(()=>useMangerStore().mangerInfo[0] as IMangerData) 
-const router = useRouter();
-const route = useRoute();
+  IconSettings
+} from '@arco-design/web-vue/es/icon'
+import { Modal, Message } from '@arco-design/web-vue'
+import { useMangerStore } from '@/store/manger'
+import { IMangerData } from '@/types/manger'
+const mangerInfo = computed(() => useMangerStore().mangerInfo[0] as IMangerData)
+const router = useRouter()
+const route = useRoute()
 
-let asideData= shallowRef<any[]>([])
-onMounted(()=>{
-  if(mangerInfo.value.manger_state!='1'){
-    asideData.value =asideList.filter(item=>item.path!='/manger')
-  }else{
-    asideData.value= asideList
+let asideData = shallowRef<any[]>([])
+onMounted(() => {
+  if (mangerInfo.value.manger_state != '1') {
+    asideData.value = asideList.filter((item) => item.path != '/manger')
+  } else {
+    asideData.value = asideList
   }
 })
 
-const defaultOpenKeys = ref(["/" + route.path.split("/")[1]]);
-const defaultSelectedKeys = ref([route.path]);
-const breadcrumbList = ref<any[]>([]);
+const defaultOpenKeys = ref(['/' + route.path.split('/')[1]])
+const defaultSelectedKeys = ref([route.path])
+const breadcrumbList = ref<any[]>([])
 watch(
   () => route.path,
   () => {
     breadcrumbList.value = asideList
       .map((item) => {
-        if ("/" + route.path.split("/")[1] === item.path) {
+        if ('/' + route.path.split('/')[1] === item.path) {
           if (item.children?.length) {
             const subItem = item.children?.filter((sub) => {
-              return sub.path === route.path;
-            });
-            return [item, ...subItem];
+              return sub.path === route.path
+            })
+            return [item, ...subItem]
           } else {
-            return item;
+            return item
           }
         }
       })
       ?.filter((item) => item)
-      ?.flat();
+      ?.flat()
   },
   { immediate: true, deep: true }
-);
+)
 
 //退出登录
 const cancelLogin = () => {
   Modal.warning({
     hideCancel: false,
-    cancelText: "取消",
-      okText:"确认",
-    title: "温馨提示",
-    content: "您确定要退出登录吗？",
-    onOk:()=>{
+    cancelText: '取消',
+    okText: '确认',
+    title: '温馨提示',
+    content: '您确定要退出登录吗？',
+    onOk: () => {
       localStorage.clear()
       location.reload()
     }
-  });
-};
-const collapsed = ref(false);
+  })
+}
+const collapsed = ref(false)
 const onCollapse = () => {
-  collapsed.value = !collapsed.value;
-};
+  collapsed.value = !collapsed.value
+}
 const onClickMenuItem = (key: string) => {
-  router.push(key);
-};
+  router.push(key)
+}
 </script>
 
 <style lang="less" scoped>
@@ -165,14 +177,14 @@ const onClickMenuItem = (key: string) => {
 .layout-demo :deep(.arco-layout-sider) .logo {
   height: 32px;
   margin: 12px 8px;
-  background: rgba(255, 255, 255, 0.2);
+  // background: rgba(255, 255, 255, 0.2);
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 18px;
+  font-size: 24px;
 }
 .layout-demo :deep(.arco-layout-sider-light) .logo {
-  background: var(--color-fill-2);
+  // background: var(--color-fill-2);
 }
 .layout-demo :deep(.arco-layout-header) {
   height: 64px;
