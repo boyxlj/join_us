@@ -32,7 +32,7 @@
           </div>
           <a-dropdown>
             <div class="right">
-              <p>{{ hrInfoList[0].name || "未设置昵称" }}</p>
+              <p>{{ hrInfoList[0].name || '未设置昵称' }}</p>
               <a-avatar
                 v-if="hrInfoList[0].avatar"
                 :src="hrInfoList[0].avatar"
@@ -59,7 +59,7 @@
             margin: '24px 16px',
             padding: '24px',
             background: '#fff',
-            minHeight: '280px',
+            minHeight: '280px'
           }"
         >
           <router-view></router-view>
@@ -84,19 +84,19 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   UserOutlined,
-  ExclamationCircleOutlined,
-} from "@ant-design/icons-vue";
-import { createVNode } from "vue";
-import { IHrData } from "@/types/hr";
-import { useHrInfo } from "@/store/hr";
-import { Modal } from "ant-design-vue";
-import Footer from "@/components/common/footer/index.vue";
-const hrInfoList = computed(() => useHrInfo().hrInfoList as IHrData[]);
-const route = useRoute();
-const router = useRouter();
-const selectedKeys = ref<string[]>([route.path]);
-const collapsed = ref<boolean>(false);
-const path = route.path;
+  ExclamationCircleOutlined
+} from '@ant-design/icons-vue'
+import { createVNode } from 'vue'
+import { IHrData } from '@/types/hr'
+import { useHrInfo } from '@/store/hr'
+import { Modal } from 'ant-design-vue'
+import Footer from '@/components/common/footer/index.vue'
+const hrInfoList = computed(() => useHrInfo().hrInfoList as IHrData[])
+const route = useRoute()
+const router = useRouter()
+const selectedKeys = ref<string[]>([route.path])
+const collapsed = ref<boolean>(false)
+const path = route.path
 const componentsList = [
   BarChartOutlined,
   BarsOutlined,
@@ -104,43 +104,48 @@ const componentsList = [
   AuditOutlined,
   BankOutlined,
   ToolOutlined,
-  MoreOutlined,
-];
+  MoreOutlined
+]
 const menuList = ref([
   { id: 0, name: '数据分析' },
-  { id: 1, name: "职位管理" },
-  { id: 3, name: "简历审核" },
-  { id: 6, name: "公司信息" },
+  { id: 1, name: '职位管理' },
+  { id: 3, name: '简历审核' },
+  { id: 6, name: '公司信息' },
   { id: 4, name: '公司人事' },
-  { id: 5, name: "个人中心" },
-]);
+  { id: 5, name: '个人中心' }
+])
 const pathList = [
   '/company/statistics',
-  "/company/positionManage",
-  "/company/resumeReview",
-  "/company/companyInfo",
+  '/company/positionManage',
+  '/company/resumeReview',
+  '/company/companyInfo',
   '/company/hrs',
-  "/company/profile",
-];
+  '/company/profile'
+]
 
 const cancelLogin = () => {
   Modal.confirm({
-    title: "温馨提示",
-    cancelText: "取消",
-    okText: "确认",
+    title: '温馨提示',
+    cancelText: '取消',
+    okText: '确认',
     centered: true,
     icon: createVNode(ExclamationCircleOutlined),
-    content: "您确定要退出登录吗",
+    content: '您确定要退出登录吗',
     onOk() {
-      // localStorage.clear();
-      localStorage.removeItem("companyToken");
-      localStorage.removeItem("company_id");
-      location.reload();
+      localStorage.clear()
+      localStorage.removeItem('companyToken')
+      localStorage.removeItem('company_id')
+      localStorage.removeItem('mangerToken')
+      localStorage.removeItem('hrInfo')
+      localStorage.removeItem('manger')
+      localStorage.removeItem('companyInfo')
+      localStorage.removeItem('loginInfo')
+      location.reload()
     },
     onCancel() {},
-    class: "test",
-  });
-};
+    class: 'test'
+  })
+}
 </script>
 
 <style lang="less">
@@ -203,7 +208,7 @@ const cancelLogin = () => {
       background: #fff !important;
       color: #111 !important;
     }
-    .ant-menu-item{
+    .ant-menu-item {
       height: 50px;
       color: #222;
       margin: 6px 0 4px;

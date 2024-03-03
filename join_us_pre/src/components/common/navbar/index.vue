@@ -2,7 +2,11 @@
   <div class="navbar">
     <div class="container">
       <div class="logo">
-        <img @click="clickLogo" src="../../../assets/images/zhaopin.png" alt="" />
+        <img
+          @click="clickLogo"
+          src="../../../assets/images/zhaopin.png"
+          alt=""
+        />
         <p class="city" @click="changeCity">
           <span class="weight">{{ positionCity }}</span>
           <span class="changeCity">[切换城市]</span>
@@ -15,12 +19,18 @@
         <router-link to="/home/job" active-class="homeLinkActive"
           >职位</router-link
         >
-        <router-link to="/home/corporation" active-class="homeLinkActive">公司</router-link>
-        <router-link to="/home/consult" active-class="homeLinkActive">资讯百科</router-link>
-        <router-link to="/home/about" active-class="homeLinkActive">关于</router-link>
+        <router-link to="/home/corporation" active-class="homeLinkActive"
+          >公司</router-link
+        >
+        <router-link to="/home/consult" active-class="homeLinkActive"
+          >资讯百科</router-link
+        >
+        <router-link to="/home/about" active-class="homeLinkActive"
+          >关于</router-link
+        >
       </ul>
       <ul class="profile" v-if="!loginState">
-        <li style="width: 70px;"></li>
+        <li style="width: 70px"></li>
         <!-- <li @click="navigateLinks('/home/user/resume',true)">上传简历</li> -->
         <li @click="navigateLinks('/home/job')">我要找工作</li>
         <li @click="navigateLinks('/login?query=boss')">我要招聘</li>
@@ -31,20 +41,36 @@
         <li class="line" @click="navigateLinks('/home/user/resume')">简历</li>
         <li>上传</li>
         <div class="userProfile">
-          <div class="cons" @mouseleave="leaveUserInfo" @mouseenter="enterUserInfo"  @click="navigateLinks('/home/user/job')">
+          <div
+            class="cons"
+            @mouseleave="leaveUserInfo"
+            @mouseenter="enterUserInfo"
+            @click="navigateLinks('/home/user/job')"
+          >
             <span>{{ userInfo?.name || '应聘者' }}</span>
             <div class="avatar">
               <img :src="userInfo?.avatar" alt="" />
             </div>
             <div class="hovers" ref="hoverBox">
-              <a  @click.stop="navigateLinks('/home/user/resume')" class="centers">
-                <span class="center_title" style="text-align: left;">个人中心</span>
+              <a
+                @click.stop="navigateLinks('/home/user/resume')"
+                class="centers"
+              >
+                <span class="center_title" style="text-align: left"
+                  >个人中心</span
+                >
                 <span class="center_others">推荐职位、编辑在线简历</span>
               </a>
               <!-- <a  @click.stop="navigateLinks('/')">账号与安全中心</a>
               <a  @click.stop="navigateLinks('/')">隐私保护</a> -->
-              <a  @click.stop="navigateLinks('/home/user/jobs/fromChat')">投递记录</a>
-              <a @click.stop.prevent="navigateLinks('/login?query=boss')" class="line">切换为招聘者</a>
+              <a @click.stop="navigateLinks('/home/user/jobs/fromChat')"
+                >投递记录</a
+              >
+              <a
+                @click.stop.prevent="navigateLinks('/login?query=boss')"
+                class="line"
+                >切换为招聘者</a
+              >
               <a class="line" @click.prevent="cancelLogin">退出登录</a>
             </div>
           </div>
@@ -80,59 +106,61 @@
 </template>
 
 <script setup lang="ts">
-import { AimOutlined } from "@ant-design/icons-vue";
-import { useCity } from "@/store/city";
-import { useUserInfo } from "@/store/user";
-import { useUserLoginState } from "@/hooks/useUserLoginState";
-import {IUserInfo} from "@/types/userInfo"
+import { AimOutlined } from '@ant-design/icons-vue'
+import { useCity } from '@/store/city'
+import { useUserInfo } from '@/store/user'
+import { useUserLoginState } from '@/hooks/useUserLoginState'
+import { IUserInfo } from '@/types/userInfo'
 const userStore = useUserInfo()
-const userInfo:IUserInfo =(computed(()=>userStore.userInfoList[0]) as unknown) as  IUserInfo
-const visible = ref<boolean>(false);
-const loginState = useUserLoginState(true);
-const router = useRouter();
+const userInfo: IUserInfo = computed(
+  () => userStore.userInfoList[0]
+) as unknown as IUserInfo
+const visible = ref<boolean>(false)
+const loginState = useUserLoginState(true)
+const router = useRouter()
 const clickLogo = () => {
-  router.push("/");
-};
-const city = useCity();
+  router.push('/')
+}
+const city = useCity()
 const hoverBox = ref()
-const hotCityList = computed(() => city.hotCityList);
-const positionCity = computed(() => city.preventCity);
-const otherCityList = computed(() => city.otherCityList);
+const hotCityList = computed(() => city.hotCityList)
+const positionCity = computed(() => city.preventCity)
+const otherCityList = computed(() => city.otherCityList)
 const clickCity = (e: any) => {
-  if (!e.target.dataset.id) return;
-  city.changeCity(e.target.innerText);
-  visible.value = false;
-  router.go(0);
-};
+  if (!e.target.dataset.id) return
+  city.changeCity(e.target.innerText)
+  visible.value = false
+  router.go(0)
+}
 const changeCity = () => {
-  visible.value = true;
-};
+  visible.value = true
+}
 const navigateLogin = () => {
-  router.push("/login");
-};
+  router.push('/login')
+}
 
 const cancelLogin = (e: Event) => {
   // localStorage.clear()
-  localStorage.removeItem("token");
+  localStorage.removeItem('token')
   // location.href = '/'
   location.reload()
-};
-
-const navigateLinks = (path:string,validateLogin:boolean=false)=>{
- if(validateLogin){
-  if(!useUserLoginState(true)){
-   return router.push('/login')
-  }
- }else{
-   if(path){
-     router.push(path)
-   }
- }
 }
-const enterUserInfo = ()=>{
+
+const navigateLinks = (path: string, validateLogin: boolean = false) => {
+  if (validateLogin) {
+    if (!useUserLoginState(true)) {
+      return router.push('/login')
+    }
+  } else {
+    if (path) {
+      router.push(path)
+    }
+  }
+}
+const enterUserInfo = () => {
   hoverBox.value.style.display = 'block'
 }
-const leaveUserInfo = ()=>{
+const leaveUserInfo = () => {
   hoverBox.value.style.display = 'none'
 }
 </script>
@@ -160,9 +188,9 @@ const leaveUserInfo = ()=>{
       p {
         margin: 0;
       }
-      img{
+      img {
         width: 40px;
-        height:40px
+        height: 40px;
       }
       .city {
         margin-left: 40px;
@@ -189,8 +217,24 @@ const leaveUserInfo = ()=>{
         margin: 0 30px;
         color: #fff;
         transition: all 0.2s;
+        position: relative;
+        &::before {
+          content: '';
+          position: absolute;
+          width: 0;
+          left: 50%;
+          bottom: -18px;
+          border-radius: 20px;
+          background: var(--themeColor);
+          height: 3px;
+          transition: all 0.3s;
+        }
         &:hover {
           color: var(--themeColor);
+          &::before {
+            left: 0;
+            width: 100%;
+          }
         }
       }
       .homeLinkActive {
@@ -206,8 +250,24 @@ const leaveUserInfo = ()=>{
         margin-right: 28px;
         cursor: pointer;
         transition: all 0.2s;
+        position: relative;
+        &::before {
+          content: '';
+          position: absolute;
+          width: 0;
+          left: 50%;
+          bottom: -17px;
+          background: var(--themeColor);
+          height: 3px;
+          border-radius: 20px;
+          transition: all 0.3s;
+        }
         &:hover {
           color: var(--themeColor);
+          &::before {
+            left: 0;
+            width: 100%;
+          }
         }
       }
       .loginBtn {
@@ -232,7 +292,7 @@ const leaveUserInfo = ()=>{
       .line {
         position: relative;
         &::after {
-          content: "";
+          content: '';
           color: #fff;
           margin: 0;
           font-size: 0;
@@ -343,7 +403,7 @@ const leaveUserInfo = ()=>{
                 top: 0;
                 left: 50%;
                 transform: translateX(-50%);
-                content: "";
+                content: '';
                 position: absolute;
                 height: 1px;
                 // background-color: #ebedef;

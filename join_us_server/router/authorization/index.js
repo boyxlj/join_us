@@ -20,6 +20,7 @@ const arr = [
   '/hr/LoginOrRegister',
   '/consults',
   '/about/content',
+  '/companys/all',
 ]
 authorizationRouter.use((req, res, next) => {
   if (arr.some((item)=>item.includes(req.path))) {

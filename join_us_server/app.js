@@ -49,7 +49,7 @@ app.use('/api/manger',require('./mangerRouter'))
 
 app.use('/static',express.static(resolve(__dirname,'./static')))
 
-const port = 3303
+const port = 3308
 app.listen(port,()=>{
   console.log(`serve in running ${port}`)
 })

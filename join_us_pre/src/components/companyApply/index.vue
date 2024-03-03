@@ -42,8 +42,12 @@
             >
           </a-select>
         </div>
-        <a-button type="primary" style="margin:0 10px" @click="clickAdd">添加公司</a-button>
-        <a-button type="primary" style="margin:0 10px" @click="clickBegin">申请入驻</a-button>
+        <a-button type="primary" style="margin: 0 10px" @click="clickAdd"
+          >添加公司</a-button
+        >
+        <a-button type="primary" style="margin: 0 10px" @click="clickBegin"
+          >申请入驻</a-button
+        >
       </div>
       <div class="companyBaseForm" v-show="current == 1">
         <CompanyBaseForm :backStep="backStep" :getData="getData" />
@@ -56,45 +60,46 @@
 </template>
 
 <script setup lang="ts">
-import CompanyBaseForm from "./components/companyBaseForm/index.vue";
-import CompanyOtherForm from "./components/companyOtherForm/index.vue";
-import { emitter } from "@/utils/emitter";
-import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import { createVNode } from "vue";
-import { hrAddCompany, getAllCompany,setHrCompany } from "@/api";
-import { useCompanyInfo } from "@/store/company_hr";
-import { useHrInfo } from "@/store/hr";
-import { message, Modal } from "ant-design-vue";
-const router = useRouter();
-const current = ref<number>(0);
-let visible = ref(false);
+import CompanyBaseForm from './components/companyBaseForm/index.vue'
+import CompanyOtherForm from './components/companyOtherForm/index.vue'
+import { emitter } from '@/utils/emitter'
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
+import { createVNode } from 'vue'
+import { hrAddCompany, getAllCompany, setHrCompany } from '@/api'
+import { useCompanyInfo } from '@/store/company_hr'
+import { useHrInfo } from '@/store/hr'
+import { message, Modal } from 'ant-design-vue'
+const router = useRouter()
+const current = ref<number>(0)
+let visible = ref(false)
 //选中的公司id
-const selectCompany = ref(undefined);
+const selectCompany = ref(undefined)
 onMounted(() => {
-  emitter.on("changeCompanyState", (val) => {
-    visible.value = true;
-  });
-  selectAllCompany();
-});
+  emitter.on('changeCompanyState', (val) => {
+    visible.value = true
+    selectAllCompany()
+  })
+})
 type TCompanyList = {
-  company_id: string;
-  company_name: string;
-};
-const companyData = ref<TCompanyList[]>([]);
+  company_id: string
+  company_name: string
+}
+const companyData = ref<TCompanyList[]>([])
 
 //点击添加公司
 const clickAdd = () => {
-  const token = localStorage.getItem("token");
-  const hr_id = localStorage.getItem("hr_id");
-  if (!selectCompany.value) return message.warning("请先选择您所在的公司,或申请入驻");
+  const token = localStorage.getItem('token')
+  const hr_id = localStorage.getItem('hr_id')
+  if (!selectCompany.value)
+    return message.warning('请先选择您所在的公司,或申请入驻')
   const company_id = companyData.value.filter(
     (item) => item.company_name == selectCompany.value
-  );
+  )
   console.log('')
-  submitAdd(hr_id as string,company_id[0].company_id,token as string)
-};
+  submitAdd(hr_id as string, company_id[0].company_id, token as string)
+}
 
-const submitAdd = async(hr_id:string,company_id:string,token:string)=>{
+const submitAdd = async (hr_id: string, company_id: string, token: string) => {
   // Modal.confirm({
   //   title: "温馨提示",
   //   cancelText:"取消",
@@ -107,90 +112,89 @@ const submitAdd = async(hr_id:string,company_id:string,token:string)=>{
   //     `请确认您选择的公司: ${selectCompany.value}`
   //   ),
   //   onOk:async ()=> {
-      const res:any  = await setHrCompany({hr_id,company_id})
-      if(res.code!==200) return message.error(res.msg)
-      message.success('绑定成功')
-      useCompanyInfo().saveCompanyId(company_id);
-      useCompanyInfo().getCompanyInfo(company_id);
-      useHrInfo().saveHrId(hr_id as string);
-      useHrInfo().getHrInfo(hr_id as string);
-      visible.value = false;
-      localStorage.setItem("token", token);
-      localStorage.removeItem("hr_id");
-      setTimeout(()=>{
-        router.replace("/company");
-      },200)
+  const res: any = await setHrCompany({ hr_id, company_id })
+  if (res.code !== 200) return message.error(res.msg)
+  message.success('绑定成功')
+  useCompanyInfo().saveCompanyId(company_id)
+  useCompanyInfo().getCompanyInfo(company_id)
+  useHrInfo().saveHrId(hr_id as string)
+  useHrInfo().getHrInfo(hr_id as string)
+  visible.value = false
+  localStorage.setItem('token', token)
+  localStorage.removeItem('hr_id')
+  setTimeout(() => {
+    router.replace('/company')
+  }, 200)
 
-    // },
+  // },
   //   onCancel() {
   //     // console.log('Cancel');
   //   },
   //   class: "test123",
   // });
-
 }
 
 //查询所有公司
 const selectAllCompany = async () => {
-  const res: any = await getAllCompany();
-  if (res.code !== 200) return (companyData.value = []);
-  companyData.value = res.data;
-};
+  const res: any = await getAllCompany()
+  if (res.code !== 200) return (companyData.value = [])
+  companyData.value = res.data
+}
 
 const closeModel = () => {
-  localStorage.removeItem("companyToken");
-  localStorage.removeItem("hr_id");
-  localStorage.removeItem("loginInfo");
-};
+  localStorage.removeItem('companyToken')
+  localStorage.removeItem('hr_id')
+  localStorage.removeItem('loginInfo')
+}
 
 const clickBegin = () => {
-  const companyToken = localStorage.getItem("companyToken");
-  const hr_id = localStorage.getItem("hr_id");
+  const companyToken = localStorage.getItem('companyToken')
+  const hr_id = localStorage.getItem('hr_id')
   if (!companyToken || !hr_id)
-    return message.warning("您的登录已失效，请您重新登录");
-  current.value++;
-};
+    return message.warning('您的登录已失效，请您重新登录')
+  current.value++
+}
 
-let params = {};
+let params = {}
 
 //返回上一步
 const backStep = () => {
-  current.value--;
-};
+  current.value--
+}
 //接收公司基本信息数据 step2
 const getData = (value: any) => {
-  params = { ...params, ...value };
-  current.value++;
-};
+  params = { ...params, ...value }
+  current.value++
+}
 //接收公司基本福利数据 step3
 const getData2 = async (value: any) => {
-  const token = localStorage.getItem("token");
-  const hr_id = localStorage.getItem("hr_id");
-  const mewParams = { ...params, ...value, hr_id };
-  const res: any = await hrAddCompany(mewParams);
-  if (res.code !== 200) return message.error("绑定公司失败");
-  localStorage.setItem("token", token as string);
-  message.success("绑定公司信息提交成功，正在加速审核");
-  useCompanyInfo().saveCompanyId(res.company_id);
-  useCompanyInfo().getCompanyInfo(res.company_id);
-  useHrInfo().saveHrId(res.hr_id);
-  useHrInfo().getHrInfo(res.hr_id);
-  visible.value = false;
-  setTimeout(()=>{
-    router.replace("/company");
+  const token = localStorage.getItem('token')
+  const hr_id = localStorage.getItem('hr_id')
+  const mewParams = { ...params, ...value, hr_id }
+  const res: any = await hrAddCompany(mewParams)
+  if (res.code !== 200) return message.error('绑定公司失败')
+  localStorage.setItem('token', token as string)
+  message.success('绑定公司信息提交成功，正在加速审核')
+  useCompanyInfo().saveCompanyId(res.company_id)
+  useCompanyInfo().getCompanyInfo(res.company_id)
+  useHrInfo().saveHrId(res.hr_id)
+  useHrInfo().getHrInfo(res.hr_id)
+  visible.value = false
+  setTimeout(() => {
+    router.replace('/company')
     localStorage.removeItem('hr_id')
-  },400)
-};
+  }, 400)
+}
 
 const handleOk = () => {
-  visible.value = false;
-  console.log("ok");
-};
+  visible.value = false
+  console.log('ok')
+}
 
 const stepStyle = {
-  marginBottom: "60px",
-  boxShadow: "0px -1px 0 0 #e8e8e8 inset",
-};
+  marginBottom: '60px',
+  boxShadow: '0px -1px 0 0 #e8e8e8 inset'
+}
 </script>
 
 <style lang="less" scoped>

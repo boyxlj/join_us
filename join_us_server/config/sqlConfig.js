@@ -7,4 +7,6 @@ const sqlConfig =
   port: '3306',
   connectionLimit: 10,
 }
+
+
 module.exports = sqlConfig

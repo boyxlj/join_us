@@ -1,6 +1,9 @@
 <template>
   <div class="login">
     <div class="box">
+      <div class="backHome" @click="$router.push('/')">
+        <ArrowLeftOutlined class="icons" />回到首页
+      </div>
       <h1>JOIN-US 登录/注册</h1>
       <div class="tabs">
         <li @click="changeActive(0)" :class="activeKey === 0 ? 'active' : ''">
@@ -106,6 +109,7 @@ import { useCompanyInfo } from '@/store/company_hr'
 import { useHrInfo } from '@/store/hr'
 import CompanyApply from '@/components/companyApply/index.vue'
 import { emitter } from '@/utils/emitter'
+import { ArrowLeftOutlined } from '@ant-design/icons-vue'
 const router = useRouter()
 const route = useRoute()
 interface FormState {
@@ -188,8 +192,10 @@ const formRef = ref<FormInstance>()
 const formState = reactive<FormState>({
   code: '',
   email: '',
-  username: '13870000000',
-  psd: '123456',
+  username: '',
+  psd: '',
+  // username: '13870000000',
+  // psd: '123456',
   inputCodeValue: ''
 })
 
@@ -307,6 +313,7 @@ const submit = async () => {
         useHrInfo().saveHrId(res.hr_id)
         useHrInfo().getHrInfo(res.hr_id)
         localStorage.removeItem('token')
+        disabledSubmit.value = false
         message.success('企业登录成功')
         setTimeout(() => {
           disabledSubmit.value = false
@@ -324,6 +331,7 @@ const submit = async () => {
     disabledSubmit.value = true
     refresh()
     if (res.code != 200) {
+      disabledSubmit.value = false
       return message.error(res.msg)
     }
     localStorage.setItem('token', res.token)
@@ -354,7 +362,8 @@ const handleValidate = (...args: any) => {}
 
   .box {
     width: 580px;
-    height: 600px;
+    // height: 600px;
+    min-height: 420px;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -365,6 +374,19 @@ const handleValidate = (...args: any) => {}
     box-shadow: 0 0 10px #ddd;
     border-radius: 20px;
     background: #fff;
+    position: relative;
+    .backHome {
+      font-size: 13px;
+      margin-top: -10px;
+      color: #939393;
+      cursor: pointer;
+      position: absolute;
+      left: 60px;
+      top: 40px;
+      .icons {
+        margin-right: 4px;
+      }
+    }
 
     h1 {
       font-size: 30px;
