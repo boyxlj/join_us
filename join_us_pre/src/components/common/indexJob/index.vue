@@ -23,8 +23,16 @@
           {{ item.degrees }}
         </span>
         <template #actions>
-          <div @click="navigateCompanyDetail(item.company_id)" style="text-align: left">
-            <img style="margin-left:18px" :src="item.logo" class="avatar" alt="" />
+          <div
+            @click="navigateCompanyDetail(item.company_id)"
+            style="text-align: left"
+          >
+            <img
+              style="margin-left: 18px"
+              :src="item.logo"
+              class="avatar"
+              alt=""
+            />
             <span>
               {{ item.company_name }}
             </span>
@@ -33,7 +41,7 @@
             <span style="margin-right: 10px">
               {{ item.job_type }}
             </span>
-            <span> {{ item.financing ? item.financing : "不需要融资" }} </span>
+            <span> {{ item.financing ? item.financing : '不需要融资' }} </span>
           </div>
         </template>
       </a-card>
@@ -46,16 +54,16 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
-import { Iposition_type } from "@/types/jobType";
-import { PropType } from "vue";
-const router = useRouter();
+import { useRouter } from 'vue-router'
+import { Iposition_type } from '@/types/jobType'
+import { PropType } from 'vue'
+const router = useRouter()
 const props = defineProps({
   hotJobList: {
     type: Array as PropType<Iposition_type[]>,
-    default: () => [],
-  },
-});
+    default: () => []
+  }
+})
 
 const navigateCompanyDetail = (company_id: string) => {
   window.open(`/#/home/companyDetail?company_id=${company_id}`)
@@ -68,8 +76,8 @@ const toDetail = (item: Iposition_type) => {
   //         position_id: item.position_id,
   //     },
   // });
-  window.open(`/#/home/jobDetail?position_id=${item.position_id}`);
-};
+  window.open(`/#/home/jobDetail?position_id=${item.position_id}`)
+}
 </script>
 
 <style lang="less" scoped>
@@ -146,18 +154,16 @@ const toDetail = (item: Iposition_type) => {
   margin-top: 35px;
   width: 185px;
   height: 40px;
-  color: var(--themeColor);
   border: none;
   font-size: 14px;
   font-weight: 400;
-  border-radius:var(--radiusSize);
+  border-radius: var(--radiusSize);
   transition: all 0.14s linear;
-  background: rgba(182, 79, 219, 0.1);
-  background:rgb(138, 215, 246);
+  background: var(--themeColor);
   color: #fff;
   &:hover {
-    border-radius:var(--radiusSize) !important;
-    background-color: var(--themeColor);
+    border-radius: var(--radiusSize) !important;
+    background-color: var(--btnHoverThemeColor);
     color: #fff;
   }
 }

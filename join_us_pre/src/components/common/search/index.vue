@@ -71,7 +71,6 @@
           v-show="showSearchFocusBox"
           class="searchFocusBox"
           :style="{ width: showBoxWidth ? `${showBoxWidth}px` : '650px' }"
-          
         >
           <p class="title">
             <span>历史搜索</span>
@@ -108,167 +107,167 @@
 </template>
 
 <script setup lang="ts">
-import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import { createVNode } from "vue";
-import { Modal } from "ant-design-vue";
-import { useJobTypeStore } from "@/store/positionType";
-import { IPositionTypeChild, IPositionType1 } from "@/types/jobType";
-import { useHotSearchPosition } from "@/store/position";
-import {emitter} from "@/utils/emitter"
-const inpVal = ref("");
-const router = useRouter();
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
+import { createVNode } from 'vue'
+import { Modal } from 'ant-design-vue'
+import { useJobTypeStore } from '@/store/positionType'
+import { IPositionTypeChild, IPositionType1 } from '@/types/jobType'
+import { useHotSearchPosition } from '@/store/position'
+import { emitter } from '@/utils/emitter'
+const inpVal = ref('')
+const router = useRouter()
 
-emitter.on("closeSearchDropDownCom",()=>{
-  showSearchFocusBox.value = false;
+emitter.on('closeSearchDropDownCom', () => {
+  showSearchFocusBox.value = false
 })
 const hotSearchPositionList = computed(
   () => useHotSearchPosition().hotSearchPositionList
-);
+)
 const navigateProfilePage = (val: string) => {
   showSearchFocusBox.value = false
-  router.push(`/home/job?keyword=${val}`);
-};
+  router.push(`/home/job?keyword=${val}`)
+}
 const navigateJob = (val: string) => {
   showSearchFocusBox.value = false
-  router.push(`/home/job?keyword=${val}`);
-};
+  router.push(`/home/job?keyword=${val}`)
+}
 
 type TSearchStyle = {
-  center?: boolean;
-  height?: number;
-  inputWidth?: number;
-  optionWidth?: number;
-  showBoxWidth?: number;
-};
+  center?: boolean
+  height?: number
+  inputWidth?: number
+  optionWidth?: number
+  showBoxWidth?: number
+}
 withDefaults(defineProps<TSearchStyle>(), {
   center: true,
   height: 120,
   inputWidth: 1200,
   optionWidth: 88,
-  showBoxWidth: 650,
-});
-const route = useRoute();
-inpVal.value = route.query.keyword as string;
+  showBoxWidth: 650
+})
+const route = useRoute()
+inpVal.value = route.query.keyword as string
 //获取职位类型数据
-const data = ref<IPositionType1[]>([]);
-const showBoxData = ref<IPositionTypeChild[]>([]);
-const store = useJobTypeStore();
-data.value = store.positionTypeList;
+const data = ref<IPositionType1[]>([])
+const showBoxData = ref<IPositionTypeChild[]>([])
+const store = useJobTypeStore()
+data.value = store.positionTypeList
 //输入框
-const showSearchFocusBox = ref(false);
-const enterSearchFocusBoxValue = ref(false);
-const handleChange = () => {};
+const showSearchFocusBox = ref(false)
+const enterSearchFocusBoxValue = ref(false)
+const handleChange = () => {}
 const inputFocus = () => {
-  getHistorySearchList();
-  showSearchFocusBox.value = true;
-};
+  getHistorySearchList()
+  showSearchFocusBox.value = true
+}
 const inputNoFocus = () => {
   if (!enterSearchFocusBoxValue.value) {
-    showSearchFocusBox.value = false;
+    showSearchFocusBox.value = false
   }
-};
+}
 const enterSearchFocusBox = () => {
-  enterSearchFocusBoxValue.value = true;
-};
+  enterSearchFocusBoxValue.value = true
+}
 const leaveSearchFocusBox = () => {
-  enterSearchFocusBoxValue.value = false;
-};
+  enterSearchFocusBoxValue.value = false
+}
 
 //职位类型
-const jobTypeFocusBox = ref(false);
-const enterJobTypeFocusBoxValue = ref(false);
-const showJobTypeContent = ref(false);
+const jobTypeFocusBox = ref(false)
+const enterJobTypeFocusBoxValue = ref(false)
+const showJobTypeContent = ref(false)
 
 const clickJobType = () => {
-  jobTypeFocusBox.value = true;
-};
+  jobTypeFocusBox.value = true
+}
 const enterJobTypeFocusBox = () => {
-  enterJobTypeFocusBoxValue.value = true;
-};
+  enterJobTypeFocusBoxValue.value = true
+}
 const leaveJobTypeFocusBox = () => {
-  enterJobTypeFocusBoxValue.value = false;
-};
-document.body.addEventListener("click", () => {
+  enterJobTypeFocusBoxValue.value = false
+}
+document.body.addEventListener('click', () => {
   if (!enterJobTypeFocusBoxValue.value) {
-    jobTypeFocusBox.value = false;
+    jobTypeFocusBox.value = false
   }
-});
+})
 
-const activeKey = ref();
+const activeKey = ref()
 //悬停职位类型li
 const enterJobLi = (id: string) => {
-  showJobTypeContent.value = true;
-  activeKey.value = id;
+  showJobTypeContent.value = true
+  activeKey.value = id
   showBoxData.value = data.value?.filter(
     (item) => item.position_type_id == id
-  )[0]?.children;
-};
+  )[0]?.children
+}
 
 const navigateProfile = (id: string) => {
   router.push(
     `/home/job?position_type1=${activeKey.value}&position_type2=${id}`
-  );
-};
+  )
+}
 
 const leaveJobLi = () => {
-  showJobTypeContent.value = false;
-  activeKey.value = "";
-};
+  showJobTypeContent.value = false
+  activeKey.value = ''
+}
 
 onMounted(() => {
-  getHistorySearchList();
-});
+  getHistorySearchList()
+})
 
 //获取搜索历史
-const historyData = ref<string[]>([]);
+const historyData = ref<string[]>([])
 const getHistorySearchList = () => {
-  const str = localStorage.getItem("searchList");
+  const str = localStorage.getItem('searchList')
   if (!str) {
-    historyData.value = [];
+    historyData.value = []
   } else {
-    const data = JSON.parse(localStorage.getItem("searchList") as string);
-    historyData.value = data;
+    const data = JSON.parse(localStorage.getItem('searchList') as string)
+    historyData.value = data
   }
-};
+}
 
 //存储搜索历史记录
 const setHistorySearchList = (key: string) => {
-  if (!key) return;
-  const newList = [key, ...historyData.value];
-  localStorage.setItem("searchList", JSON.stringify(newList));
-  getHistorySearchList();
-};
+  if (!key) return
+  const newList = [key, ...historyData.value]
+  localStorage.setItem('searchList', JSON.stringify(newList))
+  getHistorySearchList()
+}
 
 //清空搜索历史记录
 const clearHistorySearchList = () => {
   Modal.confirm({
-    title: "温馨提示",
+    title: '温馨提示',
     icon: createVNode(ExclamationCircleOutlined),
     content: createVNode(
-      "div",
-      { style: "color:red;" },
-      "您确定要清空所有搜索历史记录吗?"
+      'div',
+      { style: 'color:red;' },
+      '您确定要清空所有搜索历史记录吗?'
     ),
-    cancelText: "取消",
+    cancelText: '取消',
     centered: true,
-    okText: "确定",
+    okText: '确定',
     onOk() {
-      localStorage.removeItem("searchList");
-      getHistorySearchList();
+      localStorage.removeItem('searchList')
+      getHistorySearchList()
     },
     onCancel() {},
-    class: "test",
-  });
-};
+    class: 'test'
+  })
+}
 
 //提交搜索
 const searchSubmit = () => {
-  if (!inpVal.value){
-    return router.push('/home/job');
-  } 
-  setHistorySearchList(inpVal.value);
-  router.push(`/home/job?keyword=${inpVal.value}`);
-};
+  if (!inpVal.value) {
+    return router.push('/home/job')
+  }
+  setHistorySearchList(inpVal.value)
+  router.push(`/home/job?keyword=${inpVal.value}`)
+}
 </script>
 
 <style lang="less" scoped>
@@ -555,7 +554,7 @@ const searchSubmit = () => {
 
         &:hover {
           background: #7b3ebd;
-          background:rgb(138, 215, 246);
+          background: var(--btnHoverThemeColor);
         }
       }
     }

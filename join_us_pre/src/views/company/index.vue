@@ -129,6 +129,8 @@ const cancelLogin = () => {
     cancelText: '取消',
     okText: '确认',
     centered: true,
+    closable: true,
+    maskClosable: true,
     icon: createVNode(ExclamationCircleOutlined),
     content: '您确定要退出登录吗',
     onOk() {
@@ -142,8 +144,9 @@ const cancelLogin = () => {
       localStorage.removeItem('loginInfo')
       location.reload()
     },
-    onCancel() {},
-    class: 'test'
+    onCancel() {
+      console.log('Cancel')
+    }
   })
 }
 </script>

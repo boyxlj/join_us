@@ -29,13 +29,16 @@ export default defineConfig({
       less: {
         modifyVars: {
           // 'primary-color': '#7546C9',
-          'primary-color': 'skyblue',
+          'primary-color': '#369eff',
           'link-color': '#1DA57A',
-          'border-radius-base': '8px'
+          'border-radius-base': '6px'
         },
         javascriptEnabled: true
       }
     }
+  },
+  server: {
+    port: 3303
   },
   build: {
     minify: 'terser',
