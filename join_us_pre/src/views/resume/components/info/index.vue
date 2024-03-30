@@ -77,130 +77,134 @@
 </template>
 
 <script setup lang="ts">
-import type { Rule } from "ant-design-vue/es/form";
-import type { FormInstance } from "ant-design-vue";
-import {useUserInfo} from "@/store/user"
+import type { Rule } from 'ant-design-vue/es/form'
+import type { FormInstance } from 'ant-design-vue'
+import { useUserInfo } from '@/store/user'
 const userStore = useUserInfo()
 const userInfoList = ref<any[]>(userStore.userInfoList)
-const arr = computed(()=>userInfoList.value[0])
-const props =  withDefaults(defineProps<{changeInfoForm:any,userInfo:any}>(),{})
-onMounted(()=>{
+const arr = computed(() => userInfoList.value[0])
+const props = withDefaults(
+  defineProps<{ changeInfoForm: any; userInfo: any }>(),
+  {}
+)
+onMounted(() => {
   formState.name = props.userInfo.name
   formState.email = props.userInfo.email
-  formState.apply_state = props.userInfo.apply_state?props.userInfo.apply_state:undefined
+  formState.apply_state = props.userInfo.apply_state
+    ? props.userInfo.apply_state
+    : undefined
   formState.born = props.userInfo.born
   formState.gender = props.userInfo.gender
   formState.phone = props.userInfo.phone
 })
 
 interface FormState {
-  name: string,
-  gender: string,
-  apply_state: string | undefined,
-  phone: string,
-  born: string,
-  email: string,
+  name: string
+  gender: string
+  apply_state: string | undefined
+  phone: string
+  born: string
+  email: string
 }
-const monthFormat = "YYYY/MM";
-const formRef = ref<FormInstance>();
+const monthFormat = 'YYYY/MM'
+const formRef = ref<FormInstance>()
 const formState = reactive<FormState>({
-  name: "",
-  gender: "",
+  name: '',
+  gender: '',
   apply_state: undefined,
-  phone: "",
-  born: "",
-  email: "",
-});
+  phone: '',
+  born: '',
+  email: ''
+})
 let validateName = async (_rule: Rule, value: string) => {
   if (!value) {
-    return Promise.reject("请填写您的姓名");
+    return Promise.reject('请填写您的姓名')
   }
   if (value.length < 2 || value.length >= 8) {
-    return Promise.reject("长度在2-10之间");
+    return Promise.reject('长度在2-10之间')
   } else {
-    return Promise.resolve();
+    return Promise.resolve()
   }
-};
+}
 let validateGender = async (_rule: Rule, value: number) => {
   if (!value) {
-    return Promise.reject("请选择您的性别");
+    return Promise.reject('请选择您的性别')
   } else {
-    return Promise.resolve();
+    return Promise.resolve()
   }
-};
+}
 let checkApply_state = async (_rule: Rule, value: string) => {
   if (!value) {
-    return Promise.reject("请选择您目前的求职状态");
+    return Promise.reject('请选择您目前的求职状态')
   } else {
-    return Promise.resolve();
+    return Promise.resolve()
   }
-};
+}
 
 let checkBorn = async (_rule: Rule, value: string) => {
   if (!value) {
-    return Promise.reject("请选择您的生日");
+    return Promise.reject('请选择您的生日')
   } else {
-    return Promise.resolve();
+    return Promise.resolve()
   }
-};
+}
 
 let checkEmail = async (_rule: Rule, value: string) => {
-  const reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+  const reg = /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/
   if (!value) {
-    return Promise.reject("请填写您的邮箱");
+    return Promise.reject('请填写您的邮箱')
   }
   if (!reg.test(value)) {
-    return Promise.reject("请填写合法的邮箱");
+    return Promise.reject('请填写合法的邮箱')
   } else {
-    return Promise.resolve();
+    return Promise.resolve()
   }
-};
+}
 let checkPhone = async (_rule: Rule, value: string) => {
   const reg =
-    /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/;
+    /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/
   if (!value) {
-    return Promise.reject("请填写您的手机号");
+    return Promise.reject('请填写您的手机号')
   }
   if (!reg.test(value)) {
-    return Promise.reject("请填写合法的手机号");
+    return Promise.reject('请填写合法的手机号')
   } else {
-    return Promise.resolve();
+    return Promise.resolve()
   }
-};
+}
 
 const rules: Record<string, Rule[]> = {
-  name: [{required: true,  validator: validateName, trigger: "change" }],
-  gender: [{ required: true, validator: validateGender, trigger: "change" }],
+  name: [{ required: true, validator: validateName, trigger: 'change' }],
+  gender: [{ required: true, validator: validateGender, trigger: 'change' }],
   apply_state: [
     {
       required: true,
       validator: checkApply_state,
-      trigger: "change",
-    },
+      trigger: 'change'
+    }
   ],
-  phone: [{ required: true, validator: checkPhone, trigger: "change" }],
-  born: [{ required: true, validator: checkBorn, trigger: "change" }],
-  email: [{required: true,  validator: checkEmail, trigger: "change" }],
-};
+  phone: [{ required: true, validator: checkPhone, trigger: 'change' }],
+  born: [{ required: true, validator: checkBorn, trigger: 'change' }],
+  email: [{ required: true, validator: checkEmail, trigger: 'change' }]
+}
 const layout = {
   labelCol: { span: 4 },
-  wrapperCol: { span: 14 },
-};
-const handleFinish =async (values: FormState) => {
-  const res =await userStore.updateUseInfo(values)
-  if(res===200){
-     props.changeInfoForm()
+  wrapperCol: { span: 14 }
+}
+const handleFinish = async (values: FormState) => {
+  const res = await userStore.updateUseInfo(values)
+  if (res === 200) {
+    props.changeInfoForm()
   }
-};
-const handleFinishFailed = (errors:any) => {
-};
+}
+const handleFinishFailed = (errors: any) => {}
 const resetForm = () => {
-  formRef.value?.resetFields();
+  formRef.value?.resetFields()
   props.changeInfoForm()
-};
-const handleValidate = (...args:any) => {
+}
+const handleValidate = (...args: any) => {
   // console.log(args);
-};
+}
 </script>
 
 <style lang="less" scoped>
@@ -268,7 +272,7 @@ const handleValidate = (...args:any) => {
         display: flex;
         justify-content: flex-end;
       }
-      ::v-deep(.ant-btn){
+      ::v-deep(.ant-btn) {
         border-radius: 0;
       }
     }
