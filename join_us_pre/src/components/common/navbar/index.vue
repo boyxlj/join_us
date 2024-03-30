@@ -348,7 +348,7 @@ const leaveUserInfo = () => {
             right: 0;
             border-radius: var(--radiusSize);
             display: none;
-            z-index: 999;
+            z-index: 99;
             padding: 8px 5px;
             box-sizing: border-box;
             overflow: hidden;
