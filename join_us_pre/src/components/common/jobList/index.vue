@@ -1,8 +1,10 @@
 <template>
-  <div class="jobList" v-for="(item,index) in positionData" :key="index">
+  <div class="jobList" v-for="(item, index) in positionData" :key="index">
     <div class="top">
       <div class="left">
-        <p class="jobName" @click="navigateDetail(item.position_id)">{{ item.position_name }} [{{ item.cityName }}] </p>
+        <p class="jobName" @click="navigateDetail(item.position_id)">
+          {{ item.position_name }} [{{ item.cityName }}]
+        </p>
         <p class="info">
           <b class="salary">{{ item.salary }}</b>
           <span class="year">{{ item.experiences }}</span>
@@ -14,7 +16,9 @@
           <img :src="item.logo" alt="" />
         </div>
         <div class="right_right">
-          <p class="company" @click="navigateCompanyDetail(item.company_id)">{{ item.company_name }}</p>
+          <p class="company" @click="navigateCompanyDetail(item.company_id)">
+            {{ item.company_name }}
+          </p>
           <p class="infos">
             <span class="types">{{ item.industry }}</span>
             <span class="rz">{{ item.financing }}</span>
@@ -25,7 +29,9 @@
     </div>
     <div class="bottom">
       <div class="left">
-        <span v-for="item1 in JSON.parse(item.position_tag)" :key="item1">{{ item1 }}</span>
+        <span v-for="item1 in JSON.parse(item.position_tag)" :key="item1">{{
+          item1
+        }}</span>
       </div>
       <div class="bottom_right">
         {{ JSON.parse(item.welfare_tag).join(',') }}
@@ -189,7 +195,7 @@ const navigateCompanyDetail = (company_id: string) => {
       position: relative;
 
       &::after {
-        content: " ";
+        content: ' ';
         position: absolute;
         top: 4px;
         right: -10px;
@@ -205,7 +211,7 @@ const navigateCompanyDetail = (company_id: string) => {
 
       &:last-child {
         &::after {
-          content: " ";
+          content: ' ';
           position: absolute;
           top: 4px;
           right: -10px;
@@ -228,4 +234,5 @@ const navigateCompanyDetail = (company_id: string) => {
     text-overflow: ellipsis;
     text-align: right;
   }
-}</style>
+}
+</style>

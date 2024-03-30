@@ -9,7 +9,9 @@
       >
         <template #title>
           <div class="card_title">
-            <span class="job-name">{{ item.position_name }}</span>
+            <span class="job-name" :title="item.position_name">{{
+              item.position_name
+            }}</span>
             <span class="job-salary">{{ item.salary }}</span>
           </div>
         </template>
@@ -26,6 +28,7 @@
           <div
             @click="navigateCompanyDetail(item.company_id)"
             style="text-align: left"
+            class="card_footer"
           >
             <img
               style="margin-left: 18px"
@@ -33,7 +36,7 @@
               class="avatar"
               alt=""
             />
-            <span>
+            <span class="company_name" :title="item.company_name">
               {{ item.company_name }}
             </span>
           </div>
@@ -111,6 +114,16 @@ const toDetail = (item: Iposition_type) => {
     ::v-deep(.ant-card-head) {
       height: 35px;
       border-bottom: none;
+    }
+    .card_footer {
+      display: flex;
+      .company_name {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: inline-block;
+      }
     }
   }
 
