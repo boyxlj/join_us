@@ -233,7 +233,7 @@ const getHistorySearchList = () => {
 //存储搜索历史记录
 const setHistorySearchList = (key: string) => {
   if (!key) return
-  const newList = [key, ...historyData.value]
+  const newList = [...new Set([key, ...historyData.value])]
   localStorage.setItem('searchList', JSON.stringify(newList))
   getHistorySearchList()
 }

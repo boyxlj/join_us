@@ -15,6 +15,7 @@ declare module '@vue/runtime-core' {
     ACard: typeof import('ant-design-vue/es')['Card']
     ACarousel: typeof import('ant-design-vue/es')['Carousel']
     ACascader: typeof import('ant-design-vue/es')['Cascader']
+    AConfigProvider: typeof import('ant-design-vue/es')['ConfigProvider']
     ADatePicker: typeof import('ant-design-vue/es')['DatePicker']
     ADropdown: typeof import('ant-design-vue/es')['Dropdown']
     AForm: typeof import('ant-design-vue/es')['Form']

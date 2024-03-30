@@ -26,38 +26,36 @@
         />
         <div v-else id="showInfo" class="showInfo" @click="changeInfoForm">
           <div class="name">
-            <span>{{ userInfo.name || "点击编辑昵称" }}</span>
+            <span>{{ userInfo.name || '点击编辑昵称' }}</span>
           </div>
           <div class="degree">
             <li>
               <img src="../../assets/images/icon/degree.png" alt="" /><span>{{
                 userInfo.leave_schoolTime
-                  ? userInfo.leave_schoolTime?.split("-")[0] + "年应届生"
-                  : "毕业时间"
+                  ? userInfo.leave_schoolTime?.split('-')[0] + '年应届生'
+                  : '毕业时间'
               }}</span>
             </li>
             <li>
               <img src="../../assets/images/icon/degree1.png" alt="" /><span>{{
-                userInfo.degree || "编辑学历"
+                userInfo.degree || '编辑学历'
               }}</span>
             </li>
             <li>
               <img src="../../assets/images/icon/hope_job.png" alt="" /><span>{{
-                userInfo.apply_state || "编辑求职状态"
+                userInfo.apply_state || '编辑求职状态'
               }}</span>
             </li>
           </div>
           <div class="connect">
             <li>
               <img src="../../assets/images/icon/tel.png" alt="" /><span>{{
-                userInfo.phone || "点击填写电话"
+                userInfo.phone || '点击填写电话'
               }}</span>
             </li>
             <li>
               <img src="../../assets/images/icon/email.png" alt="" />
-              <span>{{
-                userInfo.email
-              }}</span>
+              <span>{{ userInfo.email }}</span>
             </li>
           </div>
           <a-tooltip placement="top">
@@ -65,12 +63,16 @@
               <span>点击可上传头像</span>
             </template>
             <div class="avatar" @click.stop="clickAvatar">
-              <a-avatar :size="64" :src="userInfo.avatar" v-if="userInfo.avatar">
-                  <template #icon><UserOutlined /></template>
-                </a-avatar>
+              <a-avatar
+                :size="64"
+                :src="userInfo.avatar"
+                v-if="userInfo.avatar"
+              >
+                <template #icon><UserOutlined /></template>
+              </a-avatar>
               <a-avatar :size="64" v-else>
-                  <template #icon><UserOutlined /></template>
-                </a-avatar>
+                <template #icon><UserOutlined /></template>
+              </a-avatar>
               <!-- <img :src="userInfo.avatar" alt="" /> -->
             </div>
           </a-tooltip>
@@ -95,7 +97,7 @@
             <div class="editor">
               <p><edit-outlined class="icon" /><span>编辑</span></p>
             </div>
-            <pre>{{ userInfo.advantage || "点击填写您的个人优势" }}</pre>
+            <pre>{{ userInfo.advantage || '点击填写您的个人优势' }}</pre>
           </div>
         </div>
         <HopeJob
@@ -117,22 +119,22 @@
             </div>
             <li>
               <sliders-outlined /><span>{{
-                userInfo.hope_job || "编辑期望职位"
+                userInfo.hope_job || '编辑期望职位'
               }}</span>
             </li>
             <li>
               <transaction-outlined /><span>{{
-                userInfo.hope_salary || "编辑期望薪资"
+                userInfo.hope_salary || '编辑期望薪资'
               }}</span>
             </li>
             <li>
               <fund-outlined /><span>{{
-                userInfo.hope_industry || "编辑期望行业"
+                userInfo.hope_industry || '编辑期望行业'
               }}</span>
             </li>
             <li>
               <aim-outlined /><span>{{
-                userInfo.hope_city || "编辑期望城市"
+                userInfo.hope_city || '编辑期望城市'
               }}</span>
             </li>
           </div>
@@ -220,7 +222,7 @@
             <li class="desc">
               <span class="descTitle">在校经历: </span><br />
               <pre style="white-space: pre-wrap">{{
-                userInfo.school_exp || "点击编辑在校经历"
+                userInfo.school_exp || '点击编辑在校经历'
               }}</pre>
             </li>
           </div>
@@ -232,12 +234,14 @@
           <div class="title">附件简历</div>
           <div class="resumeContent">
             <div class="list">
-              <li>
+              <li @click="message.warning('功能开发中,敬请期待')">
                 <span>个人简历-pdf</span
                 ><span class="del"><delete-outlined /></span>
               </li>
             </div>
-            <div class="btns">上传附件简历</div>
+            <div class="btns" @click="message.warning('功能开发中,敬请期待')">
+              上传附件简历
+            </div>
           </div>
         </div>
         <PositionCard></PositionCard>
@@ -303,73 +307,78 @@ import {
   FundOutlined,
   TransactionOutlined,
   UserOutlined
-} from "@ant-design/icons-vue";
-import { message } from "ant-design-vue";
-import type { UploadChangeParam } from "ant-design-vue";
-import PositionCard from "@/components/common/positionCard/index.vue";
-import UserInfoBox from "@/components/common/userInfoBox/index.vue";
-import Navbar from "@/components/common/navbar/index.vue";
-import Info from "./components/info/index.vue";
-import Advantage from "./components/advantage/index.vue";
-import HopeJob from "./components/hopeJob/index.vue";
-import WorkExp from "./components/workExp/index.vue";
-import EducationExp from "./components/educationExp/index.vue";
-import OnlineResume from "@/components/common/onlineResume/index.vue";
-import { IUserInfo } from "@/types/userInfo";
-import { useUserInfo } from "@/store/user";
-import { getAge } from "@/utils/getAge";
-import { uploadUserAvatarUrl } from "@/api/upload";
-import { useValidateResume } from "@/hooks/useValidateResume";
-const userStore = useUserInfo();
+} from '@ant-design/icons-vue'
+import { message } from 'ant-design-vue'
+import type { UploadChangeParam } from 'ant-design-vue'
+import PositionCard from '@/components/common/positionCard/index.vue'
+import UserInfoBox from '@/components/common/userInfoBox/index.vue'
+import Navbar from '@/components/common/navbar/index.vue'
+import Info from './components/info/index.vue'
+import Advantage from './components/advantage/index.vue'
+import HopeJob from './components/hopeJob/index.vue'
+import WorkExp from './components/workExp/index.vue'
+import EducationExp from './components/educationExp/index.vue'
+import OnlineResume from '@/components/common/onlineResume/index.vue'
+import { IUserInfo } from '@/types/userInfo'
+import { useUserInfo } from '@/store/user'
+import { getAge } from '@/utils/getAge'
+import { uploadUserAvatarUrl } from '@/api/upload'
+import { useValidateResume } from '@/hooks/useValidateResume'
+const userStore = useUserInfo()
 
 const userInfo: IUserInfo = computed(
   () => userStore.userInfoList[0]
-) as unknown as IUserInfo;
+) as unknown as IUserInfo
 const resumeList: IResumeData[] = computed(
   () => userStore.resumeList
-) as unknown as IResumeData[];
-const activeMenu = ref(0);
+) as unknown as IResumeData[]
+const activeMenu = ref(0)
 
-const previewResumeVisible = ref(false);
+const previewResumeVisible = ref(false)
 const previewResume = () => {
   if (!useValidateResume(false)) {
-    message.warning("请先编辑简历信息");
-    return;
+    message.warning('请先编辑简历信息')
+    return
   }
-  previewResumeVisible.value = true;
-};
+  previewResumeVisible.value = true
+}
 
 interface IResumeData {
-  id: number;
-  resume_id: string;
-  userId: string;
-  company: string;
-  industry: string;
-  post: string;
-  department: string;
-  enter_time: string;
-  leave_time: string;
-  content: string;
-  performance: string;
-  skill: string;
-  addTime?: any;
-  update_time?: any;
+  id: number
+  resume_id: string
+  userId: string
+  company: string
+  industry: string
+  post: string
+  department: string
+  enter_time: string
+  leave_time: string
+  content: string
+  performance: string
+  skill: string
+  addTime?: any
+  update_time?: any
 }
 const menuList = ref([
-  { id: 1, name: "个人信息", href: "showInfo" },
-  { id: 2, name: "个人优势", href: "showAdvantage" },
-  { id: 3, name: "期望职位", href: "showHopeJob" },
-  { id: 4, name: "工作经历", href: "showWorkExp" },
-  { id: 6, name: "教育经历", href: "showEducationExp" },
-]);
+  { id: 1, name: '个人信息', href: 'showInfo' },
+  { id: 2, name: '个人优势', href: 'showAdvantage' },
+  { id: 3, name: '期望职位', href: 'showHopeJob' },
+  { id: 4, name: '工作经历', href: 'showWorkExp' },
+  { id: 6, name: '教育经历', href: 'showEducationExp' }
+])
 
 const clickMenuItem = (id: number, href: string) => {
-  activeMenu.value = id;
-  document.getElementById(href)?.scrollIntoView({ behavior: "smooth" });
-};
+  activeMenu.value = id
+  const domOffsetTop = (document.getElementById(href) as HTMLDivElement)
+    .offsetTop
+  window.scrollTo({
+    top: domOffsetTop - 60,
+    behavior: 'smooth'
+  })
+}
 
 //编辑id
-const resumeId = ref("");
+const resumeId = ref('')
 //点击添加简历按钮
 
 const states = reactive({
@@ -378,86 +387,86 @@ const states = reactive({
   hope_job: false,
   work_exp: false,
   project_exp: false,
-  education_exp: false,
-});
+  education_exp: false
+})
 
 //切换基本信息 info
 const changeInfoForm = () => {
-  states.info ? (states.info = false) : (states.info = true);
-};
+  states.info ? (states.info = false) : (states.info = true)
+}
 //切换个人优势 advantage
 const changeAdvantageForm = () => {
-  states.advantage ? (states.advantage = false) : (states.advantage = true);
-};
+  states.advantage ? (states.advantage = false) : (states.advantage = true)
+}
 //切换期望职位 hope_job
 const changeHopeJobForm = () => {
-  states.hope_job ? (states.hope_job = false) : (states.hope_job = true);
-};
+  states.hope_job ? (states.hope_job = false) : (states.hope_job = true)
+}
 //切换教育经历 education_exp
 const changeEducationExpForm = () => {
   states.education_exp
     ? (states.education_exp = false)
-    : (states.education_exp = true);
-};
+    : (states.education_exp = true)
+}
 //切换工作经历 work_exp
 const changeWorkExpForm = (id?: string) => {
   if (!id) {
-    resumeId.value = "";
+    resumeId.value = ''
   } else {
-    resumeId.value = id;
+    resumeId.value = id
   }
-  states.work_exp ? (states.work_exp = false) : (states.work_exp = true);
-};
+  states.work_exp ? (states.work_exp = false) : (states.work_exp = true)
+}
 
 //点击用户头像
-const fileList = ref([]);
-const loading = ref<boolean>(false);
-const imageUrl = ref<string>("");
-const avatarModelVisible = ref(false);
+const fileList = ref([])
+const loading = ref<boolean>(false)
+const imageUrl = ref<string>('')
+const avatarModelVisible = ref(false)
 const clickAvatar = () => {
-  avatarModelVisible.value = true;
-  imageUrl.value = userInfo.value.avatar;
-};
+  avatarModelVisible.value = true
+  imageUrl.value = userInfo.value.avatar
+}
 const handleAvatarModelOk = async () => {
   if (userInfo.value.avatar === imageUrl.value) {
-    return (avatarModelVisible.value = false);
+    return (avatarModelVisible.value = false)
   }
-  if (!imageUrl.value) return message.warning("请先上传图片");
-  const res: any = await userStore.updateUseInfo({ avatar: imageUrl.value });
-  if (res !== 200) return message.error("修改失败");
-  avatarModelVisible.value = false;
-};
+  if (!imageUrl.value) return message.warning('请先上传图片')
+  const res: any = await userStore.updateUseInfo({ avatar: imageUrl.value })
+  if (res !== 200) return message.error('修改失败')
+  avatarModelVisible.value = false
+}
 const cancelAvatarModelOk = () => {
-  imageUrl.value = "";
-  avatarModelVisible.value = false;
-};
+  imageUrl.value = ''
+  avatarModelVisible.value = false
+}
 const handleChange = (info: UploadChangeParam) => {
-  if (info.file.status === "uploading") {
-    loading.value = true;
-    return;
+  if (info.file.status === 'uploading') {
+    loading.value = true
+    return
   }
 
-  if (info.file.status === "error") {
-    loading.value = false;
-    message.error("图片上传失败");
+  if (info.file.status === 'error') {
+    loading.value = false
+    message.error('图片上传失败')
   }
-  if (info.file.status === "done") {
-    loading.value = false;
-    if (info.file.response.code !== 200) return message.error("图片上传失败");
-    imageUrl.value = info.file.response.url;
+  if (info.file.status === 'done') {
+    loading.value = false
+    if (info.file.response.code !== 200) return message.error('图片上传失败')
+    imageUrl.value = info.file.response.url
   }
-};
+}
 const beforeUpload = (file: any) => {
-  const allowImgType = ["jpeg", "png", "jpg"];
-  if (!allowImgType.includes(file.type?.split("/")[1])) {
-    message.error(`图片只能上传以下类型：${allowImgType.join("、")}`);
+  const allowImgType = ['jpeg', 'png', 'jpg']
+  if (!allowImgType.includes(file.type?.split('/')[1])) {
+    message.error(`图片只能上传以下类型：${allowImgType.join('、')}`)
   }
-  const isLt2M = file.size / 1024 / 1024 < 2;
+  const isLt2M = file.size / 1024 / 1024 < 2
   if (!isLt2M) {
-    message.error("图片的大小不能超过 2MB!");
+    message.error('图片的大小不能超过 2MB!')
   }
-  return allowImgType.includes(file.type?.split("/")[1]) && isLt2M;
-};
+  return allowImgType.includes(file.type?.split('/')[1]) && isLt2M
+}
 </script>
 
 <style lang="less" scoped>
@@ -554,7 +563,7 @@ const beforeUpload = (file: any) => {
             padding: 0 5px;
             &::after {
               width: 1px;
-              content: "";
+              content: '';
               height: 10px;
               background: #d4d5d6;
               position: absolute;
@@ -643,7 +652,7 @@ const beforeUpload = (file: any) => {
           position: relative;
           &::before {
             position: absolute;
-            content: "";
+            content: '';
             left: 0;
             top: 50%;
             width: 3px;
@@ -699,7 +708,7 @@ const beforeUpload = (file: any) => {
           position: relative;
           &::before {
             position: absolute;
-            content: "";
+            content: '';
             left: 0;
             top: 50%;
             width: 3px;
@@ -772,7 +781,7 @@ const beforeUpload = (file: any) => {
           align-items: center;
           &::before {
             position: absolute;
-            content: "";
+            content: '';
             left: 0;
             top: 50%;
             width: 3px;
@@ -841,7 +850,7 @@ const beforeUpload = (file: any) => {
               margin-right: 30px;
               position: relative;
               &::after {
-                content: "";
+                content: '';
                 position: absolute;
                 top: 50%;
                 transform: translateY(-50%);
@@ -922,7 +931,7 @@ const beforeUpload = (file: any) => {
           align-items: center;
           &::before {
             position: absolute;
-            content: "";
+            content: '';
             left: 0;
             top: 50%;
             width: 3px;
@@ -991,7 +1000,7 @@ const beforeUpload = (file: any) => {
               margin-right: 30px;
               position: relative;
               &::after {
-                content: "";
+                content: '';
                 position: absolute;
                 top: 50%;
                 transform: translateY(-50%);

@@ -37,9 +37,9 @@
         <div class="loginBtn" @click="navigateLogin">登录/注册</div>
       </ul>
       <ul class="profile profile2" v-else>
-        <li>消息</li>
+        <li @click="message.warning('功能开发中,敬请期待')">消息</li>
         <li class="line" @click="navigateLinks('/home/user/resume')">简历</li>
-        <li>上传</li>
+        <li @click="message.warning('功能开发中,敬请期待')">上传</li>
         <div class="userProfile">
           <div
             class="cons"
@@ -106,6 +106,7 @@
 </template>
 
 <script setup lang="ts">
+import { message } from 'ant-design-vue'
 import { AimOutlined } from '@ant-design/icons-vue'
 import { useCity } from '@/store/city'
 import { useUserInfo } from '@/store/user'

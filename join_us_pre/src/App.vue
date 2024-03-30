@@ -1,24 +1,28 @@
 <template>
   <router-view v-slot="{ Component }">
     <transition name="view">
-      <component :is="Component"></component>
+      <a-config-provider :locale="zhCN">
+        <component :is="Component"></component>
+      </a-config-provider>
     </transition>
   </router-view>
   <!-- <router-view></router-view> -->
 </template>
 
 <script setup lang="ts">
-import locale from 'ant-design-vue/es/date-picker/locale/zh_CN'
+import zhCN from 'ant-design-vue/es/locale/zh_CN'
+import dayjs from 'dayjs'
+import 'dayjs/locale/zh-cn'
 import { useJobTypeStore } from '@/store/positionType'
 import { useHotSearchPosition } from '@/store/position'
 import { useConsult } from '@/store/consult'
 import { useCity } from '@/store/city'
 import { useSwiperStore } from '@/store/swiper'
 import { useIndustryStore } from '@/store/industry'
+dayjs.locale('zh-cn')
 const { preventCity } = useCity()
 const mangerToken = localStorage.getItem('mangerToken')
 useJobTypeStore().getJobs() //职位类型
-
 useIndustryStore().getIndustry() //行业
 useCity().getCity()
 

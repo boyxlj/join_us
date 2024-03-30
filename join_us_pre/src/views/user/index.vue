@@ -13,7 +13,7 @@
             <template #searchSelect>
               <div @click="showCityModel" class="citySelect">
                 <span class="name">{{
-                  preventCity ? preventCity : "城市选择"
+                  preventCity ? preventCity : '城市选择'
                 }}</span>
                 <span class="arrow"></span>
               </div>
@@ -21,7 +21,9 @@
           </Search>
           <div class="exp" v-if="userInfo.hope_job || userInfo.hope_city">
             <span class="hope">期望</span>
-            <span class="hope_job">{{ userInfo.hope_job }}({{ userInfo.hope_city}})</span>
+            <span class="hope_job"
+              >{{ userInfo.hope_job }}({{ userInfo.hope_city }})</span
+            >
             <!-- <span class="hope_job_others">前端开发工程师(北京)</span> -->
           </div>
           <div class="tags">
@@ -73,17 +75,19 @@
         </div>
       </div>
       <div class="right">
-        <UserInfoBox/>
+        <UserInfoBox />
         <div class="resume">
           <div class="title">附件简历</div>
           <div class="resumeContent">
             <div class="list">
-              <li>
+              <li @click="message.warning('功能开发中,敬请期待')">
                 <span>个人简历-pdf</span
                 ><span class="del"><delete-outlined /></span>
               </li>
             </div>
-            <div class="btns">上传附件简历</div>
+            <div class="btns" @click="message.warning('功能开发中,敬请期待')">
+              上传附件简历
+            </div>
           </div>
         </div>
         <div class="card">
@@ -119,196 +123,198 @@
 </template>
 
 <script setup lang="ts">
-import { message } from "ant-design-vue";
-import { DeleteOutlined } from "@ant-design/icons-vue";
-import Search from "@/components/common/search/index.vue";
-import Empty from "@/components/common/empty/index.vue";
-import UserInfoBox from "@/components/common/userInfoBox/index.vue";
-import { useCity } from "@/store/city";
-import { useGetConditionData } from "@/store/condition";
-import DropDownlist from "@/components/common/dropDownlist/index.vue";
-import JobList from "@/components/common/jobList/index.vue";
-import PositionCard from "@/components/common/positionCard/index.vue";
-import { getPositionList } from "@/api";
-import {useUserInfo} from "@/store/user"
-import {IUserInfo} from "@/types/userInfo"
+import { message } from 'ant-design-vue'
+import { DeleteOutlined } from '@ant-design/icons-vue'
+import Search from '@/components/common/search/index.vue'
+import Empty from '@/components/common/empty/index.vue'
+import UserInfoBox from '@/components/common/userInfoBox/index.vue'
+import { useCity } from '@/store/city'
+import { useGetConditionData } from '@/store/condition'
+import DropDownlist from '@/components/common/dropDownlist/index.vue'
+import JobList from '@/components/common/jobList/index.vue'
+import PositionCard from '@/components/common/positionCard/index.vue'
+import { getPositionList } from '@/api'
+import { useUserInfo } from '@/store/user'
+import { IUserInfo } from '@/types/userInfo'
 const userStore = useUserInfo()
-const userInfo =(computed(()=>userStore.userInfoList[0]) as unknown) as  IUserInfo
-const hotCityList = computed(() => useCity().hotCityList);
-const allCityList = computed(() => useCity().allCityList);
-const preventCity = ref(useCity().preventCity);
-const cityQuList = ref<any>([]);
-const activeQuId = ref();
-const route = useRoute();
+const userInfo = computed(
+  () => userStore.userInfoList[0]
+) as unknown as IUserInfo
+const hotCityList = computed(() => useCity().hotCityList)
+const allCityList = computed(() => useCity().allCityList)
+const preventCity = ref(useCity().preventCity)
+const cityQuList = ref<any>([])
+const activeQuId = ref()
+const route = useRoute()
 //获取条件帅选数据
-const condition = useGetConditionData();
-const conditionData = ref(condition.conditionData);
-const totalData = ref(100);
+const condition = useGetConditionData()
+const conditionData = ref(condition.conditionData)
+const totalData = ref(100)
 //选择城市模态框
-const visible = ref(false);
+const visible = ref(false)
 const handleOk = () => {
-  visible.value = false;
-};
+  visible.value = false
+}
 const showCityModel = () => {
-  visible.value = true;
-};
+  visible.value = true
+}
 const keyName = [
-  "job_type",
-  "experiences",
-  "salary",
-  "degrees",
-  "people_num",
-  "financing",
-];
+  'job_type',
+  'experiences',
+  'salary',
+  'degrees',
+  'people_num',
+  'financing'
+]
 const formData = reactive<any>({
-  value0: "不限",
-  value1: "不限",
-  value2: "不限",
-  value3: "不限",
-  value4: "不限",
-  value5: "不限",
-});
+  value0: '不限',
+  value1: '不限',
+  value2: '不限',
+  value3: '不限',
+  value4: '不限',
+  value5: '不限'
+})
 const showValues = ref([
-  "求职类型",
-  "工作经验",
-  "薪资待遇",
-  "学历要求",
-  "公司规模",
-  "融资阶段",
-]);
+  '求职类型',
+  '工作经验',
+  '薪资待遇',
+  '学历要求',
+  '公司规模',
+  '融资阶段'
+])
 
 //切换筛选条件
 const getClickValue = (val: string, idx: number) => {
   for (let item in formData) {
-    if (item.includes(idx + "")) {
-      formData[item] = val;
+    if (item.includes(idx + '')) {
+      formData[item] = val
     }
   }
-  params.pageOn = 1;
-  getPositionData();
-};
+  params.pageOn = 1
+  getPositionData()
+}
 
 //切换分页
 const changePageNation = (page: number, pageSize: number) => {
-  params.pageOn = page;
-  document.documentElement.scrollTo({ top: 0, behavior: "smooth" });
-  getPositionData();
-};
+  params.pageOn = page
+  document.documentElement.scrollTo({ top: 0, behavior: 'smooth' })
+  getPositionData()
+}
 
-const keyword = ref(route.query.keyword as string);
+const keyword = ref(route.query.keyword as string)
 
 watch(
   () => route.query,
   () => {
-    params.pageOn = 1;
-    keyword.value = route.query.keyword as string;
-    getPositionData();
+    params.pageOn = 1
+    keyword.value = route.query.keyword as string
+    getPositionData()
   }
-);
+)
 
-const paramsCity = ref("");
-const showQu = ref(true);
+const paramsCity = ref('')
+const showQu = ref(true)
 //切换城市
 const clickCityItem = (cityName: string, code: number) => {
-  paramsCity.value = cityName;
-  preventCity.value = cityName;
-  if (cityName === "全国") {
-    showQu.value = false;
+  paramsCity.value = cityName
+  preventCity.value = cityName
+  if (cityName === '全国') {
+    showQu.value = false
   } else {
-    showQu.value = true;
-    getQu(cityName);
+    showQu.value = true
+    getQu(cityName)
   }
-  visible.value = false;
+  visible.value = false
   //发送请求
-  params.pageOn = 1;
-  getPositionData();
-};
+  params.pageOn = 1
+  getPositionData()
+}
 
 //请求参数
 const params = reactive({
-  region: "", //区名称
+  region: '', //区名称
   pageOn: 1,
-  pageSize: 10,
-});
+  pageSize: 10
+})
 
-const positionData = ref([]);
+const positionData = ref([])
 
 //发送请求
 const getPositionData = async () => {
-  const newObj: any = {};
+  const newObj: any = {}
   for (let i in formData) {
-    newObj[keyName[(i.slice(5) as any) * 1]] = formData[i];
+    newObj[keyName[(i.slice(5) as any) * 1]] = formData[i]
   }
   const paramsReq = {
     keyword: keyword.value,
     ...newObj,
     // cityName:keyword.value? preventCity.value:preventCity.city,
     cityName: preventCity.value,
-    ...params,
-  };
+    ...params
+  }
 
   for (let item in paramsReq) {
-    if (paramsReq[item] == "不限" || !paramsReq[item]) {
-      delete paramsReq[item];
+    if (paramsReq[item] == '不限' || !paramsReq[item]) {
+      delete paramsReq[item]
     }
   }
 
-  const res: any = await getPositionList(paramsReq);
+  const res: any = await getPositionList(paramsReq)
   if (res.code !== 200) {
-    positionData.value = [];
-    message.error("服务异常");
+    positionData.value = []
+    message.error('服务异常')
   } else {
-    totalData.value = res.total;
-    positionData.value = res.data;
+    totalData.value = res.total
+    positionData.value = res.data
   }
-};
+}
 const allCities = ref(
   allCityList.value?.map((item) => item.subLevelModelList).flat()
-);
+)
 //获取当前城市所有区域
-const getQu = (cityName: string = "武汉") => {
+const getQu = (cityName: string = '武汉') => {
   cityQuList.value = allCities.value?.filter((item) => {
     if (item.name == cityName) {
-      return item.subLevelModelList;
+      return item.subLevelModelList
     }
-  })[0]?.subLevelModelList;
-};
+  })[0]?.subLevelModelList
+}
 //点击区
 const clickQu = (id: number, name: string) => {
-  params.region = name;
-  activeQuId.value = id;
-  params.pageOn = 1;
-  getPositionData();
-};
+  params.region = name
+  activeQuId.value = id
+  params.pageOn = 1
+  getPositionData()
+}
 //点击不限
 const clickAll = () => {
-  params.region = "";
-  activeQuId.value = -1;
-  params.pageOn = 1;
-  getPositionData();
-};
+  params.region = ''
+  activeQuId.value = -1
+  params.pageOn = 1
+  getPositionData()
+}
 
 //清空筛选条件
-const random = ref(-1);
+const random = ref(-1)
 const clearCondition = () => {
   for (let item in formData) {
-    formData[item] = "不限";
+    formData[item] = '不限'
   }
-  random.value = Math.random();
-  params.pageOn = 1;
-  getPositionData();
-};
+  random.value = Math.random()
+  params.pageOn = 1
+  getPositionData()
+}
 
 onMounted(() => {
   cityQuList.value = allCityList.value?.filter(
     (item) => item.name === preventCity.value
-  )[0]?.subLevelModelList[0].subLevelModelList as [];
+  )[0]?.subLevelModelList[0].subLevelModelList as []
   getQu(preventCity.value)
-  if (preventCity.value == "全国") {
-    showQu.value = false;
+  if (preventCity.value == '全国') {
+    showQu.value = false
   }
-  getPositionData();
-});
+  getPositionData()
+})
 </script>
 
 <style lang="less" scoped>
@@ -345,7 +351,7 @@ onMounted(() => {
             margin-right: 50px;
             &::after {
               position: absolute;
-              content: "";
+              content: '';
               right: -25px;
               width: 1.5px;
               height: 12px;
@@ -360,7 +366,7 @@ onMounted(() => {
             position: relative;
             &::after {
               position: absolute;
-              content: "";
+              content: '';
               transition: all 0.24s linear;
               top: 56%;
               transform: translateY(-50%);
@@ -386,7 +392,7 @@ onMounted(() => {
             color: var(--themeColor);
             cursor: pointer;
             &::after {
-              content: " ";
+              content: ' ';
               position: absolute;
               left: 0;
               right: 0;
@@ -573,12 +579,11 @@ onMounted(() => {
     }
   }
 }
-.navbar{
+.navbar {
   position: fixed !important;
   top: 0;
-  left: 0 ;
+  left: 0;
   right: 0;
   z-index: 9999;
-
 }
 </style>
