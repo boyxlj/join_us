@@ -6,7 +6,6 @@
       </a-config-provider>
     </transition>
   </router-view>
-  <!-- <router-view></router-view> -->
 </template>
 
 <script setup lang="ts">

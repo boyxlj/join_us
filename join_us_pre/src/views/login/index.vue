@@ -301,6 +301,7 @@ const submit = async () => {
           JSON.stringify({ telephone: formState.username })
         )
         emitter.emit('changeCompanyState')
+        disabledSubmit.value = false
       } else {
         localStorage.setItem('companyToken', res.token)
         localStorage.setItem('company_id', res.company_id)

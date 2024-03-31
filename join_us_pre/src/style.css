@@ -12,32 +12,33 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
-html,
-body {
-  background: #f1f2f4 !important;
-  background: #F6F6F8 !important;
-  /* background: linear-gradient(180deg,#f5e4ff,#ebd0ff ,#F6F6F8) no-repeat !important; */
-
+#app {
+  background-image: linear-gradient(
+    to bottom,
+    #caedff,
+    #f2f3f5,
+    #f2f3f5,
+    #f2f3f5,
+    #f2f3f5
+  ) !important;
 }
 
-img{
+img {
   -webkit-user-drag: none;
 }
 /* 滚动条样式 */
-::-webkit-scrollbar{
+::-webkit-scrollbar {
   width: 5px;
-  height:6px;
+  height: 6px;
   background-color: #fff;
   border-radius: 8px;
 }
-::-webkit-scrollbar-track{
+::-webkit-scrollbar-track {
   padding: 5px;
   border-radius: 8px;
 }
-::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-thumb {
   width: 3px !important;
   border-radius: 8px;
   background-color: #cecece;
 }
-
-

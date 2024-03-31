@@ -26,7 +26,7 @@
         </span>
         <template #actions>
           <div
-            @click="navigateCompanyDetail(item.company_id)"
+            @click.stop="navigateCompanyDetail(item.company_id)"
             style="text-align: left"
             class="card_footer"
           >

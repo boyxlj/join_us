@@ -1,6 +1,6 @@
 <template>
-    <div>
-      <div class="detail-header">
+  <div>
+    <div class="detail-header">
       <div class="info-title">
         <div class="name-salary-row">
           <div class="row-first">
@@ -18,8 +18,10 @@
               >...</span
             >
           </div>
-          <div v-else class="row-last" style="text-align: right;">
-            <span v-for="(item,index) in welfare_tagArr" :key="index">{{ item }}</span>
+          <div v-else class="row-last" style="text-align: right">
+            <span v-for="(item, index) in welfare_tagArr" :key="index">{{
+              item
+            }}</span>
           </div>
           <a-card v-show="welfare_tagShown" class="welfare-card">
             <span
@@ -31,11 +33,11 @@
           </a-card>
         </div>
         <div class="info">
-          <EnvironmentOutlined :style="{ fontSize: '20px', color: '#fff' }" />
+          <EnvironmentOutlined class="icon" />
           <span>{{ jobDetailData.cityName }}</span>
-          <ShoppingOutlined :style="{ fontSize: '20px', color: '#fff' }" />
+          <ShoppingOutlined class="icon" />
           <span>{{ jobDetailData.experiences }}</span>
-          <BankOutlined :style="{ fontSize: '20px', color: '#fff' }" />
+          <BankOutlined class="icon" />
           <span>{{ jobDetailData.degrees }}</span>
         </div>
         <a-button
@@ -64,16 +66,18 @@
           @click="clickSendBtn"
           >立即投递</a-button
         >
-        <a-button v-else  type="primary" class="chat" @click="cancelSendBtn">取消投递</a-button>
+        <a-button v-else type="primary" class="chat" @click="cancelSendBtn"
+          >取消投递</a-button
+        >
       </div>
     </div>
     <div class="info-container">
       <a-card class="xx-info">
         <p class="ms">
           <span>职位描述</span>
-          <span>
+          <span @click="message.warning('功能开发中,敬请期待')">
             <WarningOutlined />
-            <a>举报该职位</a>
+            <a style="margin-left: 5px; color: var(--themeColor)">举报该职位</a>
           </span>
         </p>
         <div class="mark">
@@ -85,12 +89,21 @@
             }}</span>
           </template>
         </div>
-        <div  class="position-desc"> <pre style="white-space:pre-wrap;word-wrap:break-word;">{{jobDetailData.position_desc}}</pre> </div>
+        <div class="position-desc">
+          <pre style="white-space: pre-wrap; word-wrap: break-word">{{
+            jobDetailData.position_desc
+          }}</pre>
+        </div>
         <div class="company-info-container">
-          <div class="info" @click="navigateCompanyDetail(jobDetailData.company_id)">
+          <div
+            class="info"
+            @click="navigateCompanyDetail(jobDetailData.company_id)"
+          >
             <img class="company-avatar" :src="jobDetailData.logo" alt="" />
             <div class="detail-info">
-              <span>{{ jobDetailData.company_name }}</span>
+              <span :title="jobDetailData.company_name">{{
+                jobDetailData.company_name
+              }}</span>
               <span
                 ><span>{{ jobDetailData.company_name }}</span
                 >|<span>校招hr</span></span
@@ -103,7 +116,7 @@
         <salaryCaculate />
       </div>
     </div>
-    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -113,90 +126,90 @@ import {
   EnvironmentOutlined,
   BankOutlined,
   StarOutlined,
-  StarFilled,
-} from "@ant-design/icons-vue";
-import { Iposition_type } from "@/types/jobType";
-import salaryCaculate from "./components/salaryCaculate/index.vue";
+  StarFilled
+} from '@ant-design/icons-vue'
+import { Iposition_type } from '@/types/jobType'
+import salaryCaculate from './components/salaryCaculate/index.vue'
 import {
   getJobDetail,
   addSend,
   addCollect,
   collectOrSendState,
   deleteCollect,
-  cancelOrDelSend,
-} from "@/api";
-import { useUserInfo } from "@/store/user";
-import { useUserLoginState } from "@/hooks/useUserLoginState";
-import { useValidateResume } from "@/hooks/useValidateResume";
-import { message } from "ant-design-vue";
-const router = useRouter();
-const route = useRoute();
-let isIn = ref(false);
-const jobId = route.query.position_id;
-let jobDetailData = ref<Iposition_type>({} as Iposition_type);
-let welfare_tagArr = ref<string[]>([]);
-let welfare_tagShown = ref(false);
-let desc_tagArr = ref<string[]>([]);
-const { userId } = useUserInfo();
+  cancelOrDelSend
+} from '@/api'
+import { useUserInfo } from '@/store/user'
+import { useUserLoginState } from '@/hooks/useUserLoginState'
+import { useValidateResume } from '@/hooks/useValidateResume'
+import { message } from 'ant-design-vue'
+const router = useRouter()
+const route = useRoute()
+let isIn = ref(false)
+const jobId = route.query.position_id
+let jobDetailData = ref<Iposition_type>({} as Iposition_type)
+let welfare_tagArr = ref<string[]>([])
+let welfare_tagShown = ref(false)
+let desc_tagArr = ref<string[]>([])
+const { userId } = useUserInfo()
 const clickSendBtn = async () => {
-  if (!useUserLoginState()) return;
-  if (!useValidateResume()) return;
-  const { position_id, company_id, hr_id } = jobDetailData.value;
-  const res: any = await addSend({ position_id, company_id, hr_id, userId });
-  if (res.code !== 200) return message.error(res.msg);
-  message.success("投递成功");
-  getState();
-};
+  if (!useUserLoginState()) return
+  if (!useValidateResume()) return
+  const { position_id, company_id, hr_id } = jobDetailData.value
+  const res: any = await addSend({ position_id, company_id, hr_id, userId })
+  if (res.code !== 200) return message.error(res.msg)
+  message.success('投递成功')
+  getState()
+}
 const clickCollectBtn = async () => {
-  if (!useUserLoginState()) return;
-  const { position_id, company_id } = jobDetailData.value;
-  const res: any = await addCollect({ position_id, company_id, userId });
-  if (res.code !== 200) return message.error(res.msg);
-  message.success("收藏成功");
-  getState();
-};
+  if (!useUserLoginState()) return
+  const { position_id, company_id } = jobDetailData.value
+  const res: any = await addCollect({ position_id, company_id, userId })
+  if (res.code !== 200) return message.error(res.msg)
+  message.success('收藏成功')
+  getState()
+}
 
 //获取用户的收藏和投递状态
-const collectState = ref(false);
-const sendState = ref(false);
+const collectState = ref(false)
+const sendState = ref(false)
 const getState = async () => {
-  if (!useUserLoginState(true)) return;
-  const res: any = await collectOrSendState({ userId, position_id: jobId });
-  collectState.value = res.collectState;
-  sendState.value = res.sendState;
-  useUserInfo().getAllSendNum();
-};
+  if (!useUserLoginState(true)) return
+  const res: any = await collectOrSendState({ userId, position_id: jobId })
+  collectState.value = res.collectState
+  sendState.value = res.sendState
+  useUserInfo().getAllSendNum()
+}
 
 //取消投递
 const cancelSendBtn = async () => {
-  if (!useUserLoginState()) return;
-  const res: any = await cancelOrDelSend({ userId, position_id: jobId });
-  if (res.code !== 200) return message.error("取消投递失败");
-  message.success("已取消投递");
-  getState();
-};
+  if (!useUserLoginState()) return
+  const res: any = await cancelOrDelSend({ userId, position_id: jobId })
+  if (res.code !== 200) return message.error('取消投递失败')
+  message.success('已取消投递')
+  getState()
+}
 //取消收藏
 const cancelCollectBtn = async () => {
-  if (!useUserLoginState()) return;
-  const res: any = await deleteCollect({ userId, position_id: jobId });
-  if (res.code !== 200) return message.error("删除收藏失败");
-  message.success("已从感兴趣中移除");
-  getState();
-};
+  if (!useUserLoginState()) return
+  const res: any = await deleteCollect({ userId, position_id: jobId })
+  if (res.code !== 200) return message.error('删除收藏失败')
+  message.success('已从感兴趣中移除')
+  getState()
+}
 
 onMounted(() => {
   getJobDetail(jobId as string).then((res) => {
-    if (!res.data) return router.replace("/notFound");
-    jobDetailData.value = res.data as Iposition_type;
-    welfare_tagArr.value = JSON.parse(jobDetailData.value.welfare_tag);
-    desc_tagArr.value = JSON.parse(jobDetailData.value.position_tag);
+    if (!res.data) return router.replace('/notFound')
+    jobDetailData.value = res.data as Iposition_type
+    welfare_tagArr.value = JSON.parse(jobDetailData.value.welfare_tag)
+    desc_tagArr.value = JSON.parse(jobDetailData.value.position_tag)
     if (res.data.position_name) {
-      document.title =  res.data.position_name;
+      document.title = res.data.position_name
     }
-    if (res.data.position_state !== "1") return router.replace("/notFound");
-  });
-  getState();
-});
+    if (res.data.position_state !== '1') return router.replace('/notFound')
+  })
+  getState()
+})
 
 const navigateCompanyDetail = (company_id: string) => {
   window.open(`/#/home/companyDetail?company_id=${company_id}`)
@@ -284,9 +297,14 @@ const navigateCompanyDetail = (company_id: string) => {
     }
 
     .info {
-      width: 250px;
+      width: 50%;
       height: 30px;
       margin: 25px 0 -5px 40px;
+      .icon {
+        margin-right: 2px;
+        font-size: 14px;
+        color: #fff;
+      }
 
       span {
         display: inline-block;
@@ -295,6 +313,7 @@ const navigateCompanyDetail = (company_id: string) => {
         vertical-align: middle;
         margin: 0 3px;
         color: #fff;
+        margin-right: 18px;
       }
     }
 
@@ -302,7 +321,7 @@ const navigateCompanyDetail = (company_id: string) => {
       margin-left: 40px;
       margin-top: 20px;
       min-width: 120px;
-      height: 50px;
+      height: 42px;
       font-size: 17px;
       background-color: transparent;
       color: #fff;
@@ -313,7 +332,7 @@ const navigateCompanyDetail = (company_id: string) => {
       margin-left: 20px;
       margin-top: 20px;
       width: 120px;
-      height: 50px;
+      height: 42px;
       font-size: 17px;
       border: none;
       color: #fff;
@@ -322,7 +341,7 @@ const navigateCompanyDetail = (company_id: string) => {
 }
 .info-container {
   width: 1200px;
-  min-height: 600px;
+  min-height: 400px;
   margin: 15px auto;
   padding: 20px;
   display: flex;
@@ -362,15 +381,18 @@ const navigateCompanyDetail = (company_id: string) => {
     .position-desc {
       width: 90%;
       min-height: 100px;
+      pre {
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      }
     }
     .company-info-container {
-      width: 850px;
+      width: 100%;
       height: 100px;
       margin-top: 20px;
 
       .info {
         height: 100px;
-        width: 300px;
+        width: 70%;
         display: flex;
         align-items: center;
 
@@ -386,17 +408,24 @@ const navigateCompanyDetail = (company_id: string) => {
           margin-left: 15px;
           display: flex;
           flex-direction: column;
-          justify-content: space-around;
+          justify-content: center;
           cursor: pointer;
 
           & > span:first-of-type {
             font-size: 20px;
             font-weight: bold;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-bottom: 4px;
           }
 
           & > span:last-of-type {
             span:first-of-type {
               margin-right: 15px;
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
             }
 
             span:last-of-type {

@@ -43,7 +43,7 @@
           </a-select>
         </div>
         <a-button type="primary" style="margin: 0 10px" @click="clickAdd"
-          >添加公司</a-button
+          >加入公司</a-button
         >
         <a-button type="primary" style="margin: 0 10px" @click="clickBegin"
           >申请入驻</a-button
@@ -95,43 +95,42 @@ const clickAdd = () => {
   const company_id = companyData.value.filter(
     (item) => item.company_name == selectCompany.value
   )
-  console.log('')
   submitAdd(hr_id as string, company_id[0].company_id, token as string)
 }
 
 const submitAdd = async (hr_id: string, company_id: string, token: string) => {
-  // Modal.confirm({
-  //   title: "温馨提示",
-  //   cancelText:"取消",
-  //   okText:"确认绑定",
-  //   centered:true,
-  //   icon: createVNode(ExclamationCircleOutlined),
-  //   content: createVNode(
-  //     "div",
-  //     { style: "font-weight:bold;" },
-  //     `请确认您选择的公司: ${selectCompany.value}`
-  //   ),
-  //   onOk:async ()=> {
-  const res: any = await setHrCompany({ hr_id, company_id })
-  if (res.code !== 200) return message.error(res.msg)
-  message.success('绑定成功')
-  useCompanyInfo().saveCompanyId(company_id)
-  useCompanyInfo().getCompanyInfo(company_id)
-  useHrInfo().saveHrId(hr_id as string)
-  useHrInfo().getHrInfo(hr_id as string)
-  visible.value = false
-  localStorage.setItem('token', token)
-  localStorage.removeItem('hr_id')
-  setTimeout(() => {
-    router.replace('/company')
-  }, 200)
-
-  // },
-  //   onCancel() {
-  //     // console.log('Cancel');
-  //   },
-  //   class: "test123",
-  // });
+  Modal.confirm({
+    title: '温馨提示',
+    cancelText: '取消',
+    okText: '确认绑定',
+    centered: true,
+    icon: createVNode(ExclamationCircleOutlined),
+    content: createVNode(
+      'div',
+      { style: 'font-weight:bold;' },
+      `请确认您要绑定的公司:
+       ${selectCompany.value}`
+    ),
+    onOk: async () => {
+      const res: any = await setHrCompany({ hr_id, company_id })
+      if (res.code !== 200) return message.error(res.msg)
+      message.success('绑定成功')
+      useCompanyInfo().saveCompanyId(company_id)
+      useCompanyInfo().getCompanyInfo(company_id)
+      useHrInfo().saveHrId(hr_id as string)
+      useHrInfo().getHrInfo(hr_id as string)
+      visible.value = false
+      localStorage.setItem('token', token)
+      localStorage.removeItem('hr_id')
+      setTimeout(() => {
+        router.replace('/company')
+      }, 200)
+    },
+    onCancel() {
+      // console.log('Cancel');
+    },
+    class: 'test123'
+  })
 }
 
 //查询所有公司

@@ -280,15 +280,16 @@ const searchSubmit = () => {
   .container {
     width: 1200px;
     margin: 0 auto;
+
     .box {
       width: 75%;
       height: 50px;
       border: 2.5px solid var(--themeColor);
       border-radius: var(--radiusSize);
       display: flex;
-      justify-content: space-between;
       justify-content: flex-start !important;
       position: relative;
+      box-shadow: 0 10px 30px 0 rgba(153, 153, 153, 0.2);
       :slotted(.citySelect) {
         min-width: 120px;
         display: flex;
@@ -322,7 +323,7 @@ const searchSubmit = () => {
       .searchFocusBox {
         position: absolute;
         width: 650px;
-        min-height: 230px;
+        min-height: 120px;
         background: #fff;
         top: 55px;
         left: 140px;
