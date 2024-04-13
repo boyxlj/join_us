@@ -20,9 +20,13 @@
             {{ item.company_name }}
           </p>
           <p class="infos">
-            <span class="types">{{ item.industry }}</span>
-            <span class="rz">{{ item.financing }}</span>
-            <span class="num">{{ item.people_num }}</span>
+            <span class="types" :title="item.industry">{{
+              item.industry
+            }}</span>
+            <span class="rz" :title="item.financing">{{ item.financing }}</span>
+            <span class="num" :title="item.people_num">{{
+              item.people_num
+            }}</span>
           </p>
         </div>
       </div>
@@ -145,7 +149,7 @@ const navigateCompanyDetail = (company_id: string) => {
 
     .right_right {
       margin-left: 10px;
-
+      width: 300px;
       .company {
         font-size: 16px;
         color: #222;
@@ -163,12 +167,30 @@ const navigateCompanyDetail = (company_id: string) => {
           padding: 2px 8px;
           margin-right: 8px;
           background: #f8f8f8;
+          display: inline-block;
         }
 
         font-size: 12px;
         font-weight: 400;
         color: #666;
         margin-top: 8px;
+        .types,
+        .rz,
+        .num {
+          max-width: 120px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+        .types {
+          max-width: 130px;
+        }
+        .rz {
+          max-width: 80px;
+        }
+        .num {
+          max-width: 90px;
+        }
       }
     }
   }
